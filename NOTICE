@@ -1,0 +1,11 @@
+This product includes software developed by PrestaShop SA and Contributors
+PrestaShop is an International Registered Trademark & Property of PrestaShop SA
+@author    PrestaShop SA and Contributors <contact@prestashop.com>
+@copyright Since 2007 PrestaShop SA and Contributors
+@license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
+
+This product includes the following third-party libraries:
+- jQuery: Copyright (c) 2020 The jQuery Foundation. Released under the MIT license.
+- Composer: Copyright (c) Nils Adermann, Jordi Boggiano
+- psr/http-message: Copytight (c) PHP-FIG (http://www.php-fig.org/)
+- Datatable :  https://datatables.net/license/

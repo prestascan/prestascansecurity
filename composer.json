@@ -1,0 +1,25 @@
+{
+    "name": "module-prestashop/prestascansecurity",
+    "description": "Module PrestaScan security for PrestaShop",
+    "homepage": "https://security.prestascan.com/",
+    "license": "AFL-3.0",
+    "authors": [
+        {
+            "name": "Profileo",
+            "email": "contact@profileo.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "PrestaScan\\": "./src/"
+        },
+        "classmap": [
+            "classes"
+        ]
+    },
+    "config": {
+        "platform": {
+            "php": "5.6"
+        }
+    }
+}
