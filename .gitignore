@@ -1,0 +1,8 @@
+config.xml
+config*.xml
+md5_*.xml
+*.cache
+*.log
+/tests/
+*.sublime-*
+src/Api/TestGenericProvider.php
