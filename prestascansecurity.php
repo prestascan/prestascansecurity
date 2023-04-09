@@ -10,7 +10,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '0.8.2';
+        $this->version = '0.8.3';
         $this->author = 'PrestaScan';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -278,7 +278,7 @@ class Prestascansecurity extends Module
 
         // check if module update is available
         if($isLogged && !$dummyData) {
-            $updateObj = new \PrestaScan\Update($this->context);
+            $updateObj = new \PrestaScan\Update($this->context, $this);
             $updateObj->checkForModuleUpdate();
             $updateAvailable = Configuration::get('PRESTASCAN_UPDATE_VERSION_AVAILABLE') ? true : false;
             $this->context->smarty->assign("module_upgrade_available", $updateAvailable);
