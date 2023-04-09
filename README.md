@@ -54,13 +54,14 @@ As the security targets all kinds of merchants, using sometimes outdated version
 
 - [x] Scan your modules to identify vulnerabilities and required updates
 - [x] Identify unused modules, with the ability to disable and remove modules in one place
-- [x] Be alerted :warning: when a new vulnerability is discovered in your module (including back office and :email: alert)
+- [x] Be alerted :warning: when a new vulnerability is discovered in your module (including back office)
 - [x] List known vulnerabilities in PrestaShop Core for your current version
 - [x] List unprotected directories
 
 ### Exciting upcoming features !
-- [ ] Email notification at the end of a scan
-- [ ] Perform scan of your files to detect known malware or suspicious patterns
+- [ ] Email notification when a new vulnerability is discovered
+- [ ] BackOffice alert notifications when a new PrestaShop core vulnerability is discovered
+- [ ] Perform scans of your files to detect known malware or suspicious patterns
 - [ ] List all modified and added files
 - [ ] List non-standard files, such as zip files or database export
 - [ ] Automated scans :tada:
@@ -90,7 +91,7 @@ If you discover a security issue in this project, please report it to us as soon
 
 To report a security issue, please follow these steps:
 
-1. Contact us directly at <maxime.morel@profileo.com> and <support@profileo.com>.
+1. Contact us directly at <security@profileo.com>.
 2. Provide as much detail about the issue as possible, including steps to reproduce the issue, if possible.
 3. Do not disclose the issue publicly until we have had a chance to investigate and address the issue.
 
