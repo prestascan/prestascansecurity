@@ -49,8 +49,16 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
             self::dieWithError($this->module->l('To launch a scan please log in or create an account. Having an account allows us to securely perform scans on your behalf and deliver accurate results. Click \'Login\' on the top right corner to sign in or create a new account.'));
         }
 
+        // Check if an update is available
         $updateAvailable = Configuration::get('PRESTASCAN_UPDATE_VERSION_AVAILABLE') ? true : false;
-        if ($updateAvailable === true) {
+        if ($updateAvailable === true && Tools::getValue("action") !== "updateModule") {
+            // When an update is available, we return an error message
+            
+            if (Tools::getValue("action") === "checkScanJobsProgression") {
+                // It's not a scan, no need to display the error.
+                \PrestaScan\Tools::printAjaxResponse(true, false);
+            }
+
             self::dieWithError($this->module->l('It\'s requested to update the module in order to run a new scan'));
         }
     }
@@ -239,7 +247,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
     public function ajaxProcessUpdateModule()
     {
         try {
-            $update = new \PrestaScan\Update($this->context);
+            $update = new \PrestaScan\Update($this->context, $this->module);
             $update->ajaxProcessUpdateModule();
             Context::getContext()->cookie->__set('psscan_module_updated', true);
             \PrestaScan\Tools::printAjaxResponse(true, false);

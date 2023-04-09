@@ -30,10 +30,10 @@ class Update extends Module
     protected $context;
     protected $module;
 
-    public function __construct($context)
+    public function __construct($context, $moduleInstance)
     {
         $this->context = $context;
-        $this->module = Module::getInstanceByName('prestascansecurity');
+        $this->module = $moduleInstance;
     }
 
     /*
@@ -72,12 +72,12 @@ class Update extends Module
             if (!isset($response["url"])) {
                 if (isset($response["success"]) && $response["success"] === false
                     && isset($response["error"]) && isset($response["error"]["code"]) && $response["error"]["code"] === 200) {
-                    $error = $this->trans('Your module is already up to date. Please reload this page.',[], 'Modules.prestascansecurity.Alert');
+                    $error = $this->module->l('Your module is already up to date. Please reload this page.');
                     \Configuration::updateGlobalValue('PRESTASCAN_LAST_VERSION_CHECK', (new \DateTime())->format('Y-m-d H:i:s'));
                     \Configuration::updateGlobalValue('PRESTASCAN_UPDATE_VERSION_AVAILABLE', false);
                     throw new UpdateException($error);
                 }
-                $error = $this->trans('Error fetching the new version. Please try again.',[], 'Modules.prestascansecurity.Alert');
+                $error = $this->module->l('Error fetching the new version. Please try again.');
                 throw new UpdateException($error);
             }
             $url = $response["url"];
@@ -93,11 +93,11 @@ class Update extends Module
                     \Configuration::updateGlobalValue('PRESTASCAN_UPDATE_VERSION_AVAILABLE', false);
                     return true;
                 } else {
-                    $error = $this->trans('New module version error. Update must update module from admin module list', [], 'Modules.prestascansecurity.Alert');
+                    $error = $this->module->l('New module version error. Update must update module from admin module list');
                     throw new UpdateException($error);
                 }
             } else {
-                $error = $this->trans('Unable to download and extract module!', [], 'Modules.prestascansecurity.Alert');
+                $error = $this->module->l('Unable to download and extract module!');
                 throw new UpdateException($error);
             }
         } catch (UpdateException $updateException) {
@@ -105,7 +105,7 @@ class Update extends Module
             throw $updateException;
          } catch (\Exception $e) {
             // Other type of exception.
-            $error = $this->trans('Unexcepted error trying to retrieve the new module. Reload the page and try again.', [], 'Modules.prestascansecurity.Alert');
+            $error = $this->module->l('Unexcepted error trying to retrieve the new module. Reload the page and try again.');
             throw new \Exception($error);
         }
     }
@@ -142,13 +142,11 @@ class Update extends Module
             curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
             curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
             curl_setopt($ch, CURLOPT_FILE, $zipResource);
 
             $page = curl_exec($ch);
             if (!$page) {
-                $error = $this->trans('Cannot access to the module URL.<br />Try retriving it manually: <a href="%s">%s</a>', [$url, $url], 'Modules.prestascansecurity.Alert');
+                $error = $this->module->l('Cannot access to the module URL.<br />Try retriving it manually: <a href="%s">%s</a>', [$url, $url], 'Modules.prestascansecurity.Alert');
                 throw new UpdateException($error);
             }
             curl_close($ch);
@@ -156,7 +154,7 @@ class Update extends Module
             /* Open the Zip file */
             $zip = new \ZipArchive;
             if ($zip->open($zipFile) != "true") {
-                $error = $this->trans('Malformated module archive. Please try again.', [], 'Modules.prestascansecurity.Alert');
+                $error = $this->module->l('Malformated module archive. Please try again.');
                 throw new UpdateException($error);
             }
             /* Extract Zip File */
@@ -167,7 +165,7 @@ class Update extends Module
         } catch (UpdateException $updateException) {
             throw $updateException;
         } catch (\Exception $ex) {
-            $error = $this->trans('Unexpected error downloading or extracting module archive.', [], 'Modules.prestascansecurity.Alert');
+            $error = $this->module->l('Unexpected error downloading or extracting module archive.');
             throw new UpdateException($error);
         }
     }
@@ -181,10 +179,10 @@ class Update extends Module
                 return trim(str_replace(array("version", "=", "'"), array("", "", ""), $matches[0]));
             }
         } catch (\Exception $e) {
-            $error = $this->trans('Error retrieve module version.', [], 'Modules.prestascansecurity.Alert');
+            $error = $this->module->l('Error retrieve module version.', [], 'Modules.prestascansecurity.Alert');
             throw new UpdateException($error);
         }
-        $error = $this->trans('Invalid version data', [], 'Modules.prestascansecurity.Alert');
+        $error = $this->module->l('Invalid version data', [], 'Modules.prestascansecurity.Alert');
         throw new UpdateException($error);
     }
 
@@ -197,7 +195,7 @@ class Update extends Module
         $reponse = false;
         try {
             $request = new \PrestaScan\Api\Request(
-                "prestascan-api/v1/scan/check-version/".$version
+                "prestascan-api/v1/check-version/".$version
             );
             $reponse = $request->getResponse();
         } catch (\Exception $ex) {
