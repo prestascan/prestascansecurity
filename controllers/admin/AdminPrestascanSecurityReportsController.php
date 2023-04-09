@@ -95,13 +95,39 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
                         continue;
                     }
 
-                if (isset($payload["error"])) {
-                    // @todo : There is an error with one of the report. What should we do?
-                    \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['ERROR']);
-                    throw new Exception($payload["error"]["message"]);
-                    continue;
+                if (is_array($payload)
+                    && isset($payload["result"])
+                    && isset($payload["result"]['success'])
+                    && $payload["result"]['success'] === false) {
+
+                    \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['ERROR'], $payload["result"]['error']);
+                    $this->setScanStatus($job["action_name"], false);
+
+                    switch ($payload["result"]['error']) {
+                        case 'timeout':
+                            $errorMessage = $this->module->l('Error while processing one of your scans. Detail : timeout. There might be too much data to process for your scan. Please try again.');
+                            break;
+                        case 'manually_failed':
+                            $errorMessage = $this->module->l('Error while processing one of your scans. Detail : Scan manually stopped.');
+                            break;
+                        case 'other_general_error_max_attempts':
+                            $errorMessage = $this->module->l('Error while processing one of your scans. Detail : other_general_error_max_attempts. There might be too much data to process for your scan. Please try again.');
+                            break;
+                        case 'other_general_error':
+                            $errorMessage = $this->module->l('Unknown server error while processing one of your scans. Please try again.');
+                            break;
+                        
+                        default:
+                            $errorMessage = $this->module->l('Unknown error while processing one of your scans. Make sure your website is reachable by PrestaScan Security. Please try again.');
+                            break;
+                    }
+
+                    $suffixErrorMessage = " ".$this->module->l('If the error happens again, contact our support.');
+
+                    self::dieWithError($errorMessage.$suffixErrorMessage);
                 }
-                if (isset($payload) && is_array($payload)) {
+
+                if (is_array($payload)) {
                     \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['COMPLETED']);
                     $this->setScanStatus($job["action_name"], false);
                     if ($job["action_name"] === "modules_vulnerabilities") {

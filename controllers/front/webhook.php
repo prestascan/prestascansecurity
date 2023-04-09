@@ -104,8 +104,11 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
     {
         try {
             if (isset($postedData["error"])) {
-                // @todo : There is an error with one of the report. What should we do?
-                // update databas
+                $payload = $postedData["payload"];
+                $jobId = $payload['jobId'];
+
+                // We inidicate that we now need to retrieve the data from the API
+                \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['TORETRIEVE']);
 
                 // And then return success for the webhook
                 $this->returnServer(200, 'OK');
