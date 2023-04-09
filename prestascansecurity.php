@@ -10,7 +10,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '0.8';
+        $this->version = '0.8.1';
         $this->author = 'PrestaScan';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -548,7 +548,7 @@ class Prestascansecurity extends Module
             'unknown' => $this->l('Unknown Vulnerability'),
             'data_deletion' => $this->l('Data Deletion'),
             'unsecure_token' => $this->l('Unsecure Token'),
-            'path_transversal' => $this->l('Path Transversal'),
+            'path_traversal' => $this->l('Path Traversal'),
             'token_bypass' => $this->l('Token Bypass'),
             'classification_missing' => $this->l('Classification Missing'),
             // Add more vulnerability types here if needed
