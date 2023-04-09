@@ -171,7 +171,7 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
         $signature = hash_hmac('sha256', $rawPostData, Configuration::get("PRESTASCAN_WEBCRON_TOKEN"));
         $headers = getallheaders();
         foreach ($headers as $name => $value) {
-            if ($name == 'Signature') {
+            if (strtolower($name) === 'signature') {
                 return hash_equals($value, $signature);
             }
         }
