@@ -138,7 +138,7 @@ We thank all partner agencies for their work releasing security advisories.<br>
 ## License
 
 This project is licensed under the Apache License, Version 2.0.
-The full text of the license is included in the file [`LICENSE.md`](./LICENSE.md).
+The full text of the license is included in the file [`LICENSE`](./LICENSE).
 A [`AUTHORS`](./AUTHORS) file in the root directory of this project lists all authors and contributors of this project.
 A [`NOTICE`](./NOTICE) file in the root directory of this project provides attribution notices for any third-party software or content that is included in this project. Please update the `NOTICE` file to acknowledge any external contributions to this project.
 
