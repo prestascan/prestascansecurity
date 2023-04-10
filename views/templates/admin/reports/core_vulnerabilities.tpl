@@ -46,7 +46,7 @@
             scan_result_item_type=$scan_result_item_type
             scan_result_text=$scan_result_text
             class="scan_result"
-            last_scan_outdate=$core_vulnerabilities_last_scan_outdated
+            message_scan_outdated={l s='The last scan of %s is too old to be taken into consideration, please relaunch a new scan.' mod='prestascansecurity'}
         }
     </div>
     <div class="files_results eoresults col-md-8">

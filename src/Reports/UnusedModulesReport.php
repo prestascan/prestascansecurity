@@ -54,6 +54,14 @@ class UnusedModulesReport extends Report
         $reportSummary['total_disabled_modules'] = count($payload['result']['disabled']);
         $reportSummary['total_uninstalled_modules'] = count($payload['result']['not_installed']);
 
+        $criticity = "low";
+        if ($reportSummary['scan_result_ttotal'] > 10) {
+            $criticity = "high";
+        } elseif ($reportSummary['scan_result_ttotal'] > 5) {
+            $criticity = "medium";
+        }
+        $reportSummary['scan_result_criticity'] = $criticity;
+
         return parent::saveReport($payload['completion_date'], $reportSummary, $payload);
     }
 

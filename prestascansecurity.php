@@ -10,7 +10,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '0.8.3';
+        $this->version = '0.8.4';
         $this->author = 'PrestaScan';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -282,6 +282,12 @@ class Prestascansecurity extends Module
             $updateObj->checkForModuleUpdate();
             $updateAvailable = Configuration::get('PRESTASCAN_UPDATE_VERSION_AVAILABLE') ? true : false;
             $this->context->smarty->assign("module_upgrade_available", $updateAvailable);
+
+            // check if banner is available
+            $bannerResponse = \PrestaScan\Banner::getBanner();
+            if (!empty($bannerResponse)) {
+                $this->context->smarty->assign('banner', $bannerResponse);
+            }
         }
 
         return $this->display(__FILE__, 'views/templates/admin/layouts/main.tpl');
@@ -313,11 +319,9 @@ class Prestascansecurity extends Module
 
     protected function assignAdminVariables($dummyData, $moduleNewVulnerabilitiesAlert)
     {
-        $vulnAlertHandler = new \PrestaScan\VulnerabilityAlertHandler($this);
         $this->assignReportVariables();
         $this->assignSmartyStaticVariables();
         $this->assignSettingsPageUrl();
-        $this->assignLastScanDateVariables();
         $this->assignTokenAndShopUrlVariables();
 
         if ($dummyData) {
@@ -375,27 +379,6 @@ class Prestascansecurity extends Module
             'modules_vulnerabilities_status' => 'outdated',
             'modules_vulnerabilities_last_scan_date' => '30 Novembre 2022 à 16h49',
         ]);
-    }
-
-    protected function assignLastScanDateVariables()
-    {
-        $listScan = \PrestaScan\Reports\Report::getReportsListName();
-        foreach ($listScan as $action_name) {
-            $lastScan = PrestaScanQueue::getLastScanDate($action_name);
-            if (!empty($lastScan)) {
-                $date_scan = strtotime($lastScan);
-                $this->context->smarty->assign($action_name . '_last_scan_date', date('F d, Y \a\t H:i', $date_scan));
-
-                if ($date_scan <= strtotime('-1 month')) {
-                    $message = sprintf($this->l('The last scan of %s is too old to be taken into consideration, please relaunch a new scan.'), $lastScan);
-                    $this->context->smarty->assign($action_name . '_status', 'outdated');
-                    $this->context->smarty->assign($action_name . '_last_scan_outdated', $message);
-                } else {
-                    $this->context->smarty->assign($action_name . '_status', 'todate');
-                    $this->context->smarty->assign($action_name . '_last_scan_outdated', false);
-                }
-            }
-        }
     }
 
     protected function assignTokenAndShopUrlVariables()

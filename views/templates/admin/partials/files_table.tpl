@@ -97,11 +97,20 @@
             </tr>
         </thead>
         {foreach name=aFiles from=$aFiles item=aFile}
+            {if isset($aFile.severity.value) && ($aFile.severity.value === 'Critical' || $aFile.severity.value === 'critical')}
+                {assign var='datasort' value=1}
+            {elseif isset($aFile.severity.value) && ($aFile.severity.value === 'High' || $aFile.severity.value === 'high')}
+                {assign var='datasort' value=2}
+            {elseif isset($aFile.severity.value) && ($aFile.severity.value === 'Medium' || $aFile.severity.value === 'medium')}
+                {assign var='datasort' value=3}
+            {else}
+                {assign var='datasort' value=4}
+            {/if}
             <tr>
                 <input type="hidden" class="description" name="description" value="{$aFile.description.en.value}"/>
                 <td width="5%" class="dt-control"></td>  
                 <td width="20%" class="cve"><strong>{$aFile.cve.value}</strong></td>
-                <td width="10%">{$aFile.severity.value}</td>
+                <td width="10%" data-sort="{$datasort}">{$aFile.severity.value}</td>
                 <td width="10%">{$aFile.fo.value}</td>
                 <td width="10%">{$aFile.bo.value}</td>
                 <td width="10%">{$aFile.from.value}</td>

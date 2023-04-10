@@ -37,7 +37,18 @@
     {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_in_progress.tpl"}
 {elseif !empty($modules_vulnerabilities_results)}
     <div class="result_container col-md-4">
-        {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}/partials/scan_result.tpl" scanType="modules_vulnerabilities" aScanResult=$modules_vulnerabilities_results.summary scan_result_item_type=$scan_result_item_type scan_result_text=$scan_result_text module_result1_count=$module_result1_count module_result2_count=$module_result2_count module_result1_title=$module_result1_title module_result2_title=$module_result2_title class="scan_result" last_scan_outdate=$modules_vulnerabilities_last_scan_outdated}
+        {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}/partials/scan_result.tpl"
+            scanType="modules_vulnerabilities"
+            aScanResult=$modules_vulnerabilities_results.summary
+            scan_result_item_type=$scan_result_item_type
+            scan_result_text=$scan_result_text
+            module_result1_count=$module_result1_count
+            module_result2_count=$module_result2_count
+            module_result1_title=$module_result1_title
+            module_result2_title=$module_result2_title
+            class="scan_result"
+            message_scan_outdated={l s='The last scan of %s is too old to be taken into consideration, please relaunch a new scan.' mod='prestascansecurity'}
+        }
     </div>
 
     <div class="col-md-8">

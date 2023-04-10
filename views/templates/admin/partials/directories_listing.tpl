@@ -32,7 +32,14 @@
     {assign var='scan_result_text' value={l s='on %d directories may be at risk on your PrestaShop' sprintf=[$directories_listing_results.summary.scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
     {assign var='file_action' value={l s='Contact your agency or contact our experts to verify this directory' mod='prestascansecurity'}}
     <div class="result_container col-md-4">
-        {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_result.tpl" scanType="directories_listing" aScanResult=$directories_listing_results.summary scan_result_item_type=$scan_result_item_type scan_result_text=$scan_result_text class="scan_result" last_scan_outdate=$directories_listing_last_scan_outdated}
+        {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_result.tpl"
+            scanType="directories_listing"
+            aScanResult=$directories_listing_results.summary
+            scan_result_item_type=$scan_result_item_type
+            scan_result_text=$scan_result_text
+            class="scan_result"
+            message_scan_outdated={l s='The last scan of %s is too old to be taken into consideration, please relaunch a new scan.' mod='prestascansecurity'}
+        }
     </div>
     <div class="files_results eoresults col-md-8">
         <h2>{$directories_listing_results.summary.scan_result_fail_total} {$directorie_result_title}</h2>
