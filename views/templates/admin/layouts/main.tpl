@@ -55,6 +55,9 @@
 			</p>
 		</div>
 	{/if}
+
+	{include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}layouts/banner.tpl"}
+	
 	{if isset($module_upgrade_available) && $module_upgrade_available}
 		{include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}layouts/upgrade_module_banner.tpl"}
 	{/if}

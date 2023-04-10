@@ -39,6 +39,10 @@
     text-align: center;
     font-weight: normal;
 }
+#prestascansecurity_main_container .banner_promo img {
+    height: auto;
+    width: 100%;
+}
 #prestascansecurity_main_container .informationPanel {
     background-color: #041839;
     box-shadow: none;
@@ -736,6 +740,7 @@
 #prestascansecurity_main_container #tab-report-home h2.scan_title {
     font-weight: 600;
     margin-top: 38px;
+    font-size: 34px;
 }
 #prestascansecurity_main_container #tab-report-home h2.scan_title,
 #prestascansecurity_main_container #tab-report-home .last_result_date {
@@ -801,7 +806,7 @@
     padding: 0;
     margin: 0;
 }
-#prestascansecurity_main_container #tab-report-home .scan_link.row > a {
+#prestascansecurity_main_container #tab-report-home .scan_link.row > span > a {
     color: #353a40;
     text-decoration: underline;
 }
@@ -879,19 +884,22 @@
 #prestascansecurity_main_container #tab-report-home .files_results .totalmodules span {
     background: url('../img/ico_fichiers.svg') no-repeat center center;
 }
-#prestascansecurity_main_container #tab-report-home .files_results.scan_expired .totalmodules span {
+#prestascansecurity_main_container #tab-report-home .files_results.scan_expired .totalmodules span,
+#prestascansecurity_main_container #tab-report-home .files_results .totalmodules.circle_color_gray span {
     background: url('../img/ico_fichiers_gray.svg') no-repeat center center;
 }
 #prestascansecurity_main_container #tab-report-home .modules_results .totalmodules span {
     background: url('../img/ico_module.svg') no-repeat center center;    
 }
-#prestascansecurity_main_container #tab-report-home .modules_results.scan_expired .totalmodules span {
+#prestascansecurity_main_container #tab-report-home .modules_results.scan_expired .totalmodules span,
+#prestascansecurity_main_container #tab-report-home .modules_results .totalmodules.circle_color_gray span {
     background: url('../img/ico_module_gray.svg') no-repeat center center;    
 }
 #prestascansecurity_main_container #tab-report-home .vulnerabilities_results .totalmodules span {
     background: url('../img/ico_vulnerabilites.svg') no-repeat center center;
 }
-#prestascansecurity_main_container #tab-report-home .vulnerabilities_results.scan_expired .totalmodules span {
+#prestascansecurity_main_container #tab-report-home .vulnerabilities_results.scan_expired .totalmodules span,
+#prestascansecurity_main_container #tab-report-home .vulnerabilities_results .totalmodules.circle_color_gray span {
     background: url('../img/ico_vulnerabilites_gray.svg') no-repeat center center;
 }
 #prestascansecurity_main_container #tab-report-home .scan_expired a.btn-generate-report {

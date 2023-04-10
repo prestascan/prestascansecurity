@@ -435,7 +435,7 @@ $(function () {
           { type: 'file-size', targets: 1 }
         ],
       };
-     
+
       if ($('.prestascansecurity_datatable.no-sort-by-file-size').length) {
         $('.prestascansecurity_datatable.no-sort-by-file-size').each(function () {
           if($(this).attr("id") == "protectionFiles") {
@@ -462,7 +462,7 @@ $(function () {
         bProcessing: true,
         paging: false,
         searching: false,
-        order: [[1, 'asc']],
+        order: [[2, 'asc']],
       }); 
 
       const list = document.querySelector('#prestascansecurity_main_container ul#modules');

@@ -300,7 +300,7 @@ class DemoData
         $coreVulnerabilitiesDisplayReport['result'][] = array(
             'cve' => array('value' => '2018-20717'),
             'description' => array('en' => array('value' => 'In the orders section of PrestaShop before 1.7.2.5, an attack is possible after gaining access to a target store with a user role with the rights of at least a Salesman or higher privileges. The attacker can then inject arbitrary PHP objects into the process and abuse an object chain in order to gain Remote Code Execution. This occurs because protection against serialized objects looks for a 0: followed by an integer, but does not consider 0:+ followed by an integer.')),
-            'severity' => array('value' => 'Critical'),
+            'severity' => array('value' => 'Medium'),
             'fo' => array('value' => 'Yes'),
             'bo' => array('value' => 'No'),
             'from' => array('value' => '1.6.0.1'),
@@ -311,7 +311,7 @@ class DemoData
         $coreVulnerabilitiesDisplayReport['result'][] = array(
             'cve' => array('value' => '2019-13461'),
             'description' => array('en' => array('value' => 'In PrestaShop before 1.7.6.0 RC2, the id_address_delivery and id_address_invoice parameters are affected by an Insecure Direct Object Reference vulnerability due to a guessable value sent to the web application during checkout. An attacker could leak personal customer information. This is PrestaShop bug #14444.')),
-            'severity' => array('value' => 'Critical'),
+            'severity' => array('value' => 'low'),
             'fo' => array('value' => 'Yes'),
             'bo' => array('value' => 'No'),
             'from' => array('value' => '1.6.0.1'),
@@ -322,7 +322,7 @@ class DemoData
         $coreVulnerabilitiesDisplayReport['result'][] = array(
             'cve' => array('value' => '2019-13461'),
             'description' => array('en' => array('value' => 'In PrestaShop before 1.7.6.0 RC2, the id_address_delivery and id_address_invoice parameters are affected by an Insecure Direct Object Reference vulnerability due to a guessable value sent to the web application during checkout. An attacker could leak personal customer information. This is PrestaShop bug #14444.')),
-            'severity' => array('value' => 'Critical'),
+            'severity' => array('value' => 'Medium'),
             'fo' => array('value' => 'Yes'),
             'bo' => array('value' => 'No'),
             'from' => array('value' => '1.6.0.1'),

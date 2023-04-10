@@ -198,4 +198,111 @@ class Tools
 
         return $formattedList;
     }
+
+    public static function isContainingPerformedScan($scans)
+    {
+        foreach ($scans as $scan) {
+            if ($scan !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function isContainingOutdatedScan($scans, $month = 1)
+    {
+        foreach ($scans as $aScan) {
+            if (!$aScan) {
+                // Scan not performed
+                continue;
+            }
+            if (self::isScanOutDated($aScan['summary']['date'], $month)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function isScanOutDated($date, $month = 1)
+    {
+        $outdated = false;
+        if (!empty($date)) {
+            $date_scan = strtotime($date);
+            if ($date_scan <= strtotime('-'.(int)$month.' month')) {
+                $outdated = true;
+            }
+        }
+        return $outdated;
+    }
+
+    public static function formatDateString($date)
+    {
+        $formattedDate = "";
+        if (!empty($date)) {
+            $formattedDate = date('j F Y', strtotime($date));
+        }
+        return $formattedDate;
+    }
+
+    public static function getOldestScan($scans)
+    {
+        if (count($scans) === 1) {
+            return $scans[0];
+        }
+
+        // Set the initial value of the oldest scan and date
+        $oldestScan = null;
+        $oldestDate = null;
+
+        // Loop through the results array
+        foreach ($scans as $aScan) {
+            if (!$aScan) {
+                // Scan not performed
+                continue;
+            }
+
+            // Check if the oldest date is null or the aScan's date is older
+            $date = $aScan['summary']['date'];
+            if ($oldestDate === null || $date < $oldestDate) {
+                // Update the oldest scan and date
+                $oldestScan = $aScan;
+                $oldestDate = $date;
+            }
+        }
+
+        // Return the oldest scan (or the first one if none are found)
+        return is_null($oldestScan) ? $scans[0] : $oldestScan;
+    }
+
+    public static function getScanWithHighestCriticity($scans)
+    {
+        $highestCriticityScan = null;
+        $highestCriticityLevel = -1;
+
+        $criticityLevels = array(
+            'critical' => 4,
+            'high' => 3,
+            'medium' => 2,
+            'low' => 1
+        );
+
+        foreach ($scans as $scan) {
+            if (!$scan) {
+                continue;
+            }
+            //var_dump($scan['summary']);
+            if (!isset($scan['summary']['scan_result_criticity'])) {
+                var_dump($scan['summary']);
+            }
+            $scanCriticity = $scan['summary']['scan_result_criticity'];
+
+            if (isset($criticityLevels[$scanCriticity]) && $criticityLevels[$scanCriticity] > $highestCriticityLevel) {
+                $highestCriticityScan = $scan;
+                $highestCriticityLevel = $criticityLevels[$scanCriticity];
+            }
+        }
+
+        return is_null($highestCriticityScan) ? $scans[0] : $highestCriticityScan;
+    }
+
 }

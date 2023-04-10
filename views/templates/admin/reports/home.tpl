@@ -33,193 +33,42 @@
     {assign var='dataAction' value="generateGlobalReport"}
     {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/start_scan_overlay.tpl" aText=$scan_text aTextBtn=$scan_text_btn dataAction=$dataAction}
 {else}
+
     <div class="all_result_data col-md-12">
-        <h2 class="hook-title">{l s='Results of last scan' mod='prestascansecurity'}</h2>
-        <div data-link-parent="report-files" class="report-result files_results col-lg-4 col-md-12 {if (isset($directories_listing_status) && $directories_listing_status === 'outdated') || !isset($directories_listing_status)}scan_expired{/if}">
+        <h2 class="hook-title">{l s='Results from previous scans' mod='prestascansecurity'}</h2>
 
-            {if isset($directories_listing_results) && isset($directories_listing_results.summary)}
-                {if $directories_listing_results.summary.scan_result_criticity === 'high' || $directories_listing_results.summary.scan_result_criticity === 'critical'}
-                    {assign var='scan_result_circle_color' value='red'}
-                {elseif $directories_listing_results.summary.scan_result_criticity === 'medium'}
-                    {assign var='scan_result_circle_color' value='yellow'}
-                {else}
-                    {assign var='scan_result_circle_color' value='green'}
-                {/if}
-            {else}
-                {assign var='scan_result_circle_color' value='green'}
-            {/if}
+        {* Files and directories *}
+        {include
+            file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/home/scan_summary.tpl"
+            scan_title={l s='Files and Directories' mod='prestascansecurity'}
+            scans=array($directories_listing_results)
+            classcontainer='files'
+            message_scan_outdated={l s='Your last vulnerability scan for your directories is outdated and should not be relied upon. Perform a new scan to ensure accurate results.' mod='prestascansecurity'}
+            more_details_link='report-files-4'
+            action_scan_btn='generateFilesReport'
+        }
 
-            <div class="result_data_container">
-                <div class="result_data_total">
-                    <div class="col-lg-6 col-md-6 col-xs-6">
-                        <div class="totalmodules circle_color_{$scan_result_circle_color}"><span></span></div>
-                    </div>
+        {* Module scan *}
+        {include
+            file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/home/scan_summary.tpl"
+            scan_title={l s='Modules status' mod='prestascansecurity'}
+            scans=array($modules_vulnerabilities_results, $modules_unused_results)
+            classcontainer='modules'
+            message_scan_outdated={l s='Your last vulnerability scan for your modules is outdated and should not be relied upon. Perform a new scan to ensure accurate results.' mod='prestascansecurity'}
+            more_details_link='modules_vulnerabilities'
+            action_scan_btn='generateModulesReport'
+        }
 
-                    <div class="col-lg-6 col-md-6 col-xs-6">
-                        <h2 class="scan_title">{l s='Files' mod='prestascansecurity'}</h2>
-                        {if (isset($directories_listing_status) && $directories_listing_status === 'outdated')}
-                            <div class="scan_date_expired">{$directories_listing_last_scan_outdated}</div>
-                        {elseif isset($directories_listing_last_scan_date) && $directories_listing_last_scan_date !== false}
-                            <div class="last_result_date">{l s='last scan on the' mod='prestascansecurity'} {$directories_listing_last_scan_date}</div>
-                        {/if}
-                    </div>
-                </div>
-                {if !isset($directories_listing_status)}
-                    <div class="no_scan_done_yet">{$no_scan_done_yet_text}</div>
-                {else}
-                    {if isset($non_standards_files_results) && !empty($non_standards_files_results)}
-                        <div class="result_data non_standards_files">
-                            {assign var='scan_result_total' value=$non_standards_files_results.summary.scan_result_total}
-                            {assign var='scan_result_text' value={l s='file(s) on %d are' sprintf=[$scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
-                            {assign var='scan_result_text_type' value={l s='non standard' mod='prestascansecurity'}}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}/partials/home_scan_result.tpl" scanType="non_standards_files" aScanResult=$non_standards_files_results.summary scan_result_text_type=$scan_result_text_type scan_result_text=$scan_result_text id="report-files-1" class="report-result-child"}
-                        </div>
-                    {/if}
-                    {if isset($added_or_modified_core_files_results) && !empty($added_or_modified_core_files_results)}
-                        <div class="result_data added_or_modified_core_files">
-                            {assign var='scan_result_total' value=$added_or_modified_core_files_results.summary.scan_result_total}
-                            {assign var='scan_result_text' value={l s='file(s) on %d are' sprintf=[$scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
-                            {assign var='scan_result_text_type' value={l s='added or modified' mod='prestascansecurity'}}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}/partials/home_scan_result.tpl" scanType="non_standards_files" aScanResult=$added_or_modified_core_files_results.summary scan_result_text_type=$scan_result_text_type scan_result_text=$scan_result_text id="report-files-2" class="report-result-child"}
-                        </div>
-                    {/if}
-                    {if isset($infected_files_results) && !empty($infected_files_results)}
-                        <div class="result_data infected_files">
-                            {assign var='scan_result_total' value=$infected_files_results.summary.scan_result_total}
-                            {assign var='scan_result_text' value={l s='file(s) on %d are' sprintf=[$scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
-                            {assign var='scan_result_text_type' value={l s='infected' mod='prestascansecurity'}}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}/partials/home_scan_result.tpl" scanType="non_standards_files" aScanResult=$infected_files_results.summary scan_result_text_type=$scan_result_text_type scan_result_text=$scan_result_text id="report-files-3" class="report-result-child"}
-                        </div>
-                    {/if}
-                    {if isset($directories_listing_results) && !empty($directories_listing_results)}
-                        <div class="result_data directories_listing">
-                            {assign var='scan_result_total' value=$directories_listing_results.summary.scan_result_total}
-                            {assign var='scan_result_text' value={l s='document(s) on %d are' sprintf=[$scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
-                            {assign var='scan_result_text_type' value={l s='unprotected' mod='prestascansecurity'}}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}/partials/home_scan_result.tpl" scanType="non_standards_files" aScanResult=$directories_listing_results.summary scan_result_text_type=$scan_result_text_type scan_result_text=$scan_result_text id="report-files-4" class="report-result-child"}
-                        </div>
-                    {/if}
-                {/if}
-            </div>
-            <div class="scan_link row">
-                {if !isset($directories_listing_status)}
-                    <p><a class="btn-generate-report btn btn-default" data-action="generateFilesReport" href="javascript:void(0);" >{l s='Start a scan' mod='prestascansecurity'}</a></p>
-                {else}
-                    <a href="javascript:void(0);">{l s='View more details' mod='prestascansecurity'}</a>
-                    <p><a class="btn-generate-report btn btn-default" data-action="generateFilesReport" href="javascript:void(0);" >{l s='Restart a scan' mod='prestascansecurity'}</a></p>
-                {/if}
-            </div>
-        </div>
-
-        <div data-link-parent="report-modules" class="report-result modules_results col-lg-4 col-md-12 {if (isset($modules_vulnerabilities_status) && $modules_vulnerabilities_status === 'outdated')|| !isset($modules_vulnerabilities_status)}scan_expired{/if}">
-
-            {if isset($modules_vulnerabilities_results) && isset($modules_vulnerabilities_results.summary)}
-                {if $modules_vulnerabilities_results.summary.scan_result_criticity === 'high' || $modules_vulnerabilities_results.summary.scan_result_criticity === 'critical'}
-                    {assign var='scan_result_circle_color' value='red'}
-                {elseif $modules_vulnerabilities_results.summary.scan_result_criticity === 'medium'}
-                    {assign var='scan_result_circle_color' value='yellow'}
-                {else}
-                    {assign var='scan_result_circle_color' value='green'}
-                {/if}
-            {else}
-                {assign var='scan_result_circle_color' value='green'}
-            {/if}
-
-            <div class="result_data_container">
-                <div class="result_data_total">
-                    <div class="col-lg-6 col-md-6 col-xs-6">
-                        <div class="totalmodules circle_color_{$scan_result_circle_color}"><span></span></div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-xs-6">
-                        <h2 class="scan_title">{l s='Modules' mod='prestascansecurity'}</h2>
-                        {if (isset($modules_vulnerabilities_status) && $modules_vulnerabilities_status === 'outdated')}
-                            <div class="last_result_expired">{$scan_expired_text}</div>
-                        {elseif isset($modules_vulnerabilities_last_scan_date) && $modules_vulnerabilities_last_scan_date !== false}
-                            <div class="last_result_date">{l s='last scan on the' mod='prestascansecurity'} {$modules_vulnerabilities_last_scan_date}</div>
-                        {/if}
-                    </div>
-                </div>
-                {if !isset($modules_vulnerabilities_status)}
-                    <div class="no_scan_done_yet">{$no_scan_done_yet_text}</div>
-                {else}
-                    {if isset($modules_vulnerabilities_results) && !empty($modules_vulnerabilities_results)}
-                        <div class="result_data modules_vulnerabilities">
-                            {assign var='scan_result_total' value=$modules_vulnerabilities_results.summary.scan_result_total}
-                            {assign var='scan_result_text' value={l s='module(s) on %d are' sprintf=[$scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
-                            {assign var='scan_result_text_type' value={l s='at risk' mod='prestascansecurity'}}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}/partials/home_scan_result.tpl" scanType="non_standards_files" aScanResult=$modules_vulnerabilities_results.summary scan_result_text_type=$scan_result_text_type scan_result_text=$scan_result_text id="modules_vulnerabilities" class="report-result-child"}
-                        </div>
-                    {/if}
-                    {if isset($modules_unused_results) && !empty($modules_unused_results)}
-                        <div class="result_data modules_unused">
-                            {assign var='scan_result_total' value=$modules_unused_results.summary.scan_result_total}
-                            {assign var='scan_result_text' value={l s='module(s) on %d are' sprintf=[$scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
-                            {assign var='scan_result_text_type' value={l s='inactive' mod='prestascansecurity'}}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}/partials/home_scan_result.tpl" scanType="non_standards_files" aScanResult=$modules_unused_results.summary scan_result_text_type=$scan_result_text_type scan_result_text=$scan_result_text id="modules_unused" class="report-result-child"}
-                        </div>
-                    {/if}
-                {/if}
-            </div>
-            <div class="scan_link row">
-                {if !isset($modules_vulnerabilities_status)}
-                    <p><a class="btn-generate-report btn btn-default" data-action="generateModulesReport" href="javascript:void(0);" >{l s='Start a scan' mod='prestascansecurity'}</a></p>
-                {else}
-                    <a href="javascript:void(0);">{l s='View more details' mod='prestascansecurity'}</a>
-                    <p><a class="btn-generate-report btn btn-default" data-action="generateModulesReport" href="javascript:void(0);" >{l s='Restart a scan' mod='prestascansecurity'}</a></p>
-                {/if}
-            </div>
-        </div>
-
-        <div data-link-parent="report-core-vulnerabilities" class="report-result vulnerabilities_results col-lg-4 col-md-12 {if (isset($core_vulnerabilities_status) && $core_vulnerabilities_status === 'outdated') || !isset($core_vulnerabilities_status)}scan_expired{/if}">
-
-            {if isset($core_vulnerabilities_results) && isset($core_vulnerabilities_results.summary)}
-                {if $core_vulnerabilities_results.summary.scan_result_criticity === 'high' || $core_vulnerabilities_results.summary.scan_result_criticity === 'critical'}
-                    {assign var='scan_result_circle_color' value='red'}
-                {elseif $core_vulnerabilities_results.summary.scan_result_criticity === 'medium'}
-                    {assign var='scan_result_circle_color' value='yellow'}
-                {else}
-                    {assign var='scan_result_circle_color' value='green'}
-                {/if}
-            {else}
-                {assign var='scan_result_circle_color' value='green'}
-            {/if}
-
-            <div class="result_data_container">
-                <div class="result_data_total">
-                    <div class="col-lg-6 col-md-6 col-xs-6">
-                        <div class="totalmodules circle_color_{$scan_result_circle_color}"><span></span></div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-xs-6">
-                        <h2 class="scan_title">{l s='Vulnerabilities' mod='prestascansecurity'}</h2>
-                        {if (isset($core_vulnerabilities_status) && $core_vulnerabilities_status === 'outdated')}
-                            <div class="last_result_expired">{$scan_expired_text}</div>
-                        {elseif isset($core_vulnerabilities_last_scan_date) && $core_vulnerabilities_last_scan_date !== false}
-                            <div class="last_result_date">{l s='last scan on the' mod='prestascansecurity'} {$core_vulnerabilities_last_scan_date}</div> 
-                        {/if}
-                    </div>
-                </div>
-                {if !isset($core_vulnerabilities_status)}
-                    <div class="no_scan_done_yet">{$no_scan_done_yet_text}</div>
-                {else}
-                    {if isset($core_vulnerabilities_results) && !empty($core_vulnerabilities_results)}
-                        <div class="result_data">
-                            {assign var='scan_result_total' value=$core_vulnerabilities_results.summary.scan_result_total}
-                            {assign var='scan_result_text' value={l s='vulnerabilities(s) detected' sprintf=[$scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
-                            {assign var='scan_result_text_type' value={l s='' mod='prestascansecurity'}}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}/partials/home_scan_result.tpl" scanType="non_standards_files" aScanResult=$core_vulnerabilities_results.summary scan_result_text_type=$scan_result_text_type scan_result_text=$scan_result_text id="report-core-vulnerabilities" class="report-result-child"}
-                        </div>
-                    {/if}
-                {/if}
-            </div>
-            <div class="scan_link row">
-                {if !isset($core_vulnerabilities_status)}
-                    <p><a class="btn-generate-report btn btn-default" data-action="generateVulnerabilitiesReport" href="javascript:void(0);" >{l s='Start a scan' mod='prestascansecurity'}</a></p>
-                {else}
-                    <a href="javascript:void(0);">{l s='View more details' mod='prestascansecurity'}</a>
-                    <p><a class="btn-generate-report btn btn-default" data-action="generateVulnerabilitiesReport" href="javascript:void(0);" >{l s='Restart a scan' mod='prestascansecurity'}</a></p>
-                {/if}
-            </div>
-        </div>
+        {* Core Vuln Scan *}
+        {include
+            file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/home/scan_summary.tpl"
+            scan_title={l s='Core Vulnerabilities' mod='prestascansecurity'}
+            scans=array($core_vulnerabilities_results)
+            classcontainer='vulnerabilities'
+            message_scan_outdated={l s='Your last vulnerability scan for your directories is outdated and should not be relied upon. Perform a new scan to ensure accurate results.' mod='prestascansecurity'}
+            more_details_link='tab-report-core-vulnerabilities'
+            action_scan_btn='generateVulnerabilitiesReport'
+        }
     </div>
 {/if}
 
