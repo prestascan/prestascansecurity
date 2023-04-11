@@ -37,7 +37,7 @@
         {assign var='scan_result_circle_color' value='green'}
     {/if}
 
-    {assign var='scan_date_formated' value=\PrestaScan\Tools::formatDateString($scan_oldest.summary.date)}
+    {assign var='scan_date_formated' value=Prestascansecurity::redirectTools('formatDateString', $scan_oldest.summary.date)}
 {/if}
 
 {if $scan_outdated || !$scan_performed}
