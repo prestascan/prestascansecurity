@@ -172,7 +172,15 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
         
         $rawPostData = file_get_contents('php://input');
         $signature = hash_hmac('sha256', $rawPostData, Configuration::get("PRESTASCAN_WEBCRON_TOKEN"));
-        $headers = getallheaders();
+
+        // Check if getallheaders function exists for this PHP version
+        // https://github.com/php/php-src/pull/3363
+        if (!function_exists('getallheaders')) {
+            $headers = $this->getallheadersFallback();
+        } else {
+            $headers = getallheaders();
+        }
+
         foreach ($headers as $name => $value) {
             if (strtolower($name) === 'signature') {
                 return hash_equals($value, $signature);
@@ -183,4 +191,13 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
         return false;
     }
 
+    private function getallheadersFallback() {
+        $headers = [];
+        foreach ($_SERVER as $name => $value) {
+            if (substr($name, 0, 5) == 'HTTP_') {
+                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+            }
+        }
+        return $headers;
+    }
 }

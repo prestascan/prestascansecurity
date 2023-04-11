@@ -10,7 +10,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '0.8.4';
+        $this->version = '0.8.5';
         $this->author = 'PrestaScan';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -441,7 +441,7 @@ class Prestascansecurity extends Module
             $mediaJsDef['module_updated_confirmation_message'] = $this->l('Your module has been successfully updated.');
         }
 
-        if (version_compare(_PS_VERSION_, '1.6.0.0', '>=')) {
+        if (version_compare(_PS_VERSION_, '1.6.1.0', '>=')) {
             Media::addJsDef($mediaJsDef);
         } else {
             $this->context->smarty->assign('mediaJsDef', $mediaJsDef);
