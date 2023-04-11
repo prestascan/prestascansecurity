@@ -187,9 +187,17 @@ class Tools
                     'installed' => $aModuleOnDisk['installed'],
                 );
 
-                if (isset($aModule->module_key) && $aModule->module_key !== '') {
-                    // We add the module key for the module that have one (for addons requests)
-                    $formattedList[$aModuleOnDisk['name']][] = $aModule->module_key;
+                // Unfortunately the key is not defined with `\Module::getModulesOnDisk`
+                // Does it depends of the version of PrestaShop ?
+                // So we need to create an instance to retrive the key
+                try {
+                    $instance = \Module::getInstanceByName($aModuleOnDisk['name']);
+                    if (isset($instance->module_key) && !empty($instance->module_key)) {
+                        // We add the module key for the module that have one (for addons requests)
+                        $formattedList[$aModuleOnDisk['name']]['module_key'] = $instance->module_key;
+                    }
+                } catch (\Exception $exp) {
+                    // Do nothing
                 }
 
                 unset($modulesOnDisk[$key]);
