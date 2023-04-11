@@ -10,7 +10,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '0.8.5';
+        $this->version = '0.8.6';
         $this->author = 'PrestaScan';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -542,5 +542,15 @@ class Prestascansecurity extends Module
         }
 
         return ucfirst($shortName); // Return the input value if the short name is not found
+    }
+
+    /**
+     * Versions of prestashop 1.6, don't support namespaces in Smarty templates
+     * 
+     * This function is designed to bypass this limitation, by moving the namespaced call on the PHP side
+     */
+    public static function redirectTools($functionName, $param)
+    {
+        return PrestaScan\Tools::{$functionName}($param);
     }
 }

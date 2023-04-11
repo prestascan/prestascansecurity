@@ -19,10 +19,10 @@
  * limitations under the License.
  *}
 
-{assign var='oldest_scan' value=\PrestaScan\Tools::getOldestScan($scans)}
-{assign var='scan_highest_criticity' value=\PrestaScan\Tools::getScanWithHighestCriticity($scans)}
-{assign var='at_least_one_scan_performed' value=\PrestaScan\Tools::isContainingPerformedScan($scans)}
-{assign var='at_least_one_scan_outdated' value=\PrestaScan\Tools::isContainingOutdatedScan($scans)}
+{assign var='oldest_scan' value=Prestascansecurity::redirectTools('getOldestScan', $scans)}
+{assign var='scan_highest_criticity' value=Prestascansecurity::redirectTools('getScanWithHighestCriticity', $scans)}
+{assign var='at_least_one_scan_performed' value=Prestascansecurity::redirectTools('isContainingPerformedScan', $scans)}
+{assign var='at_least_one_scan_outdated' value=Prestascansecurity::redirectTools('isContainingOutdatedScan', $scans)}
 
 <div data-link-parent="report-{$classcontainer}" class="report-result {$classcontainer}_results col-lg-4 col-md-12 {if $at_least_one_scan_outdated}scan_expired{/if}">
 

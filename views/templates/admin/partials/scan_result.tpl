@@ -32,13 +32,13 @@
 {else}
     {assign var='scan_result_circle_color' value='green'}
 {/if}
-{assign var='is_scan_outdated' value=\PrestaScan\Tools::isScanOutDated($aScanResult.date)}
+{assign var='is_scan_outdated' value=Prestascansecurity::redirectTools('isScanOutDated', $aScanResult.date)}
 
 <h2 class="hook-title">{l s='Latest scan results' mod='prestascansecurity'}</h2>
 {if $is_scan_outdated === true}
-    <div class="scan_date_expired">{sprintf($message_scan_outdated, \PrestaScan\Tools::formatDateString($aScanResult.date))}</div>
+    <div class="scan_date_expired">{sprintf($message_scan_outdated, Prestascansecurity::redirectTools('formatDateString', $aScanResult.date))}</div>
 {else}
-    <span class="last_result_date">{\PrestaScan\Tools::formatDateString($aScanResult.date)}</span>
+    <span class="last_result_date">{Prestascansecurity::redirectTools('formatDateString', $aScanResult.date)}</span>
 {/if}
 <div class="last_result_data">
     <div class="result_modules_count">
