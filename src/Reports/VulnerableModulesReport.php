@@ -35,7 +35,7 @@ class VulnerableModulesReport extends Report
 
         // Save the module list in cache (we need it for webhook alerts to reduce the charge)
         $cacheDirectory = \PrestaScan\Tools::getCachePath();
-        $cacheHash =  \Configuration::get('PRESTASCAN_SEC_HASH');
+        $cacheHash = \Configuration::get('PRESTASCAN_SEC_HASH');
         $tokenCache = \PrestaScan\Tools::getHashByName("cacheHash", $cacheHash);
         $moduleRawCacheFile = $cacheDirectory."modules_raw"."_".$tokenCache.".cache";
         file_put_contents($moduleRawCacheFile, serialize($allModulesOnDisk));
@@ -75,15 +75,28 @@ class VulnerableModulesReport extends Report
         // Retrieve additionnal job data
         $jobData = json_decode($jobData, true);
 
-        $logData = "[" . date("Y-m-d H:i:s") . "] jobData: " . print_r($jobData, true) . PHP_EOL;
-        file_put_contents('webhook.log', $logData, FILE_APPEND);
+        if (is_array($payload)
+            && isset($payload['result']) 
+            && is_array($payload['result'])) {
 
-        if (is_array($payload) && isset($payload['result'])  && is_array($payload['result'])) {
-            foreach ($payload['result'] as $k => $moduledata) {
+            // Check if the version is concerned by the alert
+            $cacheDirectory = \PrestaScan\Tools::getCachePath();
+            $cacheHash =  \Configuration::get('PRESTASCAN_SEC_HASH');
+            $tokenCache = \PrestaScan\Tools::getHashByName("cacheHash", $cacheHash);
+            $moduleRawCacheFile = $cacheDirectory."modules_raw"."_".$tokenCache.".cache";
 
+            if (file_exists($moduleRawCacheFile)) {
+                // This cache file should always exists when a scan is triggered.
+                // Tho, this is a fallback function
+                $allModulesOnDisk = unserialize(file_get_contents($moduleRawCacheFile));
+            } else {
                 // We first add missing informations concerning the modules (installed/enabled)
                 // We get the list of modules in the site
                 $allModulesOnDisk = \PrestaScan\Tools::getFormattedModuleOnDiskList();
+            }
+
+            foreach ($payload['result'] as $k => $moduledata) {
+
                 foreach ($allModulesOnDisk as $key => $aModuleOnDisk) {
                     if ($aModuleOnDisk['name'] !== $moduledata["name"]) {
                         continue;
@@ -98,11 +111,13 @@ class VulnerableModulesReport extends Report
                     break;
                 }
 
-                if (isset($moduledata["require_update"]) && $moduledata["require_update"] && !count($moduledata['vulnerabilities'])) {
+                if (isset($moduledata["require_update"])
+                    && $moduledata["require_update"]
+                    && !count($moduledata['vulnerabilities'])) {
                     // Module to update, but no public vulnerability
                     $moduledata["last_update_expire"] = false;
-                    if(isset($moduledata["last_update"]) && $moduledata["last_update"] != "") {
-                        if(strtotime($moduledata["last_update"]) < strtotime('-3 years')) {
+                    if (isset($moduledata["last_update"]) && $moduledata["last_update"] != "") {
+                        if (strtotime($moduledata["last_update"]) < strtotime('-3 years')) {
                             $moduledata["last_update_expire"] = true;
                         }
                     }
@@ -114,10 +129,6 @@ class VulnerableModulesReport extends Report
                     // No vulnerabilities for this module
                     continue;
                 }
-
-
-                $logData = "[" . date("Y-m-d H:i:s") . "] modudule ".$moduledata["name"] . " - data before: " . print_r($moduledata, true) . PHP_EOL;
-                file_put_contents('webhook.log', $logData, FILE_APPEND);
 
                 // We check what is the highest criticity for the module (which may have multiple vulnerabilities)
                 $moduledata['criticity'] = "low";
@@ -133,8 +144,6 @@ class VulnerableModulesReport extends Report
                     }
                 }
                 $data['vulnerable'][] = $moduledata;
-                $logData = "[" . date("Y-m-d H:i:s") . "] modudule ".$moduledata["name"] . " - data after: " . print_r($moduledata, true) . PHP_EOL;
-                file_put_contents('webhook.log', $logData, FILE_APPEND);
             }
         }
 

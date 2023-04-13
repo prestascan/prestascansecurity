@@ -64,6 +64,7 @@ class PrestaScanQueue extends ObjectModel
         'CANCEL'        => 'cancel',
         'TORETRIEVE'    => 'toretrieve', // The scan has finished, we now need to retrive the data with oauth2
         'ERROR'         => 'error',
+        'SUGGEST_CANCEL'=> 'suggest_cancel',
     ];
 
     public function getJobFromJobId($jobUUID)
@@ -79,7 +80,10 @@ class PrestaScanQueue extends ObjectModel
         $jobId = Db::getInstance()->getValue('
                 SELECT `jobid`
                 FROM `' . _DB_PREFIX_ . self::$definition["table"] . '`
-                WHERE `action_name` = "'.pSQL($actionName).'" AND `state` = "' . pSQL(self::$actionname['PROGRESS']) . '"');
+                WHERE `action_name` = "'.pSQL($actionName).'" AND (
+                    `state` = "' . pSQL(self::$actionname['PROGRESS']) . '" OR
+                    `state` = "' . pSQL(self::$actionname['TORETRIEVE']) . '" OR
+                    `state` = "' . pSQL(self::$actionname['SUGGEST_CANCEL']) . '")');
         return empty($jobId) ? false : $jobId;
     }
 

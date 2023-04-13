@@ -30,7 +30,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '0.8.7';
+        $this->version = '0.8.8';
         $this->author = 'PrestaScan';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -316,7 +316,7 @@ class Prestascansecurity extends Module
     protected function displayInitialScanAndScanProgress($dummyData)
     {
         $displayInitialScan = true;
-        $completedJobs = PrestaScanQueue::getJobsByState("completed");
+        $completedJobs = \PrestaScanQueue::getJobsByState(\PrestaScanQueue::$actionname['COMPLETED']);
         if (!empty($completedJobs)) {
             $displayInitialScan = false;
         }
