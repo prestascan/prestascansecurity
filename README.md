@@ -1,6 +1,15 @@
-# PrestaScan Security
+<p align="center">
+    <img src="./views/img/logo.png">
+</p>
 
-> Scan your PrestaShop website to identify malware and known vulnerabilities in PrestaShop core and modules.
+:gb: **PrestaScan Security** is a PrestaShop module allowing you to scan your PrestaShop website to identify malware and known vulnerabilities in PrestaShop core and modules.
+
+:fr: **PrestaScan Security** est un module PrestaShop vous permettant de scanner votre site PrestaShop afin d'identifier les malwares et les vulnérabilités connues dans le cœur de PrestaShop et ses modules.
+
+![last release](https://badgen.net/github/release/prestascan/prestascansecurity)
+![license](https://badgen.net/github/license/prestascan/prestascansecurity)
+
+[:floppy_disk: Download latest release](https://github.com/prestascan/prestascansecurity/releases/)
 
 ## Table of contents
 * [General Information](#general-information)
@@ -12,9 +21,7 @@
 
 ## General Information
 
-![PrestaScan Security Logo](./views/img/logo.png)
-
-PrestaScan Security is a free and open-source module that helps you secure your PrestaShop website by identifying malware and known vulnerabilities in the PrestaShop core and modules. The module is easy to install and use, and it keeps you updated on the latest security threats to your website. It is compatible with PrestaShop 1.6, 1.7, and 8. Our team of security experts constantly monitors and audits modules to ensure the best protection for your online store.
+**PrestaScan Security** is a free and open-source module that helps you secure your PrestaShop website by identifying malware and known vulnerabilities in the PrestaShop core and modules. The module is easy to install and use, and it keeps you updated on the latest security threats to your website. It is compatible with PrestaShop 1.6, 1.7, and 8. Our team of security experts constantly monitors and audits modules to ensure the best protection for your online store.
 
 ### Is the module free?
 
@@ -49,6 +56,14 @@ On the other hand, the cost of the development of the module has been significan
 ### Compatibility
 
 As the security targets all kinds of merchants, using sometimes outdated versions of PrestaShop, we do our best for the moment to keep the module at least compatible with PrestaShop 1.6, 1.7, and 8.<br>The module has also been tested in PrestaShop 1.5, however, we cannot guarantee keeping maintaining it for this version.
+
+| PrestaShop version tested | Status | Comments |
+| -------- | ------ | ------ |
+| **8.X** (8.0.2) | :heavy_check_mark: | Stable (beta)
+| **1.7.X** (1.7.8.8) | :heavy_check_mark: | Stable (beta)
+| **1.6.1.X*** (1.6.1.24) | :heavy_check_mark: | Stable (beta)
+| **1.6.0.X*** (1.6.0.9) | :heavy_check_mark: | Stable (beta)
+| **1.5** | :no_good:  | Not tested in the latest release
 
 ## Features
 
@@ -91,7 +106,7 @@ If you discover a security issue in this project, please report it to us as soon
 
 To report a security issue, please follow these steps:
 
-1. Contact us directly at <security@profileo.com>.
+1. Contact us directly at <security@prestascan.com>.
 2. Provide as much detail about the issue as possible, including steps to reproduce the issue, if possible.
 3. Do not disclose the issue publicly until we have had a chance to investigate and address the issue.
 
@@ -111,10 +126,6 @@ For this reason, we either had to include `vendor-static` and rename Guzzle clas
 ### Developing locally
 
 You may use `localoauth=1` GET argument to force OAuth2 and scans to run in your local environment.
-
-When using Docker for your local server, you need to provide Docker with a host that can be called in the Docker network. To do so, enable "Multistore" option in PrestaShop in order to add a second shop URL to your main shop, and enter the Docker container name, for example : `prestashop_1788_prestashop_1` (You can find your container name with `docker container ls` command. During the registration process, you may then select your docker URL as your shop URL.
-
-You may use `dummy=1` GET argument to force DemoData to be displayed in your local environment or for test purposes.
 
 ### Data processing and connections
 
@@ -150,7 +161,7 @@ Include a reference to the license in the header of each source code file in you
 /*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.

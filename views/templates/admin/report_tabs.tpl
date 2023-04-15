@@ -1,7 +1,7 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -31,7 +31,7 @@
         {/if}
         <ul class="nav nav-tabs">
             <li id="report-modules" class="{if $prestascansecurity_activetab == "report-modules"}active{/if}">
-                <a href="#tab-report-modules" data-toggle="tab">{l s='Modules' mod='PrestascanSecurity'} {if isset($eosec_modules_install_state)}({$eosec_modules_install_state|count}){/if}</a>
+                <a href="#tab-report-modules" data-toggle="tab">{l s='Modules' mod='prestascansecurity'} {if isset($eosec_modules_install_state)}({$eosec_modules_install_state|count}){/if}</a>
             </li>
         </ul>
         <div class="tab-content">

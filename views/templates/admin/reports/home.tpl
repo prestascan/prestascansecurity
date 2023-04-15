@@ -1,7 +1,7 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -64,7 +64,7 @@
             file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/home/scan_summary.tpl"
             scan_title={l s='Core Vulnerabilities' mod='prestascansecurity'}
             scans=array($core_vulnerabilities_results)
-            classcontainer='vulnerabilities'
+            classcontainer='core-vulnerabilities'
             message_scan_outdated={l s='Your last vulnerability scan for your directories is outdated and should not be relied upon. Perform a new scan to ensure accurate results.' mod='prestascansecurity'}
             more_details_link='tab-report-core-vulnerabilities'
             action_scan_btn='generateVulnerabilitiesReport'
@@ -74,7 +74,7 @@
 
 {if !$prestascansecurity_isLoggedIn}
     {assign var='infopanel_title' value={l s='Log in to start to scan' mod='prestascansecurity'}}
-    {assign var='infopanel_message' value={l s='To launch a scan please log in or create an account. Having an account allows us to securely perform scans on your behalf and deliver accurate results. Click \'Login\' on the top right corner to sign in or create a new account.' mod='prestascansecurity'}}
+    {assign var='infopanel_message' value={l s='To launch a scan please log in or create an account. Having an account allows us to securely perform scans on your behalf and deliver accurate results. Click on the Login button on the top right corner to sign in or create a new account.' mod='prestascansecurity'}}
 
     {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}layouts/information_important.tpl" title=$infopanel_title message=$infopanel_message}
 {else}

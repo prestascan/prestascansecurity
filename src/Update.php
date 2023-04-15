@@ -2,7 +2,7 @@
 /*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -84,7 +84,7 @@ class Update extends Module
             if ($this->downloadAndExtractZipModuleFile($url)) {
                 $module = \Module::getInstanceByName($this->module->name);
                 $newVersion = $this->getModuleVersionFromDisk();
-                if ($newVersion != "") {
+                if (!empty($newVersion)) {
                     // PrestaShop Core is sometimes returning warnings during the update. We do not have control over this code.
                     // So we are using the Error Suppression Operator to hide the warnings/notice calleing this function.
                     @ $module->runUpgradeModule();
@@ -93,7 +93,7 @@ class Update extends Module
                     \Configuration::updateGlobalValue('PRESTASCAN_UPDATE_VERSION_AVAILABLE', false);
                     return true;
                 } else {
-                    $error = $this->module->l('New module version error. Update must update module from admin module list');
+                    $error = $this->module->l('Error trying to install the new module. Please try updating the module from your module list.');
                     throw new UpdateException($error);
                 }
             } else {

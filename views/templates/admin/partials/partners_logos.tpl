@@ -1,7 +1,7 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -27,6 +27,7 @@
             <a href="https://www.202-ecommerce.com/" target="_blank"><img class="partner3" alt="202 Ecommerce" src="/modules/prestascansecurity/views/img/partners/partner3.png"/></a>
             <a href="https://www.profileo.com/" target="_blank"><img class="partner2" alt="Profileo 100% E-commerce" src="/modules/prestascansecurity/views/img/partners/partner2.png"/></a>
             <a href="https://www.772424.com/" target="_blank"><img class="partner4" alt="772424 E-commerce hosting" src="/modules/prestascansecurity/views/img/partners/partner4.png"/></a>
+            <a href="https://friends-of-presta.github.io/security-advisories/" target="_blank"><img class="partner5" alt="Friends Of Presta" src="/modules/prestascansecurity/views/img/partners/partner5.png"/></a>
         </div>
     </div>
 </div>

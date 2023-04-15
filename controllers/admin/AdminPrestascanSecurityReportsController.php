@@ -2,7 +2,7 @@
 /*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -162,7 +162,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
 
                 if ($e->getCode() == 400) {
                     \PrestaScanQueue::updateJob($jobId, "error", $e->getMessage());
-                    self::dieWithError($this->module->l('Job error'));
+                    self::dieWithError($this->module->l('Scan processing error.'));
                 } elseif ($e->getCode() == 200) {
                     $resultProgress[] = $job["action_name"];
                     \PrestaScanQueue::updateJob($jobId);
@@ -178,7 +178,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         }
 
         if (count($resultProgress)) {
-            \PrestaScan\Tools::printAjaxResponse(true, false, $this->module->l('Job not yet finished'));
+            \PrestaScan\Tools::printAjaxResponse(true, false, $this->module->l('Scan not finished yet'));
         }
         \PrestaScan\Tools::printAjaxResponse(true, false);
     }
@@ -188,6 +188,12 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         try {
             $actionType = Tools::getValue("action_type");
             $moduleName = Tools::getValue('module_name');
+
+            if (!Validate::isModuleName($moduleName)) {
+                $error = $this->module->l('The module you are trying to edit doesn\'t seems to be valid. You may try refreshing the module list cache by starting a new scan of your Modules at-risk.');
+                self::dieWithError($error);
+            }
+
             $module = Module::getInstanceByName($moduleName);
             $message = $this->module->l('Module action not performed');
             if ($module) {
@@ -204,8 +210,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
                         }
                         break;
                     case "uninstallmodule" :
-                        $retour = $module->uninstall();
-                        if ($retour) {
+                        if ($retour = $module->uninstall()) {
                             $message = $this->module->l('Module successfully uninstalled');
                         }
                         break;
@@ -214,10 +219,12 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
                         break;
                 }
             } else {
-                self::dieWithError($this->module->l('The module you are trying to delete/uninstall could not be found. Please try launching a new scan to refresh the modules cache.'));
+                $error = $this->module->l('The module you are trying to delete/uninstall could not be found. Please try launching a new scan to refresh the modules cache.');
+                self::dieWithError($error);
             }
         } catch (Exception $e) {
-            self::dieWithError($this->module->l('An unexpected error occurred when trying to delete/uninstall the module. Please try launching a new scan to refresh the modules cache.'));
+            $error = $this->module->l('An unexpected error occurred when trying to delete/uninstall the module. You may try refreshing the module list cache by starting a new scan of your Modules at-risk.');
+            self::dieWithError($error);
         }
 
         \PrestaScan\Tools::printAjaxResponse($retour ? true : false, $retour ? false : true, $message);
@@ -289,8 +296,8 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
 
     public function ajaxProcessGenerateModulesReport()
     {
-        $this->generateReport(\PrestaScan\Reports\VulnerableModulesReport::class, true);
-        $this->generateReport(\PrestaScan\Reports\UnusedModulesReport::class);
+        $this->generateReport(\PrestaScan\Reports\UnusedModulesReport::class, true);
+        $this->generateReport(\PrestaScan\Reports\VulnerableModulesReport::class);
     }
 
     public function ajaxProcessGenerateVulnerabilitiesReport()
@@ -305,10 +312,10 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
 
     public function ajaxProcessGenerateGlobalReport()
     {
-        $this->generateReport(\PrestaScan\Reports\VulnerableModulesReport::class, true);
         $this->generateReport(\PrestaScan\Reports\UnusedModulesReport::class, true);
         $this->generateReport(\PrestaScan\Reports\CoreVulnerabilitiesReport::class, true);
-        $this->generateReport(\PrestaScan\Reports\DirectoriesProtectionReport::class);
+        $this->generateReport(\PrestaScan\Reports\DirectoriesProtectionReport::class, true);
+        $this->generateReport(\PrestaScan\Reports\VulnerableModulesReport::class);
     }
 
     public function generateReport($classReport, $bath = false)
@@ -333,7 +340,25 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         }
 
         if (!$bath) {
-            \PrestaScan\Tools::printAjaxResponse(true, false);
+            $forceActiveTab = array();
+            switch ($classReport) {
+                case \PrestaScan\Reports\VulnerableModulesReport::class:
+                    $forceActiveTab['forceactivetab'] = "modules_vulnerabilities";
+                    break;
+                case \PrestaScan\Reports\UnusedModulesReport::class:
+                    $forceActiveTab['forceactivetab'] = "modules_unused";
+                    break;
+                case \PrestaScan\Reports\DirectoriesProtectionReport::class:
+                    $forceActiveTab['forceactivetab'] = "report-files";
+                    break;
+                case \PrestaScan\Reports\CoreVulnerabilitiesReport::class:
+                    $forceActiveTab['forceactivetab'] = "report-core-vulnerabilities";
+                    break;
+                default:
+                    $forceActiveTab = false;
+                    break;
+            }
+            \PrestaScan\Tools::printAjaxResponse(true, false, '', $forceActiveTab);
         }
     }
 
@@ -347,7 +372,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
             $alert = new \PrestaScanVulnAlerts((int)Tools::getValue("alert_id"));
             $alert->dismissAlert(Context::getContext()->employee->id);
         } catch (\Exception $e) {
-            self::dieWithError($this->module->l('Error while dismissing the alert. Please try again.'.$e->getMessage()));
+            self::dieWithError($this->module->l('Error while dismissing the alert. Please try again.'));
         }
 
         \PrestaScan\Tools::printAjaxResponse(true, false);

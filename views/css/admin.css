@@ -1,7 +1,7 @@
 /*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -857,20 +857,20 @@
 }
 #prestascansecurity_main_container #tab-report-home .files_results .totalmodules, 
 #prestascansecurity_main_container #tab-report-home .modules_results .totalmodules,
-#prestascansecurity_main_container #tab-report-home .vulnerabilities_results .totalmodules {
+#prestascansecurity_main_container #tab-report-home .core-vulnerabilities_results .totalmodules {
     padding: 16% 16% 0;
 }
 @media (max-width : 1700px) {
     #prestascansecurity_main_container #tab-report-home .files_results .totalmodules, 
     #prestascansecurity_main_container #tab-report-home .modules_results .totalmodules, 
-    #prestascansecurity_main_container #tab-report-home .vulnerabilities_results .totalmodules {
+    #prestascansecurity_main_container #tab-report-home .core-vulnerabilities_results .totalmodules {
         padding: 20% 16% 0;
     }
 }
 @media (max-width : 1550px) {
     #prestascansecurity_main_container #tab-report-home .files_results .totalmodules, 
     #prestascansecurity_main_container #tab-report-home .modules_results .totalmodules, 
-    #prestascansecurity_main_container #tab-report-home .vulnerabilities_results .totalmodules {
+    #prestascansecurity_main_container #tab-report-home .core-vulnerabilities_results .totalmodules {
         padding: 42px 16% 0;
     }
 }
@@ -895,11 +895,11 @@
 #prestascansecurity_main_container #tab-report-home .modules_results .totalmodules.circle_color_gray span {
     background: url('../img/ico_module_gray.svg') no-repeat center center;    
 }
-#prestascansecurity_main_container #tab-report-home .vulnerabilities_results .totalmodules span {
+#prestascansecurity_main_container #tab-report-home .core-vulnerabilities_results .totalmodules span {
     background: url('../img/ico_vulnerabilites.svg') no-repeat center center;
 }
-#prestascansecurity_main_container #tab-report-home .vulnerabilities_results.scan_expired .totalmodules span,
-#prestascansecurity_main_container #tab-report-home .vulnerabilities_results .totalmodules.circle_color_gray span {
+#prestascansecurity_main_container #tab-report-home .core-vulnerabilities_results.scan_expired .totalmodules span,
+#prestascansecurity_main_container #tab-report-home .core-vulnerabilities_results .totalmodules.circle_color_gray span {
     background: url('../img/ico_vulnerabilites_gray.svg') no-repeat center center;
 }
 #prestascansecurity_main_container #tab-report-home .scan_expired a.btn-generate-report {
@@ -929,7 +929,7 @@
 @media (max-width: 1300px) {
     #prestascansecurity_main_container #tab-report-home .files_results, 
     #prestascansecurity_main_container #tab-report-home .modules_results, 
-    #prestascansecurity_main_container #tab-report-home .vulnerabilities_results {
+    #prestascansecurity_main_container #tab-report-home .core-vulnerabilities_results {
         width: 100% !important;
     }
     #prestascansecurity_main_container #tab-report-home .all_result_data > div {
@@ -1217,4 +1217,7 @@ table#coreVulnerabilities.dataTable .cve {
     float: right;
     font-size: 0.8rem;
     cursor: pointer;
+}
+#prestascansecurity_main_container p.button-center {
+    margin: 0 auto;
 }

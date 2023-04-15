@@ -1,7 +1,7 @@
 /*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -36,11 +36,16 @@ $(function () {
         dismissAlertBanner : $("#alert_vulnerabilities_banner a.dismiss-action"),
         // More action alert banner module vulnerable
         moreActionAlertModule : $("#alert_vulnerabilities_banner .alert-vulnerability-action"),
+        // Home container
+        homeContainer : $('#tab-report-home')
       },
       cssSelector : {
         buttonReportGenerate : ".btn-generate-report",
         popupDialog : "#popupDialog",
-        alertModuleVulnerabilitiesBanner : "#alert_vulnerabilities_banner"
+        alertModuleVulnerabilitiesBanner : "#alert_vulnerabilities_banner",
+        btnDetailSummaryDashboard : ".report-result-child a",
+        btnMainMenuElement : ".menu_element",
+        btnSubMenuElement : ".menu-sous-element a"
       },
       dataTables : {
         coreVulnerabilitiesDT : false
@@ -52,15 +57,39 @@ $(function () {
       //display message in popup if exists
       this.showModuleUpdatedConfirmationPopup();
       
-      // Order matters
+      // Execution order matters
       this.initDatatables();
       this.initHandlers();
+
       // Start the timer to check job progression
       this.config.checkScanJobsProgresion = setInterval(this.checkJobsProgression.bind(this), 10000);
       // Show alert module new vuknerability
       prestascanSecurity_Tools.moveAlertTop();
     },
     initHandlers : function() {
+
+      // Click on the menu item
+      this.config.jQuerySelectors.container.on(
+        'click',
+        this.config.cssSelector.btnMainMenuElement,
+        this.handleMenuClick
+      );
+
+      // Click on the sub menu item
+      this.config.jQuerySelectors.container.on(
+        'click',
+        this.config.cssSelector.btnSubMenuElement,
+        this.handleSubMenuClick
+      );
+
+      // Click on the links in the dashboard
+      this.config.jQuerySelectors.homeContainer.on(
+        'click',
+        this.config.cssSelector.btnDetailSummaryDashboard,
+        this.handleDashboardLinkDetail
+      );
+
+      // Click on the scan button
       this.config.jQuerySelectors.container.on(
         'click',
         this.config.cssSelector.buttonReportGenerate,
@@ -100,7 +129,7 @@ $(function () {
     },
     showModuleUpdatedConfirmationPopup : function() {
       if (typeof module_updated_confirmation_message !== 'undefined' && module_updated_confirmation_message != '') {
-        window.prestascanSecurity.popupAlertDialog(module_updated_confirmation_message);
+        window.prestascanSecurity_Tools.createPopupDialog(module_updated_confirmation_message, []);
       }
     },
     processExpandRowDataTable : function() {
@@ -119,54 +148,29 @@ $(function () {
         }
     },
     processDisableOrDeleteModule : function() {
-      var $popupDialog = $(this.config.cssSelector.popupDialog);
-      $popupDialog.attr("title", "");
-      $popupDialog.find("*").remove();
-      $popupDialog.append("<p>"+question_to_this_action+"</p>");
-      $popupDialog.dialog({
-        resizable: false,
-        height: "auto",
-        width: 280,
-        modal: true,
-        buttons: [
-          {
-            text : text_yes,
-            class: "confirm",
-            click: function() {
-              window.prestascanSecurity.handleActionModuleUnused($(this));
-            }
-          },
-          {
-            text: text_cancel,
-            class: "return",
-            click:function() {
-                $(this).dialog("close");
-            }
+      var $this = $(this);
+      var buttons = [
+        {
+          text : text_yes,
+          class: "confirm",
+          click: function() {
+            window.prestascanSecurity.handleActionModuleUnused($this);
           }
-        ],
-        open: function (event, ui) {
-          $(".ui-widget-overlay").css({
-            opacity: 0.5,
-            filter: "Alpha(Opacity=20)",
-            backgroundColor: "black",
-            display:"block",
-            'z-index': 100
-          });
-          $(".ui-dialog").css({
-            'z-index': 101
-          });
         },
-        close: function (event, ui) {
-            $(".ui-widget-overlay").css({
-                display:"none"
-            });
+        {
+          text: text_cancel,
+          class: "return",
+          click:function() {
+            $this.dialog("close");
+          }
         }
-      });
+      ];
+      window.prestascanSecurity_Tools.createPopupDialog(question_to_this_action, buttons);
     },
     handleActionModuleUnused : function($obj) {
       var type = $obj.data("action");
       var name = $obj.data("modulename");
-      if(!prestascansecurity_isLoggedIn) {
+      if (!prestascansecurity_isLoggedIn) {
         return false;
       }
       $.ajax({
@@ -176,8 +180,10 @@ $(function () {
         data: {action: 'unusedModulesActions', ajax: true, action_type: type, module_name: name},
         dataType: 'json',
         success: function (response) {
+          // Close existing popups
+          window.prestascanSecurity_Tools.closeExistingPopup();
           if(response.error && typeof response.statusText != 'undefined' && response.statusText != '' ) {
-            window.prestascanSecurity.popupAlertDialog(response.statusText);
+            window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
           }
           if(response.success) {
             $obj.parent().parent().parent().parent().remove();
@@ -198,13 +204,16 @@ $(function () {
           alert(response.responseJSON.statusText);
         },
         complete: function () {
-          $("#popupDialog").dialog('close');
           return true;
         }
       });
     },
     handlerGenerateReport : function() {
-       window.prestascanSecurity.loadReport($(this).data('action'));
+      if (!prestascansecurity_isLoggedIn) {
+        window.prestascanSecurity_Tools.createPopupDialog(text_error_not_logged_in, []);
+        return;
+      }
+      window.prestascanSecurity.loadReport($(this).data('action'));
     },
     loadReport : function(action, customData) {
       $(this.config.cssSelector.buttonReportGenerate + "[data-action='"+action+"']").addClass("disabled");
@@ -233,11 +242,23 @@ $(function () {
         if (typeof currentActiveTab === "undefined") {
           currentActiveTab = jQuerySelectors.container.find('li.menu_element.active').attr('id');
         }
+
+        if (typeof res.data !== "undefined" && typeof res.data.forceactivetab !== "undefined") {
+          // Override active tab if defined in the response
+          // (used to redirect the user to the good tab when clicking from the dashboard)
+          currentActiveTab = res.data.forceactivetab;
+        }
+
         currentActiveTab = currentActiveTab.replace("#","");
         window.location.href = window.prestascanSecurity_Tools.updateQueryStringParameter(window.location.href, 'activetab', currentActiveTab);
-        window.location.reload(true);
+
+        // Fallback function (we had issues with some specific cases where location.href do not refresh the page)
+        setTimeout(function() {
+          window.location.reload(true);
+        }, 2000);
+        
       } else if(typeof res.error != "undefined" && res.error && res.statusText != "undefined" && res.statusText != "") {
-        window.prestascanSecurity.popupAlertDialog(res.statusText);
+        window.prestascanSecurity_Tools.createPopupDialog(res.statusText, []);
       } else if (typeof res.iterator !== "undefined") {
         // progress
         $(".PrestascanSecurityLoaderProgressPercent").text(Math.ceil(res.iterator.current_step / res.iterator.total_steps * 100));
@@ -251,15 +272,10 @@ $(function () {
     },
     loadReportError : function(res) {
       if (res.status === 200) {
-        $("#generation-error").html(res.responseText);
+        window.prestascanSecurity_Tools.createPopupDialog(res.responseText, []);
       } else {
-        $("#generation-error").text(js_error_occured);
+        window.prestascanSecurity_Tools.createPopupDialog(js_error_occured, []);
       }
-      $("#generation-error").show();
-      $('#generation-progress').hide();
-      $(".PrestascanSecurityLoaderSteps").hide();
-      $('.btn-generate-report').show();
-      //$(".btn-generate-report").removeClass("disabled");
     },
     postJsonAjax : function(url, data, handlerSuccess, handlerError) {
       $.ajax({
@@ -290,11 +306,11 @@ $(function () {
             window.location.reload();
           }
           else {
-            window.prestascanSecurity.popupAlertDialog(response.statusText);
+            window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
           }
         },
         error: function (response) {
-          window.prestascanSecurity.popupAlertDialog(response.statusText);
+          window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
         },
         complete: function () {
           return true;
@@ -332,44 +348,19 @@ $(function () {
         success: function (response) {
           if (response.error || (response.success && !response.data && response.statusText != '')) {
             // Do not use `this` to access the object in ajax reply
-            var $popupDialog = $(window.prestascanSecurity.config.cssSelector.popupDialog);
-            $popupDialog.attr("title", "");
-            $popupDialog.find("*").remove();
-            $popupDialog.append("<p>" + response.statusText + "</p>");
-            $popupDialog.dialog({
-              minHeight: 0,
-              buttons: [
-                {
-                  text : text_reload,
-                  click: function() {
-                    window.location.reload();
-                  }
+            var buttons = [{
+                text : text_reload,
+                click: function() {
+                  window.location.reload();
                 }
-              ],
-              open: function (event, ui) {
-                $(".ui-widget-overlay").css({
-                  opacity: 0.5,
-                  filter: "Alpha(Opacity=20)",
-                  backgroundColor: "black",
-                  display:"block",
-                  'z-index': 100
-                });
-                $(".ui-dialog").css({
-                  'z-index': 101
-                });
-              },
-              close: function (event, ui) {
-                $(".ui-widget-overlay").css({
-                    display:"none"
-                });
-              }
-            });
+            }];
+            window.prestascanSecurity_Tools.createPopupDialog(response.statusText, buttons);
           } else if (response.success && typeof response.data != 'undefined' && typeof response.data == 'array') {
             var dt = response.data;
             dt.every(function (tab) {
               if ($("#" + tab + " .scan_in_progress").length == 0) {
                 // Do not use `this` to access the object in ajax reply
-                window.prestascanSecurity.popupAlertDialog(response.statusText);
+                window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
                 return false;
               }
             });
@@ -384,40 +375,13 @@ $(function () {
         },
         error: function (response) {
           // Do not use `this` to access the object in ajax reply
-          window.prestascanSecurity.popupAlertDialog(response.statusText);
+          window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
         },
         complete: function () {
           return true;
         }
       });
 
-    },
-    popupAlertDialog : function(content) {
-      // Do not use `this`, as this function may be called from an ajax reply where `this` obj is not initiated
-      var $popupDialog = $(window.prestascanSecurity.config.cssSelector.popupDialog);
-      $popupDialog.attr("title", "");
-      $popupDialog.find("*").remove();
-      $popupDialog.append("<p>" + content + "</p>");
-      $popupDialog.dialog({
-        minHeight: 0,
-        open: function (event, ui) {
-          $(".ui-widget-overlay").css({
-            opacity: 0.5,
-            filter: "Alpha(Opacity=20)",
-            backgroundColor: "black",
-            display:"block",
-            'z-index': 100
-          });
-          $(".ui-dialog").css({
-            'z-index': 101
-          });
-        },
-        close: function (event, ui) {
-          $(".ui-widget-overlay").css({
-              display:"none"
-          });
-        }
-      });
     },
     initDatatables : function()
     {
@@ -488,32 +452,23 @@ $(function () {
       }
     },
     processDismissAlert : function() {
-      var $popupDialog = $(window.prestascanSecurity.config.cssSelector.popupDialog);
-      $popupDialog.attr("title", "");
-      $popupDialog.find("*").remove();
-      $popupDialog.append("<p>"+question_to_this_dismiss_action+"</p>");
-      $popupDialog.dialog({
-        resizable: false,
-        height: "auto",
-        width: 280,
-        modal: true,
-        buttons: [
-          {
-            text : text_yes_dismiss,
-            class: "confirm",
-            click: function() {
-              window.prestascanSecurity.handleActionDismissAlert($(window.prestascanSecurity.config.jQuerySelectors.dismissAlertBanner).attr('data-alertId'));
-            }
-          },
-          {
-            text: text_cancel,
-            class: "return",
-            click:function() {
-              $(this).dialog("close");
-            }
+      var buttons = [
+        {
+          text : text_yes_dismiss,
+          class: "confirm",
+          click: function() {
+            window.prestascanSecurity.handleActionDismissAlert($(window.prestascanSecurity.config.jQuerySelectors.dismissAlertBanner).attr('data-alertId'));
           }
-        ],
-      });
+        },
+        {
+          text: text_cancel,
+          class: "return",
+          click:function() {
+            $(this).dialog("close");
+          }
+        }
+      ];
+      window.prestascanSecurity_Tools.createPopupDialog(question_to_this_dismiss_action, buttons);
     },
     handleActionDismissAlert : function (alertId) {
       if(!prestascansecurity_isLoggedIn) {
@@ -527,10 +482,10 @@ $(function () {
         dataType: 'json',
         success: function (response) {
 
-          $("#popupDialog").dialog('close');
+          window.prestascanSecurity_Tools.closeExistingPopup();
 
           if(response.error && typeof response.statusText != 'undefined' && response.statusText != '' ) {
-            window.prestascanSecurity.popupAlertDialog(response.statusText);
+            window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
           }
           if(response.success) {
             window.location.reload();
@@ -538,8 +493,8 @@ $(function () {
           }
         },
         error: function (response) {
+          window.prestascanSecurity_Tools.closeExistingPopup();
           alert(response.responseJSON.statusText);
-          $("#popupDialog").dialog('close');
           return true;
         }
       });
@@ -549,7 +504,36 @@ $(function () {
       var pscan = window.prestascanSecurity;
       var description = $(pscan.config.cssSelector.alertModuleVulnerabilitiesBanner).data('description');
       description = "<strong>"+banner_vulnerability_more_action+"</strong></br></br>"+banner_vulnerability_more_details+"</br>"+description;
-      pscan.popupAlertDialog(description);
+      window.prestascanSecurity_Tools.createPopupDialog(description, []);
+    },
+    handleDashboardLinkDetail : function(e) {
+      e.preventDefault();
+      var activesubtab = $(this).attr('href');
+      var activetab = $(this).parents('.report-result').attr('data-link-parent');
+      window.prestascanSecurity_Tools.openMenuTab(activetab, activesubtab);
+      return false;
+    },
+    handleMenuClick : function(e) {
+      if ($(this).attr('id') != 'connexion' && $(this).attr('id') != 'contact') {
+        var activetab = $(this).children("a").first().attr('href');
+        $('.menu_element').removeClass('active');
+        $('.tab-pane').removeClass('active');
+        $(this).addClass('active');
+        $(activetab).addClass('active');
+        var activesubtab = $(activetab + " .menu-sous-element.active").children("a").first().attr('href');
+        $(activesubtab).addClass("active");
+        window.prestascanSecurity_Tools.addUrlParameter("activetab",$(this).attr('id'));
+      }
+    },
+    handleSubMenuClick : function(e) {
+      e.preventDefault();
+      var activesubtab = $(this).attr('href');
+      $(this).parent().parent().children('li').removeClass('active');
+      $(this).parent().addClass('active');
+      window.prestascanSecurity_Tools.addUrlParameter("activetab",$(this).attr('href').replace("#",""));
+      $(this).parent().parent().parent().children('div').removeClass('active');
+      $(activesubtab).addClass('active');
+      return false;
     },
   } // window.prestascanSecurity
   
@@ -585,20 +569,8 @@ $(function () {
         $("#content").find(".bootstrap:nth-child(1)").find(".page-head").first().append(al);
         al.show();
       }
-    }
-  } // window.prestascanSecurity_Tools
-
-  prestascanSecurity.init();
-});
-
-
-$(window).load(function() {
-  // Dashboard
-  $('.report-result-child a').each(function () {
-    $(this).on('click', function (e) {
-      e.preventDefault();
-      var activesubtab = $(this).attr('href');
-      var activetab = $(this).parents('.report-result').attr('data-link-parent');
+    },
+    openMenuTab : function(activetab, activesubtab) {
       $('.menu_element').removeClass('active');
       $('#tab-'+activetab+' .menu-sous-element').removeClass('active'); 
       $('.tab-pane').removeClass('active'); 
@@ -609,12 +581,49 @@ $(window).load(function() {
 
       activesubtab = activesubtab.replace('#','')
       $('.'+activesubtab+'.menu-sous-element').addClass('active');
-      window.prestascanSecurity_Tools.addUrlParameter("activetab",activesubtab);
 
-      return false;
-    });
-  });
+      window.prestascanSecurity_Tools.addUrlParameter("activetab", activesubtab);
+    },
+    closeExistingPopup : function() {
+      $("#popupDialog").dialog('close');
+    },
+    createPopupDialog : function(mainContent, buttons) {
+      var $popupDialog = $(window.prestascanSecurity.config.cssSelector.popupDialog);
+      $popupDialog.attr("title", "");
+      $popupDialog.find("*").remove();
+      $popupDialog.append("<p>"+mainContent+"</p>");
+      $popupDialog.dialog({
+        resizable: false,
+        height: "auto",
+        width: 280,
+        modal: true,
+        buttons: buttons,
+        open: function (event, ui) {
+          $(".ui-widget-overlay").css({
+            opacity: 0.5,
+            filter: "Alpha(Opacity=20)",
+            backgroundColor: "black",
+            display:"block",
+            'z-index': 100
+          });
+          $(".ui-dialog").css({
+            'z-index': 101
+          });
+        },
+        close: function (event, ui) {
+            $(".ui-widget-overlay").css({
+                display:"none"
+            });
+        }
+      });
+
+    },
+  } // window.prestascanSecurity_Tools
+
+  prestascanSecurity.init();
 });
+
+
 
 
 
@@ -687,35 +696,6 @@ $(document).ready(function () {
   });
 
 
-  //For v1.5
-  $('.menu_element').each(function() {
-    $(this).on("click", function(e){
-      if ($(this).attr('id') != 'connexion' && $(this).attr('id') != 'contact') {
-        var activetab = $(this).children("a").first().attr('href');
-        $('.menu_element').removeClass('active');
-        $('.tab-pane').removeClass('active');
-        $(this).addClass('active');
-        $(activetab).addClass('active');
-        var activesubtab = $(activetab + " .menu-sous-element.active").children("a").first().attr('href');
-        $(activesubtab).addClass("active");
-        window.prestascanSecurity_Tools.addUrlParameter("activetab",$(this).attr('id'));
-      }
-    });
-  });
-  $('.menu-sous-element a').each(function(){
-    $(this).on('click', function (e) {
-      e.preventDefault();
-      var activesubtab = $(this).attr('href');
-      $(this).parent().parent().children('li').removeClass('active');
-      $(this).parent().addClass('active');
-      window.prestascanSecurity_Tools.addUrlParameter("activetab",$(this).attr('href').replace("#",""));
-      $(this).parent().parent().parent().children('div').removeClass('active');
-      $(activesubtab).addClass('active');
-      return false;
-    });
-  });
-
-
   $("#connexion .logout a").on('click', function () {
     $("#popupDialog").attr("title", "");
     $("#popupDialog *").remove();
@@ -740,7 +720,7 @@ $(document).ready(function () {
               success: function (response) {
                 console.log(response);
                 if (response.error || (response.success && !response.data && response.statusText != '')) {
-                        window.prestascanSecurity.popupAlertDialog(response.error);
+                  window.prestascanSecurity_Tools.createPopupDialog(response.error, []);
                 } else {
                   if (response.success) {
                     window.location.reload();
@@ -748,7 +728,7 @@ $(document).ready(function () {
                 }
               },
               error: function (response) {
-                window.prestascanSecurity.popupAlertDialog(response.statusText);
+                window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
                 clearInterval(window.prestascanSecurity.config.checkScanJobsProgresion);
               },
               complete: function () {
@@ -758,7 +738,7 @@ $(document).ready(function () {
           }
         },
         {
-          text: "Cancel",
+          text: text_cancel,
           class: "return",
           click:function() {
               $(this).dialog("close");

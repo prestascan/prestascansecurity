@@ -1,7 +1,7 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -21,7 +21,7 @@
 
 {assign var='scan_text' value={l s='Launch the Scan to check the status of your modules at-risk' mod='prestascansecurity'}}
 {assign var='dataAction' value="generateModuleReport"}
-{assign var='tooltiptext1' value={l s='This list displays modules flagged for known vulnerabilities. There may be false positives if there is uncertainty regarding the starting version of the vulnerability.'}}
+{assign var='tooltiptext1' value={l s='This list displays modules flagged for known vulnerabilities. There may be false positives if there is uncertainty regarding the starting version of the vulnerability.' mod='prestascansecurity'}}
 {assign var='tooltiptext2' value={l s='This list displays modules that are not up to date or have not been updated by their authors for years.' mod='prestascansecurity'}}
 {if !empty($modules_vulnerabilities_results)}
     {assign var='module_result1_title' value={l s='vulnerable module(s)' mod='prestascansecurity'}}

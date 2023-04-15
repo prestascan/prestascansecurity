@@ -1,7 +1,7 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -29,6 +29,6 @@
     <h2 class='scan_text {if isset($aTextNormal)}normal{/if}'>{$aText}</h2>
     <br/><br/>
     <div class="row">
-        <p><a class="{if !isset($dataLink)}btn-generate-report {/if}btn btn-default" data-action="{$dataAction}" href="{if !isset($dataLink)}javascript:void(0);{else}{$dataLink}{/if}" {if isset($dataLink)}target='_blank'{/if}>{$scan_btn_text}</a></p>
+        <p class='button-center'><a class="{if !isset($dataLink)}btn-generate-report {/if}btn btn-default" data-action="{$dataAction}" href="{if !isset($dataLink)}javascript:void(0);{else}{$dataLink}{/if}" {if isset($dataLink)}target='_blank'{/if}>{$scan_btn_text}</a></p>
     </div>
 </div>

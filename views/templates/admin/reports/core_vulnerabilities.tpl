@@ -1,7 +1,7 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -22,8 +22,14 @@
 {assign var='scan_text' value={l s='Launch the Scan to list known PrestaShop vulnerabilities' mod='prestascansecurity'}}
 {assign var='dataAction' value="generateCoreVulnerabilities"}
 
-{if !empty($core_vulnerabilities_results.result)}
+{if !empty($progressScans['core_vulnerabilities'])}
+    {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_in_progress.tpl"}
+{elseif empty($core_vulnerabilities_results)}
+    {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/start_scan_overlay.tpl" aText=$scan_text dataAction=$dataAction}
+{else}
+
     {assign var='prestashop_version' value=$core_vulnerabilities_results.summary.prestashop_version}
+
     {assign var='scan_result_total' value=$core_vulnerabilities_results.summary.scan_result_ttotal}
 
     {if $scan_result_total == 1}
@@ -32,12 +38,8 @@
         {assign var='scan_result_item_type' value={l s='core vulnerabilities' mod='prestascansecurity'}}
     {/if}
 
-    {assign var='scan_result_text' value={l s='on prestashop ' mod='prestascansecurity'}|cat:$prestashop_version}
-{/if}
+    {assign var='scan_result_text' value={l s='on PrestaShop ' mod='prestascansecurity'}|cat:$prestashop_version}
 
-{if !empty($progressScans['core_vulnerabilities'])}
-    {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_in_progress.tpl"}
-{elseif !empty($core_vulnerabilities_results)}
     <div class="result_container col-md-4">
         {include
             file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_result.tpl"
@@ -72,6 +74,5 @@
     {assign var='infopanel_message' value={l s='New PrestaShop versions often include security fixes. Ensuring your version is up-to-date is crucial. If you don\'t plan to update your PrestaShop immediatly, be certain to patch any high, or critical vulnerabilities.' mod='prestascansecurity'}}
     {assign var='infopanel_message_2' value={l s='Our experts or your agency can provide guidance and assistance in addressing vulnerabilities for you.' mod='prestascansecurity'}}
     {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}layouts/information_important.tpl" title=$infopanel_title message=$infopanel_message message2=$infopanel_message_2}
-{else}
-    {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/start_scan_overlay.tpl" aText=$scan_text dataAction=$dataAction}
+
 {/if}

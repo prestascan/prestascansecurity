@@ -30,7 +30,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '0.8.8';
+        $this->version = '1.0.0';
         $this->author = 'PrestaScan';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -173,7 +173,8 @@ class Prestascansecurity extends Module
 
     protected function createTabs()
     {
-        // In PS 1.5, you'll have a fatal error. You need to manually add a Menu (in Adminsitration > Menu), with the following details :
+        // In PS 1.5, this may trigger a fatal error. You will need to manually add a Menu (in Adminsitration > Menu),
+        // with the following details :
         // Name : AdminPrestascanSecurityReports
         // Classe : AdminPrestascanSecurityReports
         // Module : PrestascanSecurity
@@ -258,15 +259,6 @@ class Prestascansecurity extends Module
     {
         $dummyData = Tools::getValue("dummy") ? true : false;
 
-        // @todo : Check if used, otherwise delte it.
-        // We create a hash for the log files (which will be different from the hash for the FC token)
-        // So in case the cache file hash is known, the hash for the FC will remain unknown.
-        //$recursiveScanDirectoryHash = \PrestaScan\Tools::getHashByName("recursiveScanDirectory", $moduleHash);
-        // log of directories scanned for malware
-        /*if (file_exists(_PS_MODULE_DIR_.'prestascansecurity/logs/scan_recursiveScanDirectory_'.$recursiveScanDirectoryHash.'.log')) {
-            $this->context->smarty->assign('recursiveScanDirectoryLog',
-                $this->_path.'logs/scan_recursiveScanDirectory_'.$recursiveScanDirectoryHash.'.log');
-        }*/
         $vulnAlertHandler = new \PrestaScan\VulnerabilityAlertHandler($this);
         $moduleNewVulnerabilitiesAlert = $vulnAlertHandler->getNewVulnerabilityAlerts();
 
@@ -344,10 +336,6 @@ class Prestascansecurity extends Module
         $this->assignSettingsPageUrl();
         $this->assignTokenAndShopUrlVariables();
 
-        if ($dummyData) {
-            $this->assignDummyDataVariables();
-        }
-
         $this->context->smarty->assign('alert_new_modules_vulnerability', $moduleNewVulnerabilitiesAlert);
     }
 
@@ -377,28 +365,6 @@ class Prestascansecurity extends Module
             $settings_page_url = "http://127.0.0.1/user/profile";
         }
         $this->context->smarty->assign('settings_page_url', $settings_page_url);
-    }
-
-    protected function assignDummyDataVariables()
-    {
-        $this->context->smarty->assign([
-            'modules_unused_results' => \PrestaScan\DemoData::unusedModulesData(),
-            'modules_vulnerabilities_results' => \PrestaScan\DemoData::vulnerableModulesData(),
-            'directories_listing_results' => \PrestaScan\DemoData::unprotectedDirectories(),
-            'core_vulnerabilities_results' => \PrestaScan\DemoData::coreVulnerabilitiesDisplayReport(),
-            'files_status' => 'high',
-            'files_last_scan_date' => '30 Novembre 2022 à 16h49',
-            'modules_status' => 'medium',
-            'modules_last_scan_date' => '30 Novembre 2022 à 16h49',
-            'vulnerabilities_status' => 'outdated',
-            'vulnerabilities_last_scan_date' => '30 Novembre 2022 à 16h49',
-            'directories_listing_status' => 'high',
-            'directories_listing_last_scan_date' => '30 Novembre 2022 à 16h49',
-            'core_vulnerabilities_status' => 'medium',
-            'core_vulnerabilities_last_scan_date' => '30 Novembre 2022 à 16h49',
-            'modules_vulnerabilities_status' => 'outdated',
-            'modules_vulnerabilities_last_scan_date' => '30 Novembre 2022 à 16h49',
-        ]);
     }
 
     protected function assignTokenAndShopUrlVariables()
@@ -440,7 +406,7 @@ class Prestascansecurity extends Module
         $mediaJsDef = array(
             'question_to_this_action' => $this->l('Are you sure to this action ?'),
             'question_to_logout' => $this->l('Are you sure to log out ?'),
-            'js_error_occured' => $this->l('An error occured while generating the report. This may be due to a timeout, and you may try to apply filters to your search to reduce processing time.'),
+            'js_error_occured' => $this->l('An error occured while generating the report. This may be due to a timeout. Please try again.'),
             'question_to_logout' => $this->l('Are you sure to log out ?'),
             'js_description' => $this->l('Description'),
             'text_confirm_log_me_out' => $this->l('Yes, log me out'),
@@ -452,6 +418,7 @@ class Prestascansecurity extends Module
             'banner_vulnerability_more_action' => $this->l('This alert is triggered because a new vulnerability was discovered in PrestaShop for this module. Your shop may be vulnerable if the module is not patched yet. Please contact your agency or our team of experts to fix the issue. Please redo a full scan of your module to get more details about the vulnerability.'),
             'banner_vulnerability_more_details'  => $this->l('More details about this issue:'),
             'alert_new_modules_vulnerability' => !empty($moduleNewVulnerabilitiesAlert) ? true : false,
+            'text_error_not_logged_in' => $this->l('To launch a scan please log in or create an account. Having an account allows us to securely perform scans on your behalf and deliver accurate results. Click on the Login button on the top right corner to sign in or create a new account.'),
         );
 
         //Check cookie if update module is running
