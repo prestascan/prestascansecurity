@@ -1,7 +1,7 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -106,8 +106,14 @@
             {else}
                 {assign var='datasort' value=4}
             {/if}
+
+            {assign var='defaultLanguage' value=Context::getContext()->language->iso_code}
+            {assign var='aFileDescription' value=$aFile.description.en.value}
+            {if $defaultLanguage != 'en' && isset($aFile.description.{$defaultLanguage}.value) && !empty($aFile.description.{$defaultLanguage}.value)}
+                {assign var='aFileDescription' value=$aFile.description.{$defaultLanguage}.value}
+            {/if}
             <tr>
-                <input type="hidden" class="description" name="description" value="{$aFile.description.en.value}"/>
+                <input type="hidden" class="description" name="description" value="{$aFileDescription}"/>
                 <td width="5%" class="dt-control"></td>  
                 <td width="20%" class="cve"><strong>{$aFile.cve.value}</strong></td>
                 <td width="10%" data-sort="{$datasort}">{$aFile.severity.value}</td>

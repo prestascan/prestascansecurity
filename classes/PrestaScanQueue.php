@@ -2,7 +2,7 @@
 /*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -67,14 +67,6 @@ class PrestaScanQueue extends ObjectModel
         'SUGGEST_CANCEL'=> 'suggest_cancel',
     ];
 
-    public function getJobFromJobId($jobUUID)
-    {
-        $sql = 'SELECT *
-                FROM `' . _DB_PREFIX_ . self::$definition["table"] . '`
-                WHERE `jobid` = "' . pSQL($jobUUID) . '"';
-        return Db::getInstance()->getRow($sql);
-    }
-
     public static function isJobAlreadyInProgress($actionName)
     {
         $jobId = Db::getInstance()->getValue('
@@ -87,7 +79,7 @@ class PrestaScanQueue extends ObjectModel
         return empty($jobId) ? false : $jobId;
     }
 
-    public function isJobAlreadyCompleted($actionName)
+    public static function isJobAlreadyCompleted($actionName)
     {
         $jobId = Db::getInstance()->getValue('
                 SELECT *

@@ -1,7 +1,7 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -21,7 +21,7 @@
 
 <section id="prestascansecurity_dashboard_hook" class="panel{if isset($alert_modules_vulnerability) && !empty($alert_modules_vulnerability)} prestascanalert{elseif isset($module_upgrade_available) && $module_upgrade_available} prestascanupdate{/if}">
     <div class="panel-heading mb-0">
-        <img src="/modules/prestascansecurity/views/img/icon_dashboard.png"/> {l s='Prestascan Security' mod='prestascansecurity'}
+        <img src="/modules/prestascansecurity/views/img/icon_dashboard.png"/> {l s='PrestaScan Security' mod='prestascansecurity'}
     </div>
 
     {if isset($alert_modules_vulnerability) && !empty($alert_modules_vulnerability)}

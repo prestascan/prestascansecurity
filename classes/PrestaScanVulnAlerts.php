@@ -2,7 +2,7 @@
 /*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * 
- * For questions or comments about this software, contact Maxime Morel-Bailly <maxime.morel@profileo.com>
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
  * Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -83,7 +83,7 @@ class PrestaScanVulnAlerts extends ObjectModel
     {
         $this->module_name = pSQL($module_name);
         $this->vulnerability_type = pSQL($vulnerability['type']);
-        $this->vulnerability_data = pSQL(json_encode($vulnerability['description']));
+        $this->vulnerability_data = json_encode($vulnerability['description']);
         $this->public_link = pSQL($vulnerability['public_link']);
         $this->cve = pSQL($vulnerability['cve']);
         $this->criticity = pSQL($vulnerability['criticity']);
@@ -100,7 +100,7 @@ class PrestaScanVulnAlerts extends ObjectModel
         return $this->save();
     }
 
-    public function dismissAll()
+    public static function dismissAll()
     {
         $sql = "UPDATE `" . _DB_PREFIX_ . self::$definition["table"] . "`
                 SET `dismissed` = 1, `date_upd` = NOW()
