@@ -24,33 +24,38 @@
 
 namespace PrestaScan\OAuth2;
 
-class AccessToken {
-
+class AccessToken
+{
     private $accessToken;
     private $expires;
     private $refreshToken;
     private $scope;
 
-    public function __construct(array $options) {
+    public function __construct(array $options)
+    {
         $this->accessToken = $options['access_token'];
         $this->expires = isset($options['expires']) ? $options['expires'] : null;
         $this->refreshToken = isset($options['refresh_token']) ? $options['refresh_token'] : null;
         $this->scope = isset($options['scope']) ? $options['scope'] : null;
     }
 
-    public function getToken() {
+    public function getToken()
+    {
         return $this->accessToken;
     }
 
-    public function getExpires() {
+    public function getExpires()
+    {
         return $this->expires;
     }
 
-    public function getRefreshToken() {
+    public function getRefreshToken()
+    {
         return $this->refreshToken;
     }
 
-    public function getScope() {
+    public function getScope()
+    {
         return $this->scope;
     }
 

@@ -26,5 +26,4 @@ namespace PrestaScan\Exception;
 
 class JobAlreadyInProgressException extends \Exception
 {
-
 }

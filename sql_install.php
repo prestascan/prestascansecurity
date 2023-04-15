@@ -21,7 +21,6 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -37,7 +36,7 @@ $sql = array();
 // However, this is only available in MySql 8.0 or later. So we prefer to use a char(36) to store
 // our UUID. The volume of data stored will be reduced on client side, so this will not create
 // performance bottleneck
-$sql[_DB_PREFIX_.'prestascan_queue'] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'prestascan_queue` (
+$sql[_DB_PREFIX_.'prestascan_queue'] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prestascan_queue` (
               `id` int(11) NOT NULL AUTO_INCREMENT,
               `jobid` char(36) NOT NULL,
               `action_name` varchar(255) NOT NULL,
@@ -48,9 +47,9 @@ $sql[_DB_PREFIX_.'prestascan_queue'] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX
               `date_upd` datetime NULL,
               PRIMARY KEY (`id`),
               UNIQUE KEY `unique_jobid` (`jobid`)
-            ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
-$sql[_DB_PREFIX_.'vulnerability_alerts'] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'prestascan_vuln_alerts` (
+$sql[_DB_PREFIX_.'vulnerability_alerts'] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prestascan_vuln_alerts` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
             `module_name` varchar(255) NOT NULL,
             `vulnerability_type` varchar(255) NOT NULL,
@@ -63,4 +62,4 @@ $sql[_DB_PREFIX_.'vulnerability_alerts'] = 'CREATE TABLE IF NOT EXISTS `'._DB_PR
             `date_add` datetime NOT NULL,
             `date_upd` datetime NULL,
             PRIMARY KEY (`id`)
-        ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+        ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';

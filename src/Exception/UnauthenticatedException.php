@@ -26,5 +26,4 @@ namespace PrestaScan\Exception;
 
 class UnauthenticatedException extends \Exception
 {
-
 }

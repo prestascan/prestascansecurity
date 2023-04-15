@@ -26,7 +26,7 @@ namespace PrestaScan\Reports;
 
 class CoreVulnerabilitiesReport extends Report
 {
-    public $reportName = "core_vulnerabilities";
+    public $reportName = 'core_vulnerabilities';
 
     public function generate()
     {
@@ -34,8 +34,8 @@ class CoreVulnerabilitiesReport extends Report
             'ps_version' => \PrestaScan\Tools::getPrestashopVersion(),
         );
         $request = new \PrestaScan\Api\Request(
-            "prestascan-api/v1/scan/core-vulnerabilities",
-            "POST",
+            'prestascan-api/v1/scan/core-vulnerabilities',
+            'POST',
             $postBody
         );
 
@@ -49,39 +49,38 @@ class CoreVulnerabilitiesReport extends Report
         $countVulnerabilitiesHigh = 0;
         $countVulnerabilitiesMedium = 0;
         $countVulnerabilitiesLow = 0;
-        $criticity = "low";
+        $criticity = 'low';
         foreach ($payload['result'] as $k => $vulnerabilitie) {
-            $payload['result'][$k]['cve']['value'] = substr($vulnerabilitie['cve']['value'], strrpos($vulnerabilitie['cve']['value'],'/CVE-') + 5 );
+            $payload['result'][$k]['cve']['value'] = substr($vulnerabilitie['cve']['value'], strrpos($vulnerabilitie['cve']['value'], '/CVE-') + 5 );
             $payload['result'][$k]['link'] = $vulnerabilitie['cve']['value'];
-            if (isset($vulnerabilitie["severity"]["value"])) {
-                $severity = $vulnerabilitie["severity"]["value"];
+            if (isset($vulnerabilitie['severity']['value'])) {
+                $severity = $vulnerabilitie['severity']['value'];
                 switch (strtolower($severity)) {
-                    case "critical" :
+                    case 'critical':
                         $countVulnerabilitiesCritical++;
                         $criticity = $severity;
                         break;
-                    case "high" :
+                    case 'high':
                         $countVulnerabilitiesHigh++;
-                        $criticity = $criticity !== "critical" ? $severity : $criticity;
+                        $criticity = $criticity !== 'critical' ? $severity : $criticity;
                         break;
-                    case "medium" :
+                    case 'medium':
                         $countVulnerabilitiesMedium++;
-                        $criticity = $criticity !== "critical" && $criticity !== "medium" ? $severity : $criticity;
+                        $criticity = $criticity !== 'critical' && $criticity !== 'medium' ? $severity : $criticity;
                         break;
-                    case "low" :
+                    case 'low':
                         $countVulnerabilitiesLow++;
                         break;
                     default :
                         break;
                 }
             }
-
         }
         $reportSummary = array();
 
         $reportSummary['prestashop_version'] = \PrestaScan\Tools::getPrestashopVersion();
-        $reportSummary['scan_result_total'] = count($payload["result"]);
-        $reportSummary['scan_result_criticity'] = $countVulnerabilitiesCritical > 0 ? 'high' : ($countVulnerabilitiesHigh > 0 ? "medium" : ($countVulnerabilitiesMedium > 0 ? "medium" : ""));
+        $reportSummary['scan_result_total'] = count($payload['result']);
+        $reportSummary['scan_result_criticity'] = $countVulnerabilitiesCritical > 0 ? 'high' : ($countVulnerabilitiesHigh > 0 ? 'medium' : ($countVulnerabilitiesMedium > 0 ? 'medium' : ''));
         $reportSummary['scan_result_ttotal'] = $countVulnerabilitiesCritical + $countVulnerabilitiesHigh + $countVulnerabilitiesMedium + $countVulnerabilitiesLow;
         $reportSummary['total_critical'] = $countVulnerabilitiesCritical;
         $reportSummary['total_high'] = $countVulnerabilitiesHigh;

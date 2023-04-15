@@ -33,25 +33,25 @@ class Report
     private $cacheReports = array();
 
     private static $reportList = array(
-        "non_standards_files",
-        "added_or_modified_core_files",
-        "infected_files",
-        "directories_listing",
-        "modules_vulnerabilities",
-        "core_vulnerabilities",
-        "modules_unused"
+        'non_standards_files',
+        'added_or_modified_core_files',
+        'infected_files',
+        'directories_listing',
+        'modules_vulnerabilities',
+        'core_vulnerabilities',
+        'modules_unused',
     );
 
     public function __construct()
     {
         $cacheDirectory = \PrestaScan\Tools::getCachePath();
 
-        $cacheHash =  \Configuration::get('PRESTASCAN_SEC_HASH');
+        $cacheHash = \Configuration::get('PRESTASCAN_SEC_HASH');
         // We create a hash for the cache files (to avoid direct access by guessing the name of the file)
-        $tokenCache = \PrestaScan\Tools::getHashByName("cacheHash", $cacheHash);
+        $tokenCache = \PrestaScan\Tools::getHashByName('cacheHash', $cacheHash);
 
         foreach (self::$reportList as $aReportName) {
-            $this->cacheReports[$aReportName] = $cacheDirectory.$aReportName."_".$tokenCache.".cache";
+            $this->cacheReports[$aReportName] = $cacheDirectory . $aReportName . '_' . $tokenCache . '.cache';
         }
     }
 
@@ -59,7 +59,7 @@ class Report
     {
         // Check if job already in progress
         if (\PrestaScanQueue::isJobAlreadyInProgress($this->reportName)) {
-            throw new JobAlreadyInProgressException("Job already in progress");
+            throw new JobAlreadyInProgressException('Job already in progress');
         }
     }
 
@@ -68,8 +68,8 @@ class Report
         if (!isset($response['job_id'])) {
             // Error
             throw new \Exception(
-                "The API was not able to handle the request with the following error : Missing job_id"
-                .". Please try again or contact support for assistance."
+                'The API was not able to handle the request with the following error : Missing job_id.
+                Please try again or contact support for assistance.'
             );
         }
     }
@@ -81,9 +81,7 @@ class Report
             $this->reportName,
             json_encode($jobData)
         )) {
-            throw new \Exception(
-                "The scan wasn't able to save your request. Please try again or contact support for assistance."
-            );
+            throw new \Exception('The scan wasn\'t able to save your request. Please try again or contact support for assistance.');
         }
     }
 

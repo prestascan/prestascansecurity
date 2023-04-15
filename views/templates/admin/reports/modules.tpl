@@ -19,10 +19,10 @@
  * limitations under the License.
  *}
 
-<div id="modules_vulnerabilities" class="tab-pane {if $eosecuritycheck_activetab == "modules_vulnerabilities" || $eosecuritycheck_activetab == "report-modules" || $eosecuritycheck_activetab == "report-home"}active{/if}">
+<div id='modules_vulnerabilities' class="tab-pane {if $eosecuritycheck_activetab == 'modules_vulnerabilities' || $eosecuritycheck_activetab == 'report-modules' || $eosecuritycheck_activetab == 'report-home'}active{/if}">
     {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_vulnerable.tpl" progressScans=$progressScans}
 </div>
 
-<div id="modules_unused" class="tab-pane {if $eosecuritycheck_activetab == "modules_unused"}active{/if}">
+<div id='modules_unused' class="tab-pane {if $eosecuritycheck_activetab == 'modules_unused'}active{/if}">
     {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_unused.tpl" progressScans=$progressScans}
 </div>

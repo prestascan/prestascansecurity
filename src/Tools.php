@@ -46,20 +46,20 @@ class Tools
         // The function has known issues to identify the state of a module (enable or disabled AND installed or not installed)
         // We do not trust this function and we will rely directly of the ps_module table to check the state.
         // We will also not filter by shop ID and will check if the module is at least enable in one shop.
-        $sql = "SELECT module.id_module, module_shop.id_module module_shop_id, module.name
-            FROM `"._DB_PREFIX_."module` module
-            LEFT JOIN `"._DB_PREFIX_."module_shop` module_shop ON module_shop.id_module = module.id_module";
+        $sql = 'SELECT module.id_module, module_shop.id_module module_shop_id, module.name' .
+            ' FROM `' . _DB_PREFIX_ . 'module` module' .
+            ' LEFT JOIN `' . _DB_PREFIX_ . 'module_shop` module_shop ON module_shop.id_module = module.id_module';
         $listEnabledOrInstalledModules = \Db::getInstance()->executeS($sql);
 
         foreach ($prestaShopModules as $key => $aModule) {
-            if (isset($aModule->not_on_disk) && (int)$aModule->not_on_disk === 1) {
+            if (isset($aModule->not_on_disk) && (int) $aModule->not_on_disk === 1) {
                 unset($prestaShopModules[$key]);
                 continue;
             }
             $active = false;
             $installed = false;
             foreach ($listEnabledOrInstalledModules as $moduleArray) {
-                if ((int)$moduleArray['id_module'] === (int)$aModule->id) {
+                if ((int) $moduleArray['id_module'] === (int) $aModule->id) {
                     $installed = true;
                     $active = $moduleArray['module_shop_id'] === NULL ? false : true;
                     break;
@@ -75,13 +75,13 @@ class Tools
         }
         return array(
             'allModules' => $prestaShopModules,
-            'modulesOnDisk' => $list
+            'modulesOnDisk' => $list,
         );
     }
 
     public static function getHashByName($hashName, $key)
     {
-        return md5(_COOKIE_KEY_.$hashName.$key);
+        return md5(_COOKIE_KEY_ . $hashName . $key);
     }
 
     public static function displayErrorAndDie($code, $message = null)
@@ -99,11 +99,11 @@ class Tools
         // - We need the FO URLs, however this function might be called from the BO. The FO and BO URL might be different...
         // - The module doesn't need to display different configuration/results for each shop, so we need to retrive the default shop URL ? Check if maintenance ?
         // Note : It should support localhost with custom port
-        
+
         $protocol = (!empty($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on' || $_SERVER['HTTPS'] == '1')) ? 'https://' : 'http://';
         $server = $_SERVER['SERVER_NAME'];
         $port = $_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 81 ? ':'.$_SERVER['SERVER_PORT'] : '';
-        return $protocol.$server.$port;
+        return $protocol . $server . $port;
     }
 
     public static function deleteReport($filename)
@@ -152,7 +152,7 @@ class Tools
             )
         ));
     }
-    
+
     public static function deleteCacheFiles()
     {
         $fullPath = self::getCachePath();
@@ -162,7 +162,15 @@ class Tools
 
     public static function getCachePath()
     {
-        return _PS_MODULE_DIR_."prestascansecurity/cache/";
+        return _PS_MODULE_DIR_ . 'prestascansecurity/cache/';
+    }
+
+    public static function getModuleRawCacheFile()
+    {
+        $cacheDirectory = self::getCachePath();
+        $cacheHash = \Configuration::get('PRESTASCAN_SEC_HASH');
+        $tokenCache = self::getHashByName('cacheHash', $cacheHash);
+        return $cacheDirectory . 'modules_raw_' . $tokenCache . '.cache';
     }
 
     public static function getFormattedModuleOnDiskList()
@@ -239,7 +247,7 @@ class Tools
         $outdated = false;
         if (!empty($date)) {
             $date_scan = strtotime($date);
-            if ($date_scan <= strtotime('-'.(int)$month.' month')) {
+            if ($date_scan <= strtotime('-' . (int) $month . ' month')) {
                 $outdated = true;
             }
         }
@@ -248,11 +256,7 @@ class Tools
 
     public static function formatDateString($date)
     {
-        $formattedDate = "";
-        if (!empty($date)) {
-            $formattedDate = date('j F Y', strtotime($date));
-        }
-        return $formattedDate;
+        return !empty($date) ? date('j F Y', strtotime($date)) : '';
     }
 
     public static function getOldestScan($scans)
@@ -294,14 +298,13 @@ class Tools
             'critical' => 4,
             'high' => 3,
             'medium' => 2,
-            'low' => 1
+            'low' => 1,
         );
 
         foreach ($scans as $scan) {
             if (!$scan) {
                 continue;
             }
-            //var_dump($scan['summary']);
             if (!isset($scan['summary']['scan_result_criticity'])) {
                 var_dump($scan['summary']);
             }
@@ -315,5 +318,4 @@ class Tools
 
         return is_null($highestCriticityScan) ? $scans[0] : $highestCriticityScan;
     }
-
 }

@@ -21,7 +21,6 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -35,7 +34,7 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_0_6($module)
 {
-    $query = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'prestascan_vuln_alerts` (
+    $query = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prestascan_vuln_alerts` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `module_name` varchar(255) NOT NULL,
                 `vulnerability_type` varchar(255) NOT NULL,
@@ -48,7 +47,7 @@ function upgrade_module_0_6($module)
                 `date_add` datetime NOT NULL,
                 `date_upd` datetime NULL,
                 PRIMARY KEY (`id`)
-            ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
     if (Db::getInstance()->execute($query) == false) {
         return false;

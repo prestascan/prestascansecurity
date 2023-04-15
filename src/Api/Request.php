@@ -21,15 +21,12 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
-
 namespace PrestaScan\Api;
 
 use PrestaScan\OAuth2\Oauth;
-use PrestaScan\Api\Response;
 
 class Request
 {
-
     private $options = array();
 
     private $OAuth;
@@ -38,7 +35,7 @@ class Request
 
     private $endpoint;
 
-    public function __construct($endpoint, $type = "GET", $postBody = null)
+    public function __construct($endpoint, $type = 'GET', $postBody = null)
     {
         // @todo check Type
         // @todo, postBody should be null or an array

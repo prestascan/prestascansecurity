@@ -26,19 +26,19 @@ namespace PrestaScan\Reports;
 
 class UnusedModulesReport extends Report
 {
-    public $reportName = "modules_unused";
+    public $reportName = 'modules_unused';
 
     public function generate()
     {
-        $moduleStatusReport = $this->getModulesByStatus();        
+        $moduleStatusReport = $this->getModulesByStatus();
         $postBody = array(
-            "not_installed" => $moduleStatusReport['not_installed'],
-            "disabled" => $moduleStatusReport['disabled']
+            'not_installed' => $moduleStatusReport['not_installed'],
+            'disabled' => $moduleStatusReport['disabled']
         );
 
         $request = new \PrestaScan\Api\Request(
-            "prestascan-api/v1/scan/modules/unused",
-            "POST",
+            'prestascan-api/v1/scan/modules/unused',
+            'POST',
             $postBody
         );
 
@@ -56,11 +56,11 @@ class UnusedModulesReport extends Report
         $reportSummary['total_disabled_modules'] = count($payload['result']['disabled']);
         $reportSummary['total_uninstalled_modules'] = count($payload['result']['not_installed']);
 
-        $criticity = "low";
+        $criticity = 'low';
         if ($reportSummary['scan_result_ttotal'] > 10) {
-            $criticity = "high";
+            $criticity = 'high';
         } elseif ($reportSummary['scan_result_ttotal'] > 5) {
-            $criticity = "medium";
+            $criticity = 'medium';
         }
         $reportSummary['scan_result_criticity'] = $criticity;
 

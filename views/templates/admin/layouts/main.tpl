@@ -21,12 +21,12 @@
 
 {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}layouts/javascript.tpl"}
 {if !isset($smarty.get.activetab)}
-	{assign var="eosecuritycheck_activetab" value="report-home"}
+	{assign var="eosecuritycheck_activetab" value='report-home'}
 {else}
 	{assign var="eosecuritycheck_activetab" value="{$smarty.get.activetab}"}
 {/if}
 {assign var="tabreportfiles" value=array("report-files","report-files-1","report-files-2","report-files-3","report-files-4")}
-{assign var="tabreportmodules" value=array("report-modules","modules_vulnerabilities","modules_unused")}
+{assign var="tabreportmodules" value=array('report-modules','modules_vulnerabilities','modules_unused')}
 <div id="prestascansecurity_main_container" data-urlreports="{$prestascansecurity_reports_ajax}" data-urlfileviewer="{$prestascansecurity_fileviewer_ajax}">
 
 	<div id="flash-message"></div>
@@ -64,7 +64,7 @@
 	<div class="panel">
 		{include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}layouts/menu.tpl"}
 		<div class="prestascansecurity_container tab-content">
-			<div id="tab-report-home" class="tab-pane {if $eosecuritycheck_activetab == "report-home"}active{/if}">
+			<div id="tab-report-home" class="tab-pane {if $eosecuritycheck_activetab == 'report-home'}active{/if}">
 			    {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}reports/home.tpl"}
 			</div>
 			<div id="tab-report-files" class="tab-content tab-pane {if $eosecuritycheck_activetab|in_array:$tabreportfiles}active{/if}">
@@ -75,7 +75,7 @@
 					<li class="hide report-files-2 menu-sous-element {if $eosecuritycheck_activetab == "report-files-2"}active{/if}">
 						<a href="#report-files-2">{l s='Added or modified files' mod='prestascansecurity'}</a>
 					</li>
-					<li class="report-files-4 menu-sous-element {if ($eosecuritycheck_activetab == "report-files-4" || $eosecuritycheck_activetab == "report-home" || $eosecuritycheck_activetab == "report-files") || (!$eosecuritycheck_activetab|in_array:$tabreportfiles && $eosecuritycheck_activetab != "report-home" && $eosecuritycheck_activetab != "report-files")}active{/if}">
+					<li class="report-files-4 menu-sous-element {if ($eosecuritycheck_activetab == "report-files-4" || $eosecuritycheck_activetab == 'report-home' || $eosecuritycheck_activetab == "report-files") || (!$eosecuritycheck_activetab|in_array:$tabreportfiles && $eosecuritycheck_activetab != 'report-home' && $eosecuritycheck_activetab != "report-files")}active{/if}">
 						<a href="#report-files-4">{l s='Directory protection' mod='prestascansecurity'}</a>
 					</li>
 					<li class="report-files-3 menu-sous-element {if $eosecuritycheck_activetab == "report-files-3"}active{/if}">
@@ -86,10 +86,10 @@
 			</div>
 			<div id="tab-report-modules" class="tab-content tab-pane {if $eosecuritycheck_activetab|in_array:$tabreportmodules}active{/if}">
 				<ul class="nav nav-tabs menu_container">
-					<li class="modules_vulnerabilities menu-sous-element {if ($eosecuritycheck_activetab == "modules_vulnerabilities" || $eosecuritycheck_activetab == "report-home" || $eosecuritycheck_activetab == "report-modules") || (!$eosecuritycheck_activetab|in_array:$tabreportmodules && $eosecuritycheck_activetab != "report-home" && $eosecuritycheck_activetab != "report-modules")}active{/if}">
+					<li class="modules_vulnerabilities menu-sous-element {if ($eosecuritycheck_activetab == 'modules_vulnerabilities' || $eosecuritycheck_activetab == 'report-home' || $eosecuritycheck_activetab == 'report-modules') || (!$eosecuritycheck_activetab|in_array:$tabreportmodules && $eosecuritycheck_activetab != 'report-home' && $eosecuritycheck_activetab != 'report-modules')}active{/if}">
 						<a href="#modules_vulnerabilities">{l s='At-risk modules' mod='prestascansecurity'}</a>
 					</li>
-					<li class="modules_unused menu-sous-element {if $eosecuritycheck_activetab == "modules_unused"}active{/if}">
+					<li class="modules_unused menu-sous-element {if $eosecuritycheck_activetab == 'modules_unused'}active{/if}">
 						<a href="#modules_unused">{l s='Unused modules' mod='prestascansecurity'}</a>
 					</li>
 				</ul>

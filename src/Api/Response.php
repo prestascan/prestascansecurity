@@ -21,33 +21,32 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
-
 namespace PrestaScan\Api;
 
-class Response {
-
+class Response
+{
     public static function checkResponse($response)
     {
         if (!is_array($response) || !isset($response['success'])) {
-            throw new \Exception("Invalid API Response");
+            throw new \Exception('Invalid API Response');
         }
 
         if ($response['success'] !== true) {
-            if (isset($response["error"])
-                && isset($response["error"]["code"])
-                && (int)$response["error"]["code"] === 200 ) {
-                // Specific case of "errors" that should not trigger an exception
-                // Example for a report that is not yet ready 
+            if (isset($response['error'])
+                && isset($response['error']['code'])
+                && (int) $response['error']['code'] === 200 ) {
+                // Specific case of 'errors' that should not trigger an exception
+                // Example for a report that is not yet ready
                 /*
                 * array(2) {
-                *  ["success"]=>
+                *  ['success']=>
                 *  bool(false)
-                *  ["error"]=>
+                *  ['error']=>
                 *  array(2) {
-                *    ["code"]=>
+                *    ['code']=>
                 *    int(200)
-                *    ["message"]=>
-                *    string(23) "Report is not ready yet"
+                *    ['message']=>
+                *    string(23) 'Report is not ready yet'
                 *  }
                 *}
                 */
@@ -57,14 +56,13 @@ class Response {
             // Error
             $message = isset($response['error']) && isset($response['error']['message']) ?
                 $response['error']['message'] :
-                "Unknown API error";
+                'Unknown API error';
             throw new \Exception($message);
         }
     }
 
     public static function getBody($response)
     {
-        return isset($response["payload"]) ? $response["payload"] : $response;
+        return isset($response['payload']) ? $response['payload'] : $response;
     }
-
 }

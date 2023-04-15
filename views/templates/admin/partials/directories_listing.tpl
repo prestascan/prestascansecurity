@@ -33,7 +33,7 @@
     {assign var='file_action' value={l s='Contact your agency or contact our experts to verify this directory' mod='prestascansecurity'}}
     <div class="result_container col-md-4">
         {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_result.tpl"
-            scanType="directories_listing"
+            scanType='directories_listing'
             aScanResult=$directories_listing_results.summary
             scan_result_item_type=$scan_result_item_type
             scan_result_text=$scan_result_text

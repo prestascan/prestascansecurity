@@ -7,8 +7,8 @@ $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_0b83a5bf53beb6c397a
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_812e46968f23a2c7f5d7b4e0746203f0'] = 'Êtes-vous sûr de vouloir désinstaller ce module ?';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_b76c7f3b6abf5a2ff33efb0f93f2d6bd'] = 'Ajax PrestaScan Security';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_4dd0f3d0352778f465a5c9a751a37adb'] = 'Une erreur s\'est produite lors de la connexion au serveur.';
-$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_1c9bc93c587bd3633b2c27d62fa09771'] = 'Êtes-vous sûr de vouloir effectuer cette action ?';
-$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_bd999efe8cf46acb06e27127f4745242'] = 'Êtes-vous sûr de vouloir vous déconnecter ?';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_dcb3c2774a9d9d2bb351ca9aaa4bfb1e'] = 'Êtes-vous sûr de vouloir effectuer cette action ?';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_b9ff4aa1cb93a366b1973c5c3af52289'] = 'Êtes-vous sûr de vouloir vous déconnecter ?';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_fd541b21fd5a44149a86bc83f5ed7739'] = 'Une erreur s\'est produite lors de la génération du rapport. Cela peut être dû à un délai d\'expiration. Veuillez réessayer.';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_b5a7adde1af5c87d7fd797b6245c2a39'] = 'Description';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_9eadb78db102ef3b8dc9c43043d26422'] = 'Oui, déconnectez-moi';
@@ -16,7 +16,7 @@ $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_01602a2174d298aea9a
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_93cba07454f06a4a960172bbd6e2a435'] = 'Oui';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_ea4788705e6873b424c65e91c2846b19'] = 'Annuler';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_2b899981cd65625d08f85c4940182694'] = 'ignorer';
-$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_e32f47cdc925977600dddb3dc90a4554'] = 'Vous êtes sur le point de supprimer cette alerte. Vous devrez effectuer un nouveau scan pour obtenir des informations supplémentaires. Êtes-vous sûr de vouloir ignorer cette alerte ?';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_9e5ad85d883414983738a03021336fd0'] = 'Vous êtes sur le point de supprimer cette alerte. Vous devrez relancer un scan pour obtenir des informations supplémentaires. Êtes-vous sûr de vouloir ignorer cette alerte ?';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_36d25ce75c123849ba2343b11d805f89'] = 'Cette alerte est déclenchée car une nouvelle vulnérabilité a été découverte dans PrestaShop pour ce module. Votre boutique peut être vulnérable si le module n\'est pas encore corrigé. Veuillez contacter votre agence ou notre équipe d\'experts pour résoudre le problème. Veuillez effectuer un nouveau scan complet de votre module pour obtenir plus de détails sur la vulnérabilité.';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_00ed7852d153c8887f89c3021693955c'] = 'Plus de détails sur ce problème :';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_c9aaa19185145b1a4554891158f68d42'] = 'Pour lancer un scan, veuillez vous connecter ou créer un compte. Avoir un compte nous permet d\'effectuer des scans en toute sécurité en votre nom et de fournir des résultats précis. Cliquez sur le bouton Connexion en haut à droite pour vous connecter ou créer un nouveau compte.';

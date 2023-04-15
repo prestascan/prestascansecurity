@@ -25,17 +25,17 @@
 
     <div id="prestascansecurity_tabs" class="panel">
         {if !isset($smarty.get.activetab)}
-            {assign var="prestascansecurity_activetab" value="report-modules"}
+            {assign var="prestascansecurity_activetab" value='report-modules'}
         {else}
             {assign var="prestascansecurity_activetab" value="{$smarty.get.activetab}"}
         {/if}
         <ul class="nav nav-tabs">
-            <li id="report-modules" class="{if $prestascansecurity_activetab == "report-modules"}active{/if}">
+            <li id='report-modules' class="{if $prestascansecurity_activetab == 'report-modules'}active{/if}">
                 <a href="#tab-report-modules" data-toggle="tab">{l s='Modules' mod='prestascansecurity'} {if isset($eosec_modules_install_state)}({$eosec_modules_install_state|count}){/if}</a>
             </li>
         </ul>
         <div class="tab-content">
-            <div id="tab-report-modules" class="tab-pane {if $prestascansecurity_activetab == "report-modules"}active{/if}">
+            <div id="tab-report-modules" class="tab-pane {if $prestascansecurity_activetab == 'report-modules'}active{/if}">
                 {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}tab_modules_report.tpl"}
             </div>
         </div>

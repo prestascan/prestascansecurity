@@ -30,7 +30,7 @@ class Queue
     {
         // Check job status
         $request = new \PrestaScan\Api\Request(
-            "prestascan-api/v1/job/".$jobId
+            'prestascan-api/v1/job/' . $jobId
         );
 
         $response = $request->getResponse();

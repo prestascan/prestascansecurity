@@ -21,7 +21,6 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
-
 class AdminPrestascanSecurityReportsController extends ModuleAdminController
 {
     /**
@@ -36,27 +35,27 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         $OAuth = new \PrestaScan\OAuth2\Oauth();
         $error = false;
         try {
-            if(!$OAuth->getAccessTokenObj()) {
+            if (!$OAuth->getAccessTokenObj()) {
                 $error = true;
             }
         } catch (\Exception $exp) {
             // An exception may occure when token values are invalid. This may happen with localoauth
-            if (\Tools::getValue("action") === "logout") {
+            if (\Tools::getValue('action') === 'logout') {
                 $this->ajaxProcessLogout();
             }
             $error = true;
         }
-        
+
         if ($error) {
             self::dieWithError($this->module->l('To launch a scan please log in or create an account. Having an account allows us to securely perform scans on your behalf and deliver accurate results. Click \'Login\' on the top right corner to sign in or create a new account.'));
         }
 
         // Check if an update is available
         $updateAvailable = Configuration::get('PRESTASCAN_UPDATE_VERSION_AVAILABLE') ? true : false;
-        if ($updateAvailable === true && Tools::getValue("action") !== "updateModule") {
+        if ($updateAvailable === true && Tools::getValue('action') !== 'updateModule') {
             // When an update is available, we return an error message
-            
-            if (Tools::getValue("action") === "checkScanJobsProgression") {
+
+            if (Tools::getValue('action') === 'checkScanJobsProgression') {
                 // It's not a scan, no need to display the error.
                 \PrestaScan\Tools::printAjaxResponse(true, false);
             }
@@ -91,12 +90,12 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         $resultProgress = [];
         $scanCompleted = false;
         foreach ($jobs as $job) {
-            $jobId = $job["jobid"];
+            $jobId = $job['jobid'];
             try {
                 $payload = \PrestaScan\Api\Queue::check($jobId);
-                if (isset($payload["error"])
-                    && isset($payload["error"]["code"])
-                    && (int)$payload["error"]["code"] === 200
+                if (isset($payload['error'])
+                    && isset($payload['error']['code'])
+                    && (int) $payload['error']['code'] === 200
                 ) {
                         // Report not ready yet
                         // Nothing to do
@@ -104,14 +103,13 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
                     }
 
                 if (is_array($payload)
-                    && isset($payload["result"])
-                    && isset($payload["result"]['success'])
-                    && $payload["result"]['success'] === false) {
+                    && isset($payload['result'])
+                    && isset($payload['result']['success'])
+                    && $payload['result']['success'] === false) {
+                    \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['ERROR'], $payload['result']['error']);
+                    $this->setScanStatus($job['action_name'], false);
 
-                    \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['ERROR'], $payload["result"]['error']);
-                    $this->setScanStatus($job["action_name"], false);
-
-                    switch ($payload["result"]['error']) {
+                    switch ($payload['result']['error']) {
                         case 'timeout':
                             $errorMessage = $this->module->l('Error while processing one of your scans. Detail : timeout. There might be too much data to process for your scan. Please try again.');
                             break;
@@ -124,32 +122,32 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
                         case 'other_general_error':
                             $errorMessage = $this->module->l('Unknown server error while processing one of your scans. Please try again.');
                             break;
-                        
+
                         default:
                             $errorMessage = $this->module->l('Unknown error while processing one of your scans. Make sure your website is reachable by PrestaScan Security. Please try again.');
                             break;
                     }
 
-                    $suffixErrorMessage = " ".$this->module->l('If the error happens again, contact our support.');
+                    $suffixErrorMessage = ' ' . $this->module->l('If the error happens again, contact our support.');
 
-                    self::dieWithError($errorMessage.$suffixErrorMessage);
+                    self::dieWithError($errorMessage . $suffixErrorMessage);
                 }
 
                 if (is_array($payload)) {
                     \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['COMPLETED']);
-                    $this->setScanStatus($job["action_name"], false);
-                    if ($job["action_name"] === "modules_vulnerabilities") {
+                    $this->setScanStatus($job['action_name'], false);
+                    if ($job['action_name'] === 'modules_vulnerabilities') {
                         $report = new \PrestaScan\Reports\VulnerableModulesReport();
-                        $report->save($payload, $job["job_data"]);
-                    } elseif($job["action_name"] === "directories_listing") {
+                        $report->save($payload, $job['job_data']);
+                    } elseif ($job['action_name'] === 'directories_listing') {
                         $report = new \PrestaScan\Reports\DirectoriesProtectionReport();
                         $report->save($payload);
-                    } elseif($job["action_name"] === "core_vulnerabilities") {
+                    } elseif ($job['action_name'] === 'core_vulnerabilities') {
                         $report = new \PrestaScan\Reports\CoreVulnerabilitiesReport();
                         $report->save($payload);
-                    } elseif ($job["action_name"] === "modules_unused") {
+                    } elseif ($job['action_name'] === 'modules_unused') {
                         $report = new \PrestaScan\Reports\UnusedModulesReport();
-                        $report->save($payload, $job["job_data"]);
+                        $report->save($payload, $job['job_data']);
                     }
                     $scanCompleted = true;
                 }
@@ -161,10 +159,10 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
                 // Code to review
 
                 if ($e->getCode() == 400) {
-                    \PrestaScanQueue::updateJob($jobId, "error", $e->getMessage());
+                    \PrestaScanQueue::updateJob($jobId, 'error', $e->getMessage());
                     self::dieWithError($this->module->l('Scan processing error.'));
                 } elseif ($e->getCode() == 200) {
-                    $resultProgress[] = $job["action_name"];
+                    $resultProgress[] = $job['action_name'];
                     \PrestaScanQueue::updateJob($jobId);
                     continue;
                 } else {
@@ -186,7 +184,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
     public function ajaxProcessUnusedModulesActions()
     {
         try {
-            $actionType = Tools::getValue("action_type");
+            $actionType = Tools::getValue('action_type');
             $moduleName = Tools::getValue('module_name');
 
             if (!Validate::isModuleName($moduleName)) {
@@ -198,7 +196,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
             $message = $this->module->l('Module action not performed');
             if ($module) {
                 switch (strtolower($actionType)) {
-                    case "deletemodule" :
+                    case 'deletemodule' :
                         if ($module::isInstalled($moduleName)) {
                             $retour = $module->uninstall();
                         } else {
@@ -209,7 +207,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
                             $message = $this->module->l('Module successfully deleted');
                         }
                         break;
-                    case "uninstallmodule" :
+                    case 'uninstallmodule' :
                         if ($retour = $module->uninstall()) {
                             $message = $this->module->l('Module successfully uninstalled');
                         }
@@ -343,16 +341,16 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
             $forceActiveTab = array();
             switch ($classReport) {
                 case \PrestaScan\Reports\VulnerableModulesReport::class:
-                    $forceActiveTab['forceactivetab'] = "modules_vulnerabilities";
+                    $forceActiveTab['forceactivetab'] = 'modules_vulnerabilities';
                     break;
                 case \PrestaScan\Reports\UnusedModulesReport::class:
-                    $forceActiveTab['forceactivetab'] = "modules_unused";
+                    $forceActiveTab['forceactivetab'] = 'modules_unused';
                     break;
                 case \PrestaScan\Reports\DirectoriesProtectionReport::class:
-                    $forceActiveTab['forceactivetab'] = "report-files";
+                    $forceActiveTab['forceactivetab'] = 'report-files';
                     break;
                 case \PrestaScan\Reports\CoreVulnerabilitiesReport::class:
-                    $forceActiveTab['forceactivetab'] = "report-core-vulnerabilities";
+                    $forceActiveTab['forceactivetab'] = 'report-core-vulnerabilities';
                     break;
                 default:
                     $forceActiveTab = false;
@@ -362,14 +360,15 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         }
     }
 
-    private static function dieWithError($error) {
+    private static function dieWithError($error)
+    {
         \PrestaScan\Tools::printAjaxResponse(false, true, $error);
     }
 
     public function ajaxProcessDismmissedAlert()
     {
         try {
-            $alert = new \PrestaScanVulnAlerts((int)Tools::getValue("alert_id"));
+            $alert = new \PrestaScanVulnAlerts((int) Tools::getValue('alert_id'));
             $alert->dismissAlert(Context::getContext()->employee->id);
         } catch (\Exception $e) {
             self::dieWithError($this->module->l('Error while dismissing the alert. Please try again.'));

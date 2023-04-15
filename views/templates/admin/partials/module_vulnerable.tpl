@@ -38,7 +38,7 @@
 {elseif !empty($modules_vulnerabilities_results)}
     <div class="result_container col-md-4">
         {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}/partials/scan_result.tpl"
-            scanType="modules_vulnerabilities"
+            scanType='modules_vulnerabilities'
             aScanResult=$modules_vulnerabilities_results.summary
             scan_result_item_type=$scan_result_item_type
             scan_result_text=$scan_result_text
