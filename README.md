@@ -9,7 +9,7 @@
 ![last release](https://badgen.net/github/release/prestascan/prestascansecurity)
 ![license](https://badgen.net/github/license/prestascan/prestascansecurity)
 
-[:floppy_disk: Download latest release](https://github.com/prestascan/prestascansecurity/releases/)
+[:floppy_disk: Download latest release](https://github.com/prestascan/prestascansecurity/releases/download/v1.0.0-rc/prestascansecurity-v1.0.0-rc.zip)
 
 ## Table of contents
 * [General Information](#general-information)
@@ -17,7 +17,7 @@
 * [Contributing](#contributing)
 * [Reporting Security Issues](#reporting-security-issues)
 * [Technical notes](#technical-notes)
-* [License](#License)
+* [License](#license)
 
 ## General Information
 
