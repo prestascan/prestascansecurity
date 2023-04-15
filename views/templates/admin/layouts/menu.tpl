@@ -3,7 +3,7 @@
  * 
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
- * Complete list of authors and contributors to this software can be found in the AUTHORS file.
+ * @author Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,7 @@
               <a href="javascript:void(0);" id="login-oauth2" class='dropbtn'><i class="icon-user"></i> <span>{l s='Logged in' mod='prestascansecurity'}</span></a>
               <div class="dropdown-content">
                 <div>
-                    <a href="{$settings_page_url}" target="_blank">{l s='Settings' mod='prestascansecurity'}</a>
+                    <a href="{$settings_page_url|escape:"html":'UTF-8'}" target="_blank">{l s='Settings' mod='prestascansecurity'}</a>
                 </div>
                 <div class='logout'>
                     <a href="javascript:void(0);">{l s='Logout' mod='prestascansecurity'}</a>
@@ -95,7 +95,7 @@
             </form>
             <a href="javascript:void(0);" id="login-oauth2"><i class="icon-user"></i> <span>{l s='Login' mod='prestascansecurity'}</span></a>
             {if isset($prestascansecurity_isLoggedIn_error)}
-                {literal} @todo format {/literal} {$prestascansecurity_isLoggedIn_error}
+                {$prestascansecurity_isLoggedIn_error|escape:"html":'UTF-8'}
             {/if}
         {/if}
     </li>

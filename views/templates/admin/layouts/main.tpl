@@ -3,7 +3,7 @@
  * 
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
- * Complete list of authors and contributors to this software can be found in the AUTHORS file.
+ * @author Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,7 +39,7 @@
 					{l s='MODULE VULNERABILITY ALERT' mod='prestascansecurity'}
 					{if count($alert_new_modules_vulnerability) > 1}
 						<span class="alert-number">
-							(<strong>{$alert_new_modules_vulnerability|count}</strong> {l s='other alerts pending'})
+							(<strong>{$alert_new_modules_vulnerability|count}</strong> {l s='other alerts pending' mod='prestascansecurity'})
 						</span>
 					{/if}
 				</span>
@@ -49,7 +49,7 @@
 						{l s='Potential vulnerability detected in module ' mod='prestascansecurity'}
 						<strong>{$alert_new_modules_vulnerability[0].name}.</strong>
 					</span>
-					&nbsp;<a href="javascript:void(0);" data-alertId="{$alert_new_modules_vulnerability[0].id}" class="dismiss-action">{l s='(Dismiss)'}</a>
+					&nbsp;<a href="javascript:void(0);" data-alertId="{$alert_new_modules_vulnerability[0].id}" class="dismiss-action">{l s='(Dismiss)' mod='prestascansecurity'}</a>
 				</span>
 				<span class="alert-vulnerability-action">{l s='More details' mod='prestascansecurity'}</span>
 			</p>

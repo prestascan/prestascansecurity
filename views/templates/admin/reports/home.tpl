@@ -3,7 +3,7 @@
  * 
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
- * Complete list of authors and contributors to this software can be found in the AUTHORS file.
+ * @author Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");

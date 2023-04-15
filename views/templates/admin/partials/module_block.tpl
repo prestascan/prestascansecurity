@@ -3,7 +3,7 @@
  * 
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * 
- * Complete list of authors and contributors to this software can be found in the AUTHORS file.
+ * @author Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63,9 +63,9 @@
                     <p class="module_description">{if isset($aType) && $aType == 'moduleVulnerable'}{l s='Module description' mod='prestascansecurity'} : {/if}{$aModule.description}</p>
                 </div>
                 <div class="module_detail_actions">
-                    <a href="javascript:void(0);" data-action="deleteModule" data-modulename="{$aModule.name}">{l s='Delete'}</a>
+                    <a href="javascript:void(0);" data-action="deleteModule" data-modulename="{$aModule.name}">{l s='Delete' mod='prestascansecurity'}</a>
                     {if $class == "modules_disabled_results"}
-                        <a href="javascript:void(0);" data-action="uninstallModule" data-modulename="{$aModule.name}">{l s='Uninstall'}</a>
+                        <a href="javascript:void(0);" data-action="uninstallModule" data-modulename="{$aModule.name}">{l s='Uninstall' mod='prestascansecurity'}</a>
                     {/if}
                 </div>
             </div>
