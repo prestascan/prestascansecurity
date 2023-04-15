@@ -179,8 +179,7 @@ Include a reference to the license in the header of each source code file in you
  * @author    Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- */
-```
+ */```
 
 For more information about using the Apache License, Version 2.0, please see the `LICENSE.md` file or visit the following URL:
 http://www.apache.org/licenses/LICENSE-2.0

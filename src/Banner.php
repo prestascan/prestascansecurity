@@ -28,16 +28,16 @@ class Banner
 {
     public static function getBanner()
     {
-        $bannerResponse  = null;
+        $bannerResponse = null;
         try {
-            // Only query the server, if no previous banner check was previously done 
+            // Only query the server, if no previous banner check was previously done
             // OR if the last banner check is older than 24h
             $lastBannerCheck = \Configuration::get('PRESTASCAN_BANNER_LAST_CHECK');
             if (empty($lastBannerCheck) || (strtotime(date('Y-m-d H:i:s')) - strtotime($lastBannerCheck)) > 86400) {
-                \Configuration::updateGlobalValue('PRESTASCAN_BANNER_LAST_CHECK', (new \DateTime())->format('Y-m-d H:i:s'));                
+                \Configuration::updateGlobalValue('PRESTASCAN_BANNER_LAST_CHECK', (new \DateTime())->format('Y-m-d H:i:s'));
                 $apiRequest = new \PrestaScan\Api\Request(
-                    "prestascan-api/v1/banner",
-                    "GET"
+                    'prestascan-api/v1/banner',
+                    'GET'
                 );
                 $apiResponse = $apiRequest->getResponse();
 
@@ -45,13 +45,13 @@ class Banner
                 if (!isset($apiResponse['image_url']) ||
                     !isset($apiResponse['cta']) ||
                     !isset($apiResponse['enable'])) {
-                     \Configuration::deleteByName('PRESTASCAN_BANNER_RESPONSE');
+                    \Configuration::deleteByName('PRESTASCAN_BANNER_RESPONSE');
                     return null;
                 }
 
                 // Check if the banner is enabled
                 if (!$apiResponse['enable']) {
-                     \Configuration::deleteByName('PRESTASCAN_BANNER_RESPONSE');
+                    \Configuration::deleteByName('PRESTASCAN_BANNER_RESPONSE');
                     return null;
                 }
 

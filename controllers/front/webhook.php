@@ -21,10 +21,8 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
-
 class PrestascansecurityWebhookModuleFrontController extends ModuleFrontController
 {
-
     public function init()
     {
         try {
@@ -71,7 +69,7 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
                 $body = array(
                     'return_id' => $postedData['return_id'],
                     'job_id'    => $postedData['job_id'],
-                    'result'    => $result
+                    'result'    => $result,
                 );
 
                 // send $body to server at endpoint : /webcron/result
@@ -85,7 +83,7 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
                 if (isset($response['completed']) && $response['completed']) {
                     $this->returnServer(200, 'OK');
                 } else {
-                    $this->returnServer(400, 'Error sending result back : ' . $response['error']['code']
+                    $this->returnServer(400, 'Error sending result back: ' . $response['error']['code']
                          . ' - ' . $response['error']['message']);
                 }
             }
@@ -105,8 +103,8 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
     private function scanCompleted($postedData)
     {
         try {
-            if (isset($postedData["error"])) {
-                $payload = $postedData["payload"];
+            if (isset($postedData['error'])) {
+                $payload = $postedData['payload'];
                 $jobId = $payload['jobId'];
 
                 // We inidicate that we now need to retrieve the data from the API
@@ -116,37 +114,21 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
                 $this->returnServer(200, 'OK');
             }
 
-            if (!isset($postedData["payload"])
-                || !isset($postedData["payload"]['jobId'])) {
+            if (!isset($postedData['payload'])
+                || !isset($postedData['payload']['jobId'])) {
                 $this->returnServer(500, 'Invalid webhook parameters');
             }
 
-            $payload = $postedData["payload"];
+            $payload = $postedData['payload'];
             $jobId = $payload['jobId'];
 
             // We inidicate that we now need to retrieve the data from the API
             \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['TORETRIEVE']);
-
         } catch (\Exception $e) {
             $this->returnServer(500, 'Error processing webhook');
         }
 
         $this->returnServer(200, 'OK');
-    }
-
-    private function scanFileCoreChangesAction($postedData)
-    {
-        // @todo
-    }
-
-    private function scanFileAddedModifiedAction($postedData)
-    {
-        // @todo
-    }
-
-    private function scanFileSuspiciousAction($postedData)
-    {
-        // @todo
     }
 
     private function alertModuleVulnerable($postedData)
@@ -168,12 +150,15 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
      */
     private function validateSignature()
     {
-        if (!Configuration::get("PRESTASCAN_WEBCRON_TOKEN")) {
+        $tokenConfig = Configuration::get('PRESTASCAN_WEBCRON_TOKEN');
+        if (!$tokenConfig || empty($tokenConfig)) {
+            // Fallback function in case that the token config is not set
+            // Module not installed properly ? Or other issue with configuration table.
             return false;
         }
-        
+
         $rawPostData = file_get_contents('php://input');
-        $signature = hash_hmac('sha256', $rawPostData, Configuration::get("PRESTASCAN_WEBCRON_TOKEN"));
+        $signature = hash_hmac('sha256', $rawPostData, $tokenConfig);
 
         // Check if getallheaders function exists for this PHP version
         // https://github.com/php/php-src/pull/3363
@@ -185,11 +170,12 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
 
         foreach ($headers as $name => $value) {
             if (strtolower($name) === 'signature') {
+                // Does the signature match ? If yes, success
                 return hash_equals($value, $signature);
             }
         }
 
-        // Signature not found.
+        // Signature is not matching, security issue
         return false;
     }
 

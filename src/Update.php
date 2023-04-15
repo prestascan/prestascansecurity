@@ -39,7 +39,7 @@ class Update extends Module
     }
 
     /*
-    * This function checks if an update for the module is available. 
+    * This function checks if an update for the module is available.
     * If this is the case, this shows the flash message with a link to update the module
     */
     public function checkForModuleUpdate()
@@ -71,9 +71,9 @@ class Update extends Module
     {
         try {
             $response = self::checkForUpdateVersion($this->module->version);
-            if (!isset($response["url"])) {
-                if (isset($response["success"]) && $response["success"] === false
-                    && isset($response["error"]) && isset($response["error"]["code"]) && $response["error"]["code"] === 200) {
+            if (!isset($response['url'])) {
+                if (isset($response['success']) && $response['success'] === false
+                    && isset($response['error']) && isset($response['error']['code']) && $response['error']['code'] === 200) {
                     $error = $this->module->l('Your module is already up to date. Please reload this page.');
                     \Configuration::updateGlobalValue('PRESTASCAN_LAST_VERSION_CHECK', (new \DateTime())->format('Y-m-d H:i:s'));
                     \Configuration::updateGlobalValue('PRESTASCAN_UPDATE_VERSION_AVAILABLE', false);
@@ -82,7 +82,7 @@ class Update extends Module
                 $error = $this->module->l('Error fetching the new version. Please try again.');
                 throw new UpdateException($error);
             }
-            $url = $response["url"];
+            $url = $response['url'];
             if ($this->downloadAndExtractZipModuleFile($url)) {
                 $module = \Module::getInstanceByName($this->module->name);
                 $newVersion = $this->getModuleVersionFromDisk();
@@ -105,7 +105,7 @@ class Update extends Module
         } catch (UpdateException $updateException) {
             // Return to the Controller
             throw $updateException;
-         } catch (\Exception $e) {
+        } catch (\Exception $e) {
             // Other type of exception.
             $error = $this->module->l('Unexcepted error trying to retrieve the new module. Reload the page and try again.');
             throw new \Exception($error);
@@ -116,7 +116,7 @@ class Update extends Module
     {
         $currentDate = (new \DateTime())->format('Y-m-d H:i:s');
         $lastCheck = \Configuration::get('PRESTASCAN_LAST_VERSION_CHECK');
-        return (((strtotime($currentDate) - strtotime($lastCheck)) / ($secondsExpire)) > 1);
+        return ((strtotime($currentDate) - strtotime($lastCheck)) / ($secondsExpire)) > 1;
     }
 
     private function configurationUpdate($response)
@@ -124,16 +124,16 @@ class Update extends Module
         $now = (new \DateTime())->format('Y-m-d H:i:s');
         \Configuration::updateGlobalValue('PRESTASCAN_LAST_VERSION_CHECK', $now);
 
-        $updateVersionAvailable = (is_array($response) && isset($response["url"])) ? true : false;
+        $updateVersionAvailable = (is_array($response) && isset($response['url'])) ? true : false;
         \Configuration::updateGlobalValue('PRESTASCAN_UPDATE_VERSION_AVAILABLE', $updateVersionAvailable);
     }
 
     private function downloadAndExtractZipModuleFile($url)
     {
         try {
-            $zipFile = $this->module->name . ".zip";
+            $zipFile = $this->module->name . '.zip';
             $extractDir = _PS_ROOT_DIR_ . '/modules/';
-            $zipResource = fopen($zipFile, "w");
+            $zipResource = fopen($zipFile, 'w');
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -154,8 +154,8 @@ class Update extends Module
             curl_close($ch);
 
             /* Open the Zip file */
-            $zip = new \ZipArchive;
-            if ($zip->open($zipFile) != "true") {
+            $zip = new \ZipArchive();
+            if ($zip->open($zipFile) !== true) {
                 $error = $this->module->l('Malformated module archive. Please try again.');
                 throw new UpdateException($error);
             }
@@ -197,14 +197,14 @@ class Update extends Module
         $reponse = false;
         try {
             $request = new \PrestaScan\Api\Request(
-                "prestascan-api/v1/check-version/".$version
+                'prestascan-api/v1/check-version/' . $version
             );
             $reponse = $request->getResponse();
         } catch (\Exception $ex) {
             $reponse = [
-                "error" => true,
-                "message"   => $ex->getMessage(),
-                "code"      => $ex->getCode()
+                'error' => true,
+                'message' => $ex->getMessage(),
+                'code' => $ex->getCode(),
             ];
         }
 

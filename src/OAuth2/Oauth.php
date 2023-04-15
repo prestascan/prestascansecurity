@@ -26,8 +26,8 @@ namespace PrestaScan\OAuth2;
 
 class Oauth
 {
-    protected $oAuthEndpointDomain = "https://security.prestascan.com/";
-    protected $apiEndpointDomain = "https://security.prestascan.com/";
+    protected $oAuthEndpointDomain = 'https://security.prestascan.com/';
+    protected $apiEndpointDomain = 'https://security.prestascan.com/';
 
     private $accessToken;
     private $refreshToken;
@@ -42,13 +42,13 @@ class Oauth
     {
         $this->accessToken = \Configuration::get('PRESTASCAN_ACCESS_TOKEN');
         $this->refreshToken = \Configuration::get('PRESTASCAN_REFRESH_TOKEN');
-        $this->expires = (int)\Configuration::get('PRESTASCAN_ACCESS_TOKEN_EXPIRE');
-        $this->testMode = (bool)\Configuration::get('PRESTASCAN_TEST_MODE_OAUTH');
+        $this->expires = (int) \Configuration::get('PRESTASCAN_ACCESS_TOKEN_EXPIRE');
+        $this->testMode = (bool) \Configuration::get('PRESTASCAN_TEST_MODE_OAUTH');
 
         if ($this->testMode && !$this->isPublicIp()) {
             // When we are in local, we can use local domain to setup the oauth2
-            $this->oAuthEndpointDomain = "http://127.0.0.1/";
-            $this->apiEndpointDomain = "http://prestascansecurity_server-laravel.test-1/";
+            $this->oAuthEndpointDomain = 'http://127.0.0.1/';
+            $this->apiEndpointDomain = 'http://prestascansecurity_server-laravel.test-1/';
         }
 
         if (!empty($this->accessToken)) {
@@ -81,19 +81,19 @@ class Oauth
         }
 
         $urlAuthorize = $forCurl ?
-            $this->apiEndpointDomain.'oauth/authorize' :
-            $this->oAuthEndpointDomain.'oauth/authorize';
+            $this->apiEndpointDomain . 'oauth/authorize' :
+            $this->oAuthEndpointDomain . 'oauth/authorize';
         $urlAccessToken = $forCurl ?
-            $this->apiEndpointDomain.'oauth/token' :
-            $this->oAuthEndpointDomain.'oauth/token';
+            $this->apiEndpointDomain . 'oauth/token' :
+            $this->oAuthEndpointDomain . 'oauth/token';
 
         $provider = new Provider([
-            'clientId'                => (int)\Configuration::get('PRESTASCAN_ACCESS_CLIENT_ID'),
-            'clientSecret'            => \Configuration::get('PRESTASCAN_ACCESS_CLIENT_SECRET'),
-            'redirectUri'             => self::getOauth2RedirectUrl(),
-            'urlAuthorize'            => $urlAuthorize,
-            'urlAccessToken'          => $urlAccessToken,
-            'urlResourceOwnerDetails' => null
+            'clientId' => (int) \Configuration::get('PRESTASCAN_ACCESS_CLIENT_ID'),
+            'clientSecret' => \Configuration::get('PRESTASCAN_ACCESS_CLIENT_SECRET'),
+            'redirectUri' => self::getOauth2RedirectUrl(),
+            'urlAuthorize' => $urlAuthorize,
+            'urlAccessToken' => $urlAccessToken,
+            'urlResourceOwnerDetails' => null,
         ]);
 
         if ($forCurl) {
@@ -103,7 +103,7 @@ class Oauth
         }
     }
 
-    /**
+    /*
     * Return an access token (might be expired, so might request for a refresh token)
     */
     public function getAccessTokenObj($refreshIfExpired = true)
@@ -123,7 +123,7 @@ class Oauth
     {
         \Configuration::updateGlobalValue('PRESTASCAN_ACCESS_TOKEN', $accessTokenObj->getToken());
         \Configuration::updateGlobalValue('PRESTASCAN_REFRESH_TOKEN', $accessTokenObj->getRefreshToken());
-        \Configuration::updateGlobalValue('PRESTASCAN_ACCESS_TOKEN_EXPIRE', $accessTokenObj->getExpires());  
+        \Configuration::updateGlobalValue('PRESTASCAN_ACCESS_TOKEN_EXPIRE', $accessTokenObj->getExpires());
 
         $this->accessTokenObj = $accessTokenObj;
     }
@@ -136,9 +136,7 @@ class Oauth
 
     public function getNewAccessTokenFromAuthorizationCode($code)
     {
-        return $this->getProvider(true)->getAccessToken('authorization_code', [
-            'code' => $code
-        ]);
+        return $this->getProvider(true)->getAccessToken('authorization_code', ['code' => $code]);
     }
 
     public function getAuthenticatedRequestWithResponse($method, $endpoint, array $options = [])
@@ -148,7 +146,7 @@ class Oauth
         // to Psr\Http\Message\RequestInterface.
         $request = $this->getProvider(true)->getAuthenticatedRequest(
             $method,
-            $this->apiEndpointDomain.$endpoint,
+            $this->apiEndpointDomain . $endpoint,
             $this->getAccessTokenObj(),
             $options
         );
@@ -171,19 +169,19 @@ class Oauth
 
     public static function getOauth2RedirectUrl()
     {
-        return \PrestaScan\Tools::getShopUrl().'/?fc=module&module=prestascansecurity&controller=oauth2';
+        return \PrestaScan\Tools::getShopUrl() . '/?fc=module&module=prestascansecurity&controller=oauth2';
     }
 
     public function getRegistragionUrl()
     {
-        return $this->oAuthEndpointDomain.'generate-user-oauth';
+        return $this->oAuthEndpointDomain . 'generate-user-oauth';
     }
 
     private function isPublicIp()
     {
         $isPublicIp = filter_var(
-            $_SERVER['REMOTE_ADDR'], 
-            FILTER_VALIDATE_IP, 
+            $_SERVER['REMOTE_ADDR'],
+            FILTER_VALIDATE_IP,
             FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
         );
         return $isPublicIp !== false ? true : false;
@@ -191,8 +189,9 @@ class Oauth
 
     private function refreshToken()
     {
-        return $this->getProvider(true)->getAccessToken('refresh_token', [
-            'refresh_token' => $this->accessTokenObj->getRefreshToken()
-        ]);
+        return $this->getProvider(true)->getAccessToken(
+            'refresh_token',
+            ['refresh_token' => $this->accessTokenObj->getRefreshToken()]
+        );
     }
 }

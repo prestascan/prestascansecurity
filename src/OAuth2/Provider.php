@@ -24,13 +24,18 @@
 
 namespace PrestaScan\OAuth2;
 
-class Provider {
-
+class Provider
+{
     protected $clientId;
+
     protected $clientSecret;
+
     protected $redirectUri;
+
     protected $urlAuthorize;
+
     protected $urlAccessToken;
+
     protected $urlResourceOwnerDetails;
 
     public function __construct($options)
@@ -79,7 +84,7 @@ class Provider {
         if (isset($options['state'])) {
             $params['state'] = $options['state'];
         } else {
-            throw new \Exception("`state` must be defined");
+            throw new \Exception('`state` must be defined');
         }
 
         $queryString = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
@@ -127,7 +132,7 @@ class Provider {
         $parsedResponse = $this->parseResponse($response);
 
         if (isset($parsedResponse['error'])) {
-            throw new \Exception("Error in OAuth2 response: " . $parsedResponse['error'] . " - " . $parsedResponse['error_description']);
+            throw new \Exception('Error in OAuth2 response: ' . $parsedResponse['error'] . ' - ' . $parsedResponse['error_description']);
         }
 
         // Convert the "expires_in" field to an absolute timestamp.
@@ -148,7 +153,7 @@ class Provider {
             return bin2hex(openssl_random_pseudo_bytes($length / 2));
         }
 
-        throw new \Exception("No suitable random generator found");
+        throw new \Exception('No suitable random generator found');
     }
 
     public function getResponse($ch)
@@ -157,12 +162,11 @@ class Provider {
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if (curl_errno($ch)) {
-            //echo 'Curl error: ' . curl_error($ch);
             if (curl_errno() === 28) {
                 // timeout
-                throw new \Exception("Request timeout. It appears that our server is currently not reachable. This may be due to an unusually high volume of demand. Please try again later");
+                throw new \Exception('Request timeout. It appears that our server is currently not reachable. This may be due to an unusually high volume of demand. Please try again later');
             } else {
-                throw new \Exception("Request error: ".curl_error($ch));
+                throw new \Exception('Request error: ' . curl_error($ch));
             }
         }
 
@@ -172,11 +176,11 @@ class Provider {
             $response = $this->parseResponse($response);
             if (isset($response['error'])
                 && isset($response['error']['message'])
-                && $response['error']['message'] === "Too Many Attempts.") {
-                throw new \PrestaScan\Exception\TooManyAttempsException("Request limit reached.");
+                && $response['error']['message'] === 'Too Many Attempts.') {
+                throw new \PrestaScan\Exception\TooManyAttempsException('Request limit reached.');
             }
-        } else if ($httpCode >= 400) {
-            throw new \Exception("HTTP error: " . $httpCode . " - " . $response);
+        } elseif ($httpCode >= 400) {
+            throw new \Exception('HTTP error: ' . $httpCode . ' - ' . $response);
         }
 
         return $response;
@@ -186,5 +190,4 @@ class Provider {
     {
         return json_decode($response, true);
     }
-
 }

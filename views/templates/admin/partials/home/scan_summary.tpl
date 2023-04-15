@@ -46,31 +46,31 @@
                     {assign var='scan_result_total' value=$scan.summary.scan_result_total}
                     {assign var='scan_type' value=$scan.summary.scan_type}
 
-                    {if $scan_type === "non_standards_files"}
+                    {if $scan_type === 'non_standards_files'}
                         {assign var='scan_result_text' value={l s='file(s)' mod='prestascansecurity'}}
                         {assign var='scan_result_text_type' value={l s='are not standard' mod='prestascansecurity'}}
                         {assign var='scan_more_details_link' value='report-files-1'}
-                    {elseif $scan_type === "added_or_modified_core_files"}
+                    {elseif $scan_type === 'added_or_modified_core_files'}
                         {assign var='scan_result_text' value={l s='file(s)' mod='prestascansecurity'}}
                         {assign var='scan_result_text_type' value={l s='are added or modified' mod='prestascansecurity'}}
                         {assign var='scan_more_details_link' value='report-files-2'}
-                    {elseif $scan_type === "infected_files"}
+                    {elseif $scan_type === 'infected_files'}
                         {assign var='scan_result_text' value={l s='file(s)' mod='prestascansecurity'}}
                         {assign var='scan_result_text_type' value={l s='are infected' mod='prestascansecurity'}}
                         {assign var='scan_more_details_link' value='report-files-3'}
-                    {elseif $scan_type === "directories_listing"}
+                    {elseif $scan_type === 'directories_listing'}
                         {assign var='scan_result_text' value={l s='directories' mod='prestascansecurity'}}
                         {assign var='scan_result_text_type' value={l s='are not protected' mod='prestascansecurity'}}
                         {assign var='scan_more_details_link' value='report-files-4'}
-                    {elseif $scan_type === "modules_vulnerabilities"}
+                    {elseif $scan_type === 'modules_vulnerabilities'}
                         {assign var='scan_result_text' value={l s='out of %d modules are' sprintf=[$scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
                         {assign var='scan_result_text_type' value={l s='at-risk' mod='prestascansecurity'}}
                         {assign var='scan_more_details_link' value='modules_vulnerabilities'}
-                    {elseif $scan_type === "modules_unused"}
+                    {elseif $scan_type === 'modules_unused'}
                         {assign var='scan_result_text' value={l s='out of %d modules are' sprintf=[$scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
                         {assign var='scan_result_text_type' value={l s='unused' mod='prestascansecurity'}}
                         {assign var='scan_more_details_link' value='modules_unused'}
-                    {elseif $scan_type === "core_vulnerabilities"}
+                    {elseif $scan_type === 'core_vulnerabilities'}
                         {assign var='scan_result_text' value={l s='vulnerabilities detected' mod='prestascansecurity'}}
                         {assign var='scan_result_text_type' value={l s='' mod='prestascansecurity'}}
                         {assign var='scan_more_details_link' value='report-core-vulnerabilities'}

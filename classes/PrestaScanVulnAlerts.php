@@ -21,10 +21,8 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
-
 class PrestaScanVulnAlerts extends ObjectModel
 {
-
     /** @var int ID */
     public $id;
 
@@ -74,10 +72,10 @@ class PrestaScanVulnAlerts extends ObjectModel
 
     public static function getAlertsNotDismissed()
     {
-        $sql = "SELECT *
-            FROM `" . _DB_PREFIX_ . self::$definition["table"] . "`
+        $sql = 'SELECT *
+            FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
             WHERE `dismissed` = 0
-            ORDER BY id DESC";
+            ORDER BY id DESC';
         return Db::getInstance()->executeS($sql);
     }
 
@@ -98,21 +96,21 @@ class PrestaScanVulnAlerts extends ObjectModel
     public function dismissAlert($employeeId)
     {
         $this->dismissed = 1;
-        $this->employee_id_dismissed = (int)$employeeId;
+        $this->employee_id_dismissed = (int) $employeeId;
         return $this->save();
     }
 
     public static function dismissAll()
     {
-        $sql = "UPDATE `" . _DB_PREFIX_ . self::$definition["table"] . "`
+        $sql = 'UPDATE `' . _DB_PREFIX_ . self::$definition['table'] . '`
                 SET `dismissed` = 1, `date_upd` = NOW()
-                WHERE `dismissed` = 0";
-        return  \Db::getInstance()->execute($sql);
+                WHERE `dismissed` = 0';
+        return Db::getInstance()->execute($sql);
     }
 
     public static function truncate()
     {
-        $sql = 'TRUNCATE TABLE `' . _DB_PREFIX_ . self::$definition["table"] . '`';
+        $sql = 'TRUNCATE TABLE `' . _DB_PREFIX_ . self::$definition['table'] . '`';
         return Db::getInstance()->execute($sql);
     }
 }

@@ -21,10 +21,8 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
-
 class PrestaScanQueue extends ObjectModel
 {
-
     /** @var int ID */
     public $id;
 
@@ -61,19 +59,20 @@ class PrestaScanQueue extends ObjectModel
     ];
 
     public static $actionname = [
-        'PROGRESS'      => 'progress',
-        'COMPLETED'     => 'completed',
-        'CANCEL'        => 'cancel',
-        'TORETRIEVE'    => 'toretrieve', // The scan has finished, we now need to retrive the data with oauth2
-        'ERROR'         => 'error',
-        'SUGGEST_CANCEL'=> 'suggest_cancel',
+        'PROGRESS' => 'progress',
+        'COMPLETED' => 'completed',
+        'CANCEL' => 'cancel',
+        // The scan has finished, we now need to retrive the data with oauth2
+        'TORETRIEVE' => 'toretrieve',
+        'ERROR' => 'error',
+        'SUGGEST_CANCEL' => 'suggest_cancel',
     ];
 
     public static function isJobAlreadyInProgress($actionName)
     {
         $jobId = Db::getInstance()->getValue('
                 SELECT `jobid`
-                FROM `' . _DB_PREFIX_ . self::$definition["table"] . '`
+                FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
                 WHERE `action_name` = "'.pSQL($actionName).'" AND (
                     `state` = "' . pSQL(self::$actionname['PROGRESS']) . '" OR
                     `state` = "' . pSQL(self::$actionname['TORETRIEVE']) . '" OR
@@ -85,7 +84,7 @@ class PrestaScanQueue extends ObjectModel
     {
         $jobId = Db::getInstance()->getValue('
                 SELECT *
-                FROM `' . _DB_PREFIX_ . self::$definition["table"] . '`
+                FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
                 WHERE `action_name` = "' . pSQL($actionName) . '" AND `state` = "' . pSQL(self::$actionname['COMPLETED']) . '"');
 
         return empty($jobId) ? false : $jobId;
@@ -93,7 +92,7 @@ class PrestaScanQueue extends ObjectModel
 
     public static function addJob($jobId, $actionName, $jobData = null)
     {
-        $jobAddedSql = 'INSERT INTO `' . _DB_PREFIX_ . self::$definition["table"] . '`
+        $jobAddedSql = 'INSERT INTO `' . _DB_PREFIX_ . self::$definition['table'] . '`
             (`jobid`, `action_name`, `job_data`, `state`, `date_add`)
             VALUES ("'.pSQL($jobId).'", "'.pSQL($actionName).'", "'.pSQL($jobData).'", "' . pSQL(self::$actionname['PROGRESS']) . '" , "'.date('Y-m-d H:i:s').'")';
         return Db::getInstance()->execute($jobAddedSql);
@@ -102,16 +101,16 @@ class PrestaScanQueue extends ObjectModel
     public static function getJobsByState($state)
     {
         $sql = 'SELECT *
-                FROM `' . _DB_PREFIX_ . self::$definition["table"] . '`
+                FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
                 WHERE `state` = "' . pSQL($state) . '"';
         $jobIds = Db::getInstance()->executeS($sql);
 
         return $jobIds;
     }
 
-    public static function updateJob($jobId, $state = "progress", $message = '')
+    public static function updateJob($jobId, $state = 'progress', $message = '')
     {
-        $jobAddedSql = 'UPDATE `' . _DB_PREFIX_ . self::$definition["table"] . '`
+        $jobAddedSql = 'UPDATE `' . _DB_PREFIX_ . self::$definition['table'] . '`
             SET `state` = \'' . pSQL($state) . '\', `date_upd` = NOW()';
         if ($message != '') {
             $jobAddedSql .= ', `error_message` = \'' . pSQL($message) . '\'';
@@ -123,7 +122,7 @@ class PrestaScanQueue extends ObjectModel
 
     public static function deleteCompletedByActionName($actionname)
     {
-        $sql = 'DELETE FROM `' . _DB_PREFIX_ . self::$definition["table"] . '`
+        $sql = 'DELETE FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
             WHERE action_name = "' . pSQL($actionname) . '"
             AND state = "' . pSQL(self::$actionname['COMPLETED']) . '"';
 
@@ -133,14 +132,14 @@ class PrestaScanQueue extends ObjectModel
     public static function getLastScanDate($action_name)
     {
         $sql = 'SELECT date_upd
-                FROM `' . _DB_PREFIX_ . self::$definition["table"] . '`
+                FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
                 WHERE `action_name` = "' . pSQL($action_name) . '"'; 
         return Db::getInstance()->getValue($sql);
     }
 
     public static function truncate()
     {
-        $sql = 'TRUNCATE TABLE `' . _DB_PREFIX_ . self::$definition["table"] . '`';
+        $sql = 'TRUNCATE TABLE `' . _DB_PREFIX_ . self::$definition['table'] . '`';
         return Db::getInstance()->execute($sql);
     }
 }

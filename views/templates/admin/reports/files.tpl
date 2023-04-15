@@ -23,6 +23,6 @@
     {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/infected_files.tpl"}
 </div>
 
-<div id="report-files-4" class="tab-pane {if $eosecuritycheck_activetab == "report-files-4" || $eosecuritycheck_activetab == "report-files" || $eosecuritycheck_activetab == "report-home" }active{/if}">
+<div id="report-files-4" class="tab-pane {if $eosecuritycheck_activetab == "report-files-4" || $eosecuritycheck_activetab == "report-files" || $eosecuritycheck_activetab == 'report-home' }active{/if}">
     {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/directories_listing.tpl"}
 </div>

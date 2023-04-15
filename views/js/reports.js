@@ -22,7 +22,6 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
-
 $(function () {
 
   var prestascanSecurity = window.prestascanSecurity = {
@@ -260,8 +259,8 @@ $(function () {
         setTimeout(function() {
           window.location.reload(true);
         }, 2000);
-        
-      } else if(typeof res.error != "undefined" && res.error && res.statusText != "undefined" && res.statusText != "") {
+
+      } else if (typeof res.error !== "undefined" && res.error && res.statusText !== "undefined" && res.statusText != "") {
         window.prestascanSecurity_Tools.createPopupDialog(res.statusText, []);
       } else if (typeof res.iterator !== "undefined") {
         // progress
@@ -336,7 +335,7 @@ $(function () {
       // `setInterval(this.checkJobsProgression.bind(this), 10000);`
       // You may then use 'this' to access properties or methods of the object
 
-      if(!prestascansecurity_isLoggedIn) {
+      if (!prestascansecurity_isLoggedIn) {
         return false;
       }
 
@@ -406,7 +405,7 @@ $(function () {
 
       if ($('.prestascansecurity_datatable.no-sort-by-file-size').length) {
         $('.prestascansecurity_datatable.no-sort-by-file-size').each(function () {
-          if($(this).attr("id") == "protectionFiles") {
+          if ($(this).attr("id") == "protectionFiles") {
             dtParams.order = [[2, 'desc']];
           }
           $(this).dataTable(dtParams);
@@ -475,7 +474,7 @@ $(function () {
       window.prestascanSecurity_Tools.createPopupDialog(question_to_this_dismiss_action, buttons);
     },
     handleActionDismissAlert : function (alertId) {
-      if(!prestascansecurity_isLoggedIn) {
+      if (!prestascansecurity_isLoggedIn) {
         return false;
       }
       $.ajax({

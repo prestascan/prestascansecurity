@@ -20,15 +20,15 @@
  *}
 
 {assign var="tabreportfiles" value=["report-files","report-files-1","report-files-2","report-files-3","report-files-4"]}
-{assign var="tabreportmodules" value=["report-modules","modules_vulnerabilities","modules_unused"]}
+{assign var="tabreportmodules" value=['report-modules','modules_vulnerabilities','modules_unused']}
 <ul class="nav nav-tabs menu_container">
-	<li id="report-home" class="menu_element {if $eosecuritycheck_activetab == "report-home"}active{/if}">
+	<li id='report-home' class="menu_element {if $eosecuritycheck_activetab == 'report-home'}active{/if}">
         <a href="#tab-report-home" data-toggle="tab">{l s='Dashboard' mod='prestascansecurity'}</a>
     </li>
     <li id="report-files" class="menu_element {if $eosecuritycheck_activetab|in_array:$tabreportfiles}active{/if}">
         <a href="#tab-report-files" data-toggle="tab">{l s='Files scan' mod='prestascansecurity'}</a>
     </li>
-    <li id="report-modules" class="menu_element {if $eosecuritycheck_activetab|in_array:$tabreportmodules}active{/if}">
+    <li id='report-modules' class="menu_element {if $eosecuritycheck_activetab|in_array:$tabreportmodules}active{/if}">
         <a href="#tab-report-modules" data-toggle="tab">{l s='Modules scan' mod='prestascansecurity'}</a>
     </li>
     <li id="report-core-vulnerabilities" class="menu_element {if $eosecuritycheck_activetab == "report-core-vulnerabilities"}active{/if}">

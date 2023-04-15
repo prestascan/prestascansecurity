@@ -26,7 +26,7 @@ namespace PrestaScan\Reports;
 
 class VulnerableModulesReport extends Report
 {
-    public $reportName = "modules_vulnerabilities";
+    public $reportName = 'modules_vulnerabilities';
 
     public function generate()
     {
@@ -36,10 +36,7 @@ class VulnerableModulesReport extends Report
         $allModulesOnDisk = \PrestaScan\Tools::getFormattedModuleOnDiskList();
 
         // Save the module list in cache (we need it for webhook alerts to reduce the charge)
-        $cacheDirectory = \PrestaScan\Tools::getCachePath();
-        $cacheHash = \Configuration::get('PRESTASCAN_SEC_HASH');
-        $tokenCache = \PrestaScan\Tools::getHashByName("cacheHash", $cacheHash);
-        $moduleRawCacheFile = $cacheDirectory."modules_raw"."_".$tokenCache.".cache";
+        $moduleRawCacheFile = \PrestaScan\Tools::getModuleRawCacheFile();
         file_put_contents($moduleRawCacheFile, serialize($allModulesOnDisk));
 
         // Complete the data with the module_key
@@ -60,32 +57,28 @@ class VulnerableModulesReport extends Report
             'modules' => $sanatizedList
         );
         $request = new \PrestaScan\Api\Request(
-            "prestascan-api/v1/scan/modules/vulnerabilities",
-            "POST",
+            'prestascan-api/v1/scan/modules/vulnerabilities',
+            'POST',
             $postBody
         );
 
-        $jobData = array("count_modules_scanned" => count($sanatizedList));
+        $jobData = array('count_modules_scanned' => count($sanatizedList));
         return parent::generateReport($request, $jobData);
     }
 
     public function save($payload, $jobData)
     {
         $data = array();
-        $data["vulnerable"] = array();
-        $data["module_to_update"] = array();
+        $data['vulnerable'] = array();
+        $data['module_to_update'] = array();
         // Retrieve additionnal job data
         $jobData = json_decode($jobData, true);
 
         if (is_array($payload)
-            && isset($payload['result']) 
+            && isset($payload['result'])
             && is_array($payload['result'])) {
-
             // Check if the version is concerned by the alert
-            $cacheDirectory = \PrestaScan\Tools::getCachePath();
-            $cacheHash =  \Configuration::get('PRESTASCAN_SEC_HASH');
-            $tokenCache = \PrestaScan\Tools::getHashByName("cacheHash", $cacheHash);
-            $moduleRawCacheFile = $cacheDirectory."modules_raw"."_".$tokenCache.".cache";
+            $moduleRawCacheFile = \PrestaScan\Tools::getModuleRawCacheFile();
 
             if (file_exists($moduleRawCacheFile)) {
                 // This cache file should always exists when a scan is triggered.
@@ -98,9 +91,8 @@ class VulnerableModulesReport extends Report
             }
 
             foreach ($payload['result'] as $k => $moduledata) {
-
                 foreach ($allModulesOnDisk as $key => $aModuleOnDisk) {
-                    if ($aModuleOnDisk['name'] !== $moduledata["name"]) {
+                    if ($aModuleOnDisk['name'] !== $moduledata['name']) {
                         continue;
                     }
                     $moduledata['active'] = $aModuleOnDisk['active'];
@@ -113,14 +105,14 @@ class VulnerableModulesReport extends Report
                     break;
                 }
 
-                if (isset($moduledata["require_update"])
-                    && $moduledata["require_update"]
+                if (isset($moduledata['require_update'])
+                    && $moduledata['require_update']
                     && !count($moduledata['vulnerabilities'])) {
                     // Module to update, but no public vulnerability
-                    $moduledata["last_update_expire"] = false;
-                    if (isset($moduledata["last_update"]) && $moduledata["last_update"] != "") {
-                        if (strtotime($moduledata["last_update"]) < strtotime('-3 years')) {
-                            $moduledata["last_update_expire"] = true;
+                    $moduledata['last_update_expire'] = false;
+                    if (isset($moduledata['last_update']) && $moduledata['last_update'] != '') {
+                        if (strtotime($moduledata['last_update']) < strtotime('-3 years')) {
+                            $moduledata['last_update_expire'] = true;
                         }
                     }
                     $data['module_to_update'][] = $moduledata;
@@ -133,16 +125,16 @@ class VulnerableModulesReport extends Report
                 }
 
                 // We check what is the highest criticity for the module (which may have multiple vulnerabilities)
-                $moduledata['criticity'] = "low";
+                $moduledata['criticity'] = 'low';
                 foreach ($moduledata['vulnerabilities'] as $vulnerability) {
-                    $criticity = $vulnerability["criticity"];
+                    $criticity = $vulnerability['criticity'];
                     if ($criticity == 'high' || $criticity == 'critical') {
                         // There is at least one high vulnerability, so we stop here, no need to continue.
-                        $moduledata['criticity'] = "high";
+                        $moduledata['criticity'] = 'high';
                         break;
-                    } elseif ($criticity == 'medium' && $moduledata['criticity'] == "low") {
+                    } elseif ($criticity == 'medium' && $moduledata['criticity'] == 'low') {
                         // We have find one medium vulnerability.
-                        $moduledata['criticity'] = "medium";
+                        $moduledata['criticity'] = 'medium';
                     }
                 }
                 $data['vulnerable'][] = $moduledata;
@@ -150,12 +142,12 @@ class VulnerableModulesReport extends Report
         }
 
         // We sort the module to update to display first modules that are not updated on addons since few years
-        $this->array_sort_by_column($data['module_to_update'], "last_update_expire", SORT_DESC);
+        $this->array_sort_by_column($data['module_to_update'], 'last_update_expire', SORT_DESC);
 
         $reportSummary = array();
-        $reportSummary['scan_result_total'] = (int)$jobData["count_modules_scanned"];
+        $reportSummary['scan_result_total'] = (int) $jobData['count_modules_scanned'];
         $reportSummary['scan_result_criticity'] = $this->calculateModuleSeverity($data);
-        $reportSummary['scan_result_ttotal'] = count($data['vulnerable']) + count($data['module_to_update']);       
+        $reportSummary['scan_result_ttotal'] = count($data['vulnerable']) + count($data['module_to_update']);
         $reportSummary['total_vulnerable'] = count($data['vulnerable']);
         $reportSummary['total_module_to_update'] = count($data['module_to_update']);
 
@@ -171,16 +163,16 @@ class VulnerableModulesReport extends Report
     {
         if (empty($data['vulnerable']) && empty($data['module_to_update'])) {
             // No vulnerabilities found and no modules to update
-            return "low";
+            return 'low';
         }
 
         if (empty($data['vulnerable'])) {
             // No vulnerabilities found but modules not up to date
-            return "medium";
+            return 'medium';
         }
 
         // There are modules not up to date, so the criticity is medium by default.
-        $maximalCriticity = "medium";
+        $maximalCriticity = 'medium';
         // And now we continue to check the criticity of the scan
 
         $vulnerableModules = $data['vulnerable'];
@@ -188,7 +180,7 @@ class VulnerableModulesReport extends Report
             $criticity = $aModule['criticity'];
             if ($criticity == 'high' || $criticity == 'critical') {
                 // There is at least one high or critical vulnerability, so we stop here, no need to continue.
-                return "high";
+                return 'high';
             }
         }
 
