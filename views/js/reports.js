@@ -56,7 +56,6 @@ $(function () {
       checkScanJobsProgresion : false
     },
     init : function() {
-      console.log("prestascanSecurity: init");
       //display message in popup if exists
       this.showModuleUpdatedConfirmationPopup();
       
@@ -321,12 +320,10 @@ $(function () {
       });
     },
     handlerSuccessGetJobsInProgress : function(res) {
-      console.log("Success");
-      console.log(res);
+
     },
     handlerErrorGetJobsInProgress : function(res) {
-      console.log("Error");
-      console.log(res);
+
     },
     checkJobsProgression : function() {
 
@@ -443,10 +440,6 @@ $(function () {
     {
       const list = document.querySelector('#prestascansecurity_main_container ul#modules');
       if (typeof list !== "undefined" && list !== null) {
-        console.log(list.scrollHeight);
-        console.log(list.scrollTop);
-        console.log(list.offsetHeight);
-        console.log(list.scrollHeight - list.scrollTop <= list.offsetHeight);
         if (list.scrollHeight - list.scrollTop <= list.offsetHeight) {
           document.querySelector('.scroll-overlay').style.opacity = 0;
         } else {
@@ -721,7 +714,6 @@ $(document).ready(function () {
               data: {action: 'logoutUser', ajax: true},
               dataType: 'json',
               success: function (response) {
-                console.log(response);
                 if (response.error || (response.success && !response.data && response.statusText != '')) {
                   window.prestascanSecurity_Tools.createPopupDialog(response.error, []);
                 } else {

@@ -22,18 +22,18 @@
 <script type="text/javascript">
     {if isset($mediaJsDef)}
         {foreach from=$mediaJsDef key=key item=value} 
-            var {$key} = {$value|json_encode:escape:"html"};
+            var {$key} = "{$value|escape:"html":'UTF-8'}";
         {/foreach}
     {/if}
     {if isset($prestascansecurity_isLoggedIn)}
         var prestascansecurity_isLoggedIn = {$prestascansecurity_isLoggedIn|var_export:true};
     {/if}
-	var prestascansecurity_tokenfc = {$prestascansecurity_tokenfc|json_encode:escape:"html"};
-	var prestascansecurity_shopurl = {$prestascansecurity_shopurl|json_encode:escape:"html"};
-	var prestascansecurity_e_firstname = {$prestascansecurity_e_firstname|json_encode:escape:"html"};
-	var prestascansecurity_e_lastname = {$prestascansecurity_e_lastname|json_encode:escape:"html"};
-	var prestascansecurity_e_email = {$prestascansecurity_e_email|json_encode:escape:"html"};
-	var webcron_token = {$webcron_token|json_encode:escape:"html"};
-	var ps_shop_urls = {$ps_shop_urls|json_encode:escape:"html"};
-	var prestascansecurity_localoauth = {$prestascansecurity_localoauth|json_encode:escape:"html"};
+	var prestascansecurity_tokenfc = "{$prestascansecurity_tokenfc|escape:"html":'UTF-8'}";
+	var prestascansecurity_shopurl = "{$prestascansecurity_shopurl|escape:"html":'UTF-8'}";
+	var prestascansecurity_e_firstname = "{$prestascansecurity_e_firstname|escape:"html":'UTF-8'}";
+	var prestascansecurity_e_lastname = "{$prestascansecurity_e_lastname|escape:"html":'UTF-8'}";
+	var prestascansecurity_e_email = "{$prestascansecurity_e_email|escape:"html":'UTF-8'}";
+	var webcron_token = "{$webcron_token|escape:"html":'UTF-8'}";
+	var ps_shop_urls = "{$ps_shop_urls|escape:"html":'UTF-8'}";
+	var prestascansecurity_localoauth = "{$prestascansecurity_localoauth|escape:"html":'UTF-8'}";
 </script>
