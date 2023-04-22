@@ -103,12 +103,13 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
     private function scanCompleted($postedData)
     {
         try {
-            if (isset($postedData['error'])) {
+            if (isset($postedData['error']) && !empty($postedData['error'])) {
                 $payload = $postedData['payload'];
                 $jobId = $payload['jobId'];
 
+                $this->checkJobStateBeforeProcess($jobId);
                 // We inidicate that we now need to retrieve the data from the API
-                \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['TORETRIEVE']);
+                \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['TORETRIEVE'], $postedData['error']);
 
                 // And then return success for the webhook
                 $this->returnServer(200, 'OK');
@@ -123,12 +124,29 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
             $jobId = $payload['jobId'];
 
             // We inidicate that we now need to retrieve the data from the API
+            $this->checkJobStateBeforeProcess($jobId);
             \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['TORETRIEVE']);
         } catch (\Exception $e) {
             $this->returnServer(500, 'Error processing webhook');
         }
 
         $this->returnServer(200, 'OK');
+    }
+
+    private function checkJobStateBeforeProcess($jobId)
+    {
+        $job = \PrestaScanQueue::getJobsByJobid($jobId);
+        if (empty($job)) {
+            // The job doesn't exists in the table. No need to return an error.
+            $this->returnServer(500, 'Job no longer existing');
+        }
+        if ($job['state'] === \PrestaScanQueue::$actionname['COMPLETED']
+            || $job['state'] === \PrestaScanQueue::$actionname['CANCEL']
+            || $job['state'] === \PrestaScanQueue::$actionname['ERROR']
+        ) {
+            // The Job exists but is already processed
+            $this->returnServer(500, 'Job already processed: '.$job['state']);
+        }
     }
 
     private function alertModuleVulnerable($postedData)

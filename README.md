@@ -55,15 +55,15 @@ On the other hand, the cost of the development of the module has been significan
 
 ### Compatibility
 
-As the security targets all kinds of merchants, using sometimes outdated versions of PrestaShop, we do our best for the moment to keep the module at least compatible with PrestaShop 1.6, 1.7, and 8.<br>The module has also been tested in PrestaShop 1.5, however, we cannot guarantee keeping maintaining it for this version.
+As the security targets all kinds of merchants, using sometimes outdated versions of PrestaShop, we do our best for the moment to keep the module at least compatible with PrestaShop 1.6, 1.7, and 8. Additional work is required to support PS 1.5.
 
 | PrestaShop version tested | Status | Comments |
 | -------- | ------ | ------ |
-| **8.X** (8.0.2) | :heavy_check_mark: | Stable (beta)
-| **1.7.X** (1.7.8.8) | :heavy_check_mark: | Stable (beta)
-| **1.6.1.X*** (1.6.1.24) | :heavy_check_mark: | Stable (beta)
-| **1.6.0.X*** (1.6.0.9) | :heavy_check_mark: | Stable (beta)
-| **1.5** | :no_good:  | Not tested in the latest release
+| **8.X** (8.0.2) | :heavy_check_mark: | Stable
+| **1.7.X** (1.7.8.8) | :heavy_check_mark: | Stable
+| **1.6.1.X*** (1.6.1.24) | :heavy_check_mark: | Stable
+| **1.6.0.X*** (1.6.0.9) | :heavy_check_mark: | Stable
+| **1.5** | :no_good:  | Not supported as of now due to JS issues
 
 ## Features
 
@@ -179,7 +179,8 @@ Include a reference to the license in the header of each source code file in you
  * @author    Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- */```
+ */
+```
 
 For more information about using the Apache License, Version 2.0, please see the `LICENSE.md` file or visit the following URL:
 http://www.apache.org/licenses/LICENSE-2.0

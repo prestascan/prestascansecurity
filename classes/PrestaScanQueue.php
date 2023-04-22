@@ -94,7 +94,7 @@ class PrestaScanQueue extends ObjectModel
     {
         $jobAddedSql = 'INSERT INTO `' . _DB_PREFIX_ . self::$definition['table'] . '`
             (`jobid`, `action_name`, `job_data`, `state`, `date_add`)
-            VALUES ("'.pSQL($jobId).'", "'.pSQL($actionName).'", "'.pSQL($jobData).'", "' . pSQL(self::$actionname['PROGRESS']) . '" , "'.date('Y-m-d H:i:s').'")';
+            VALUES ("'.pSQL($jobId).'", "'.pSQL($actionName).'", "'.pSQL($jobData).'", "' . pSQL(self::$actionname['PROGRESS']) . '" , NOW())';
         return Db::getInstance()->execute($jobAddedSql);
     }
 
@@ -106,6 +106,15 @@ class PrestaScanQueue extends ObjectModel
         $jobIds = Db::getInstance()->executeS($sql);
 
         return $jobIds;
+    }
+
+    public static function getJobsByJobid($jobid)
+    {
+        $sql = 'SELECT *
+                FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
+                WHERE `jobid` = "' . pSQL($jobid) . '"';
+
+        return Db::getInstance()->getRow($sql);
     }
 
     public static function updateJob($jobId, $state = 'progress', $message = '')
@@ -141,5 +150,26 @@ class PrestaScanQueue extends ObjectModel
     {
         $sql = 'TRUNCATE TABLE `' . _DB_PREFIX_ . self::$definition['table'] . '`';
         return Db::getInstance()->execute($sql);
+    }
+
+    public static function checkJobsRunningForTooLong($time)
+    {
+        $jobId = Db::getInstance()->executeS('
+            SELECT `jobid`, `action_name`
+            FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
+            WHERE (`state` = "' . pSQL(self::$actionname['PROGRESS']) .'" OR 
+                `state` = "' . pSQL(self::$actionname['TORETRIEVE']) . '") 
+                AND date_add < DATE_SUB(now(), INTERVAL ' . (int)$time. ' MINUTE)');
+
+        return empty($jobId) ? false : $jobId;
+    }
+
+    public static function getJobByActionNameAndState($actionName, $state)
+    {
+        $sql = 'SELECT *
+                FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
+                WHERE `action_name` = "' . pSQL($actionName) . '" AND 
+                `state` = "' .pSQL($state). '" ';
+        return Db::getInstance()->getRow($sql);
     }
 }

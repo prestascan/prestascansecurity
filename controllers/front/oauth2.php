@@ -93,17 +93,19 @@ class PrestascansecurityOauth2ModuleFrontController extends ModuleFrontControlle
             Context::getContext()->cookie->__unset('psscan_oauth2state');
             Context::getContext()->cookie->__unset('psscan_tokenfc');
 
-            // 1.7 seulement ?
-            // https://devdocs.prestashop-project.org/1.7/modules/core-updates/1.6-1.7/
-            if (version_compare(_PS_VERSION_, '1.7', '>=')) {
-                $this->setTemplate('module:prestascansecurity/views/templates/front/oauth_result.tpl');
+            // We get the module backoffice url from the cookie and redirect to backoffice
+            if (Context::getContext()->cookie->__isset('psscan_urlconfigbo')) {
+                $urlBackOffice = Context::getContext()->cookie->__get('psscan_urlconfigbo');
+                Context::getContext()->cookie->__unset('psscan_urlconfigbo');
+                Tools::redirectAdmin($urlBackOffice);
             } else {
-                $this->setTemplate('oauth_result.tpl');
+                die('You may close this window and refresh PrestaScan Security window.');
             }
         } catch (\Exception $exp) {
             // Other exception
             Context::getContext()->cookie->__unset('psscan_oauth2state');
             Context::getContext()->cookie->__unset('psscan_tokenfc');
+            Context::getContext()->cookie->__unset('psscan_urlconfigbo');
 
             // @todo : Manage this error
             die('Exception retriving access token');
@@ -116,6 +118,14 @@ class PrestascansecurityOauth2ModuleFrontController extends ModuleFrontControlle
         // Please note that we called isSudoTokenValid() prior to that to check the token.
         $tokenFC = $this->getTokenFc();
         Context::getContext()->cookie->__set('psscan_tokenfc', $tokenFC);
+
+        // We create a cookie to store the module backOffice URL
+        $urlBackOffice = \Tools::getValue('psscan_urlconfigbo');
+        if (!empty($urlBackOffice)) {
+            Context::getContext()->cookie->__set('psscan_urlconfigbo', $urlBackOffice);
+        }
+
+        // Save the cookie context
         Context::getContext()->cookie->write();
 
         // Force Test Mode

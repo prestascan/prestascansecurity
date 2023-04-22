@@ -37,4 +37,16 @@ class Queue
 
         return $response;
     }
+
+    public static function delete($jobId)
+    {
+        $request = new \PrestaScan\Api\Request(
+            'prestascan-api/v1/job/' . $jobId,
+            'DELETE'
+        );
+
+        $response = $request->getResponse();
+
+        return $response;
+    }
 }

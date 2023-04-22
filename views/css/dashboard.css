@@ -50,10 +50,6 @@
     background: red;
     color: white;
 }
-#prestascansecurity_dashboard_hook.prestascanalert .panel-heading{
-    background-color: yellow;
-    color: black!important;
-}
 #prestascansecurity_dashboard_hook.prestascanupdate .panel-heading{
     background-color: #3AD29F;
     color: white!important;

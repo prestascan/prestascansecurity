@@ -1,11 +1,9 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
- * 
+ *
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
- * 
- * @author Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +15,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * @author    Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
+ * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  *}
 
 <li id="module-{$aModule.name}" class="module_block item well {$class}">
@@ -71,6 +73,9 @@
             </div>
         {else}
             <p class="module_description">{l s='Module description' mod='prestascansecurity'} : {$aModule.description}</p>
+        {/if}
+        {if isset($alert_description)}
+            <p class='msg-alert'>{$alert_description|escape:'htmlall':'UTF-8'}</p>
         {/if}
         {if isset($aType) && $aType == 'moduleVulnerable'}
             {if isset($aModule.vulnerabilities)}

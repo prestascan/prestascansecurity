@@ -67,7 +67,7 @@ class Update extends Module
     /*
     * This function downloads the latest version of the module from the server and updates the local version
     */
-    public function ajaxProcessUpdateModule()
+    public function processUpdateModule()
     {
         try {
             $response = self::checkForUpdateVersion($this->module->version);
@@ -84,20 +84,25 @@ class Update extends Module
             }
             $url = $response['url'];
             if ($this->downloadAndExtractZipModuleFile($url)) {
-                $module = \Module::getInstanceByName($this->module->name);
                 $newVersion = $this->getModuleVersionFromDisk();
-                if (!empty($newVersion)) {
-                    // PrestaShop Core is sometimes returning warnings during the update. We do not have control over this code.
-                    // So we are using the Error Suppression Operator to hide the warnings/notice calleing this function.
-                    @ $module->runUpgradeModule();
-                    \Module::upgradeModuleVersion($this->module->name, $newVersion);
-                    \Configuration::updateGlobalValue('PRESTASCAN_LAST_VERSION_CHECK', (new \DateTime())->format('Y-m-d H:i:s'));
-                    \Configuration::updateGlobalValue('PRESTASCAN_UPDATE_VERSION_AVAILABLE', false);
-                    return true;
-                } else {
+                $this->module->installed = 1;
+                $this->module->database_version = $this->module->version;
+                $this->module->version = $newVersion;
+                $initUpgrade = Module::initUpgradeModule($this->module);
+                if (empty($newVersion)) {
                     $error = $this->module->l('Error trying to install the new module. Please try updating the module from your module list.');
                     throw new UpdateException($error);
                 }
+
+                $module = \Module::getInstanceByName($this->module->name);
+
+                // PrestaShop Core is sometimes returning warnings during the update. We do not have control over this code.
+                // So we are using the Error Suppression Operator to hide the warnings/notice calleing this function.
+                $module->runUpgradeModule();
+                \Module::upgradeModuleVersion($this->module->name, $newVersion);
+                \Configuration::updateGlobalValue('PRESTASCAN_LAST_VERSION_CHECK', (new \DateTime())->format('Y-m-d H:i:s'));
+                \Configuration::updateGlobalValue('PRESTASCAN_UPDATE_VERSION_AVAILABLE', false);
+                return true;
             } else {
                 $error = $this->module->l('Unable to download and extract module!');
                 throw new UpdateException($error);

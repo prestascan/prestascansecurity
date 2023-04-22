@@ -34,7 +34,7 @@ class Response
         if ($response['success'] !== true) {
             if (isset($response['error'])
                 && isset($response['error']['code'])
-                && (int) $response['error']['code'] === 200 ) {
+                && ((int) $response['error']['code'] === 200 || (int) $response['error']['code'] === 204) ) {
                 // Specific case of 'errors' that should not trigger an exception
                 // Example for a report that is not yet ready
                 /*

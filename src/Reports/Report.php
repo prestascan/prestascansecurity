@@ -119,4 +119,9 @@ class Report
     {
         return self::$reportList;
     }
+
+    public function updateReportCache($reportName, $report)
+    {
+        file_put_contents($this->cacheReports[$reportName], serialize($report));
+    }
 }

@@ -1,11 +1,9 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
- * 
+ *
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
- * 
- * @author Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +15,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * @author    Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
+ * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  *}
 
 {if $aFileType == 'noStandardFiles' || $aFileType == 'addedOrModifyFiles'}
@@ -51,7 +53,7 @@
                 <td width="20%" style="color:{if $aFile[0].status == 'fail' || $aFile[0].status == 'fail_curl'}#F45454{else}#3AD29F{/if}"><b>{if $aFile[0].status == 'fail'}{l s='Fail' mod='prestascansecurity'}{elseif $aFile[0].status == 'fail_curl'}{l s='Error' mod='prestascansecurity'}{else}{l s='Pass' mod='prestascansecurity'}{/if}</b></td>
                 <td width="20%">
                     {if $aFile[0].status == 'fail'}
-                        <div class="eoaction btntooltip">{l s='Solve' mod='prestascansecurity'}<span class="tooltiptext">{$file_action}</span></div>
+                        <a href="https://www.prestascan.com/fr/contactez-nous" target="_blank" class="eoaction btntooltip">{l s='Solve' mod='prestascansecurity'}<span class="tooltiptext">{$file_action}</span></a>
                     {/if}
                     {if $aFile[0].status == 'fail_curl'}
                         <div class="eoaction text-center">{l s='Error : Directory couldn\'t be scanned' mod='prestascansecurity'}</div>
@@ -113,7 +115,7 @@
                 {assign var='aFileDescription' value=$aFile.description.{$defaultLanguage}.value}
             {/if}
             <tr>
-                <input type="hidden" class="description" name="description" value="{$aFileDescription}"/>
+                <input type="hidden" class="description" name="description" value="{$aFileDescription|escape:'html'}"/>
                 <td width="5%" class="dt-control"></td>  
                 <td width="20%" class="cve"><strong>{$aFile.cve.value}</strong></td>
                 <td width="10%" data-sort="{$datasort}">{$aFile.severity.value}</td>

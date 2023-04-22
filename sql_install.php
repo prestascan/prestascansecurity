@@ -41,7 +41,7 @@ $sql[_DB_PREFIX_.'prestascan_queue'] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREF
               `jobid` char(36) NOT NULL,
               `action_name` varchar(255) NOT NULL,
               `job_data` TEXT NULL,
-              `state` ENUM (\'progress\',\'cancel\',\'completed\',\'error\',\'toretrieve\') NOT NULL,
+              `state` ENUM (\'progress\',\'cancel\',\'completed\',\'error\',\'toretrieve\',\'suggest_cancel\') NOT NULL,
               `error_message` VARCHAR(255) NULL,
               `date_add` datetime NOT NULL,
               `date_upd` datetime NULL,

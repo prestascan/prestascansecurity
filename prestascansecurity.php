@@ -27,13 +27,15 @@ if (!defined('_PS_VERSION_')) {
 
 class Prestascansecurity extends Module
 {
+    public $isLoggedIn = false;
+
     public function __construct()
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '1.0.3';
+        $this->version = '1.1.0';
         $this->author = 'PrestaScan';
-        $this->need_instance = 0;
+        $this->need_instance = false;
         $this->bootstrap = true;
 
         parent::__construct();
@@ -42,6 +44,7 @@ class Prestascansecurity extends Module
         $this->description = $this->l('Scan your PrestaShop website to identify malwares and known vulnerabilities in PrestaShop core and modules');
 
         $this->confirmUninstall = $this->l('Are you sure to uninstall this module?');
+        $this->ps_versions_compliancy = ['min' => '1.6.0', 'max' => _PS_VERSION_];
 
         require_once __DIR__ . '/vendor/autoload.php';
     }
@@ -59,6 +62,9 @@ class Prestascansecurity extends Module
             'PRESTASCAN_WEBCRON_TOKEN',
             \PrestaScan\Tools::getHashByName('webcron', Configuration::get('PRESTASCAN_SEC_HASH'))
         );
+        // Timeout, in minute, before suggesting job cancellation
+        Configuration::updateGlobalValue('PRESTASCAN_SCAN_MAX_RUN_TIME', 5);
+        // Update and Alert box in dashboard
         $this->installAlertBox();
 
         return true;
@@ -79,6 +85,10 @@ class Prestascansecurity extends Module
         foreach ($sql as $s) {
             $return &= Db::getInstance()->execute($s);
         }
+
+        // Flag to check if the upgrade was correctly run (to fix an issue when upgrade is done for versions > 1.0.3)
+        \Configuration::updateGlobalValue('PRESTASCAN_FIX_1_0_4', true);
+
         return $return;
     }
 
@@ -220,9 +230,21 @@ class Prestascansecurity extends Module
 
     public function hookDashboardZoneOne()
     {
+        // Retrieve the alerts
         $vulnAlertHandler = new \PrestaScan\VulnerabilityAlertHandler($this);
-        $updateAvailable = Configuration::get('PRESTASCAN_UPDATE_VERSION_AVAILABLE') ? true : false;
         $alerts = $vulnAlertHandler->getNewVulnerabilityAlerts();
+
+        $updateAvailable = false;
+        if ($this->isUserLoggedIn()) {
+            // We check if updates are available
+            $updateObj = new \PrestaScan\Update($this->context, $this);
+            $updateObj->checkForModuleUpdate();
+            $updateAvailable = Configuration::get('PRESTASCAN_UPDATE_VERSION_AVAILABLE') ? true : false;
+        }
+        
+        if (!$updateAvailable && !$alerts) {
+            return;
+        }
 
         $this->context->smarty->assign('module_upgrade_available', $updateAvailable);
         $link = $this->context->link->getAdminLink('AdminModules', false) .
@@ -233,12 +255,8 @@ class Prestascansecurity extends Module
         $this->context->smarty->assign('module_link', $link);
         $this->context->smarty->assign('alert_modules_vulnerability', $alerts);
 
-        if ($updateAvailable || $alerts) {
-            $this->context->controller->addCSS($this->_path . 'views/css/dashboard.css');
-            return $this->display(__FILE__, 'dashboard_zone_two.tpl');
-        } else {
-            return;
-        }
+        $this->context->controller->addCSS($this->_path . 'views/css/dashboard.css');
+        return $this->display(__FILE__, 'dashboard_zone_two.tpl');
     }
 
     public function generateModuleHash()
@@ -261,6 +279,14 @@ class Prestascansecurity extends Module
 
     public function getContent()
     {
+        // Update the module if requested to do so
+        $this->updateModule();
+        // Check for error message to display
+        if ($error = $this->checkForErrorMessage()) {
+            // @todo : Errors needs to be beautiful. So make a beautiful popup for a beautiful error <3
+            return $error;
+        }
+
         $dummyData = Tools::getValue('dummy') ? true : false;
 
         $vulnAlertHandler = new \PrestaScan\VulnerabilityAlertHandler($this);
@@ -271,25 +297,14 @@ class Prestascansecurity extends Module
         $this->displayInitialScanAndScanProgress($dummyData);
 
         // Check if user is connected
-        $isLogged = false;
-        try {
-            $OAuth = new \PrestaScan\OAuth2\Oauth();
-            $isLogged = $OAuth->getAccessTokenObj() ? true : false;
-        } catch (Exception $exp) {
-            if (!Tools::getValue('localoauth')) {
-                // Local oauth is not supported, but we do not display an error.
-                $this->context->smarty->assign('prestascansecurity_isLoggedIn_error', $this->l('An error occured while connecting you to the server.'));
-            } else {
-                // We simulate the login (note that this is NOT a secuirty issue, tokens are not validated)
-                $isLogged = true;
-            }
-        } finally {
-            if ($dummyData) {
-                $isLogged = true;
-            }
+        $isLogged = $this->isUserLoggedIn();
 
-            $this->context->smarty->assign('prestascansecurity_isLoggedIn', $isLogged);
+        // Simulate log in for dummy data
+        if ($dummyData) {
+            $isLogged = true;
         }
+
+        $this->context->smarty->assign('prestascansecurity_isLoggedIn', $isLogged);
 
         // check if module update is available
         if ($isLogged && !$dummyData) {
@@ -306,6 +321,68 @@ class Prestascansecurity extends Module
         }
 
         return $this->display(__FILE__, 'views/templates/admin/layouts/main.tpl');
+    }
+
+    public function updateModule()
+    {
+        \PrestaScan\Tools::fixMissingUpgrade();
+
+        if (!Tools::getValue('upgrade_module')) {
+            return false;
+        }
+
+        try {
+            $update = new \PrestaScan\Update($this->context, $this);
+            $update->processUpdateModule();
+            Context::getContext()->cookie->__set('psscan_module_updated', true);
+        } catch (\Exception $exp) {
+            $error = $this->l('Error upgrading the module. Please refresh this page and try again.');
+            Context::getContext()->cookie->__set('psscan_module_error', $error);
+        }
+
+        // Remove the 'upgrade_module' parameter from the query string
+        $queryString = $_SERVER['QUERY_STRING'];
+        $params = [];
+        parse_str($queryString, $params);
+        unset($params['upgrade_module']);
+        $newQueryString = http_build_query($params);
+
+        // Reload the page without the 'upgrade_module' parameter
+        $url = $_SERVER['PHP_SELF'] . '?' . $newQueryString;
+        header('Location: ' . $url);
+        exit();
+    }
+
+    public function checkForErrorMessage()
+    {
+        $errorMessage = Context::getContext()->cookie->__get('psscan_module_error');
+        if ($errorMessage) {
+            Context::getContext()->cookie->__unset('psscan_module_error');
+            return $errorMessage;
+        }
+        return false;
+    }
+
+    /**
+    * Check if the user is logged in
+    * 
+    * @return bool
+    * 
+    */
+    protected function isUserLoggedIn()
+    {
+        if ($this->isLoggedIn) {
+            // Already logged in in current object context
+            return true;
+        }
+        // Will throw an exception if token not a valid object
+        try {
+            $OAuth = new \PrestaScan\OAuth2\Oauth();
+            $this->isLoggedIn = $OAuth->getAccessTokenObj() ? true : false;
+        } catch (Exception $exp) {
+            $this->isLoggedIn = false;
+        }
+        return $this->isLoggedIn;
     }
 
     protected function displayInitialScanAndScanProgress($dummyData)
@@ -337,7 +414,7 @@ class Prestascansecurity extends Module
         $this->assignReportVariables();
         $this->assignSmartyStaticVariables();
         $this->assignSettingsPageUrl();
-        $this->assignTokenAndShopUrlVariables();
+        $this->assignRegistrationVariables();
 
         $this->context->smarty->assign('alert_new_modules_vulnerability', $moduleNewVulnerabilitiesAlert);
     }
@@ -356,8 +433,8 @@ class Prestascansecurity extends Module
         $this->context->smarty->assign([
             'scanpath' => _PS_ROOT_DIR_,
             'prestascansecurity_reports_ajax' => $this->context->link->getAdminLink('AdminPrestascanSecurityReports'),
-            'prestascansecurity_fileviewer_ajax' => $this->context->link->getAdminLink('AdminPrestascanSecurityFileviewer'),
             'prestascansecurity_tpl_path' => _PS_MODULE_DIR_ . 'prestascansecurity/views/templates/admin/',
+            'urlmodule' => $this->getPathUri(),
         ]);
     }
 
@@ -370,22 +447,45 @@ class Prestascansecurity extends Module
         $this->context->smarty->assign('settings_page_url', $settings_page_url);
     }
 
-    protected function assignTokenAndShopUrlVariables()
+    protected function assignRegistrationVariables()
     {
-        // Token used to communicate with the OAuth2 FrontController
-        $moduleHash = Configuration::get('PRESTASCAN_SEC_HASH');
-        $tokenFC = \PrestaScan\Tools::getHashByName('FCOauth', $moduleHash);
-        $this->context->smarty->assign([
-            'prestascansecurity_tokenfc' => $tokenFC,
-            'prestascansecurity_shopurl' => \PrestaScan\Tools::getShopUrl(),
-            'prestascansecurity_e_firstname' => Context::getContext()->employee->firstname,
-            'prestascansecurity_e_lastname' => Context::getContext()->employee->lastname,
-            'prestascansecurity_e_email' => $this->context->employee->email,
-            // For localhost development (see Oauth)
-            'prestascansecurity_localoauth' => Tools::getValue('localoauth') ? 1 : 0,
-            'webcron_token' => Configuration::get('PRESTASCAN_WEBCRON_TOKEN'),
-            'ps_shop_urls' => implode(';', array_map('urlencode', $this->getShopUrls())),
-        ]);
+        if ($this->isUserLoggedIn()) {
+            // Already registered, nothing to do
+            return true;
+        }
+
+        if (!$this->isUserLoggedIn()) {
+            // If we are not logged in, we will display the data for the registration
+            // Token used to communicate with the OAuth2 FrontController
+            $moduleHash = Configuration::get('PRESTASCAN_SEC_HASH');
+            $tokenFC = \PrestaScan\Tools::getHashByName('FCOauth', $moduleHash);
+            $adminLink = $this->context->link->getAdminLink('AdminModules', false);
+            if (strpos($adminLink, 'http') === false) {
+                // Depending of the PS version, the getAdminLink behavior is not the same.
+                // In some version, it will return the full url, but on other version only
+                // the part after the shop URL.
+                $adminLink = \PrestaScan\Tools::getShopUrl() . basename(_PS_ADMIN_DIR_) . '/' . $adminLink;
+            }
+            $urlConfigBo = $adminLink . '&configure=' .
+                    $this->name .'&tab_module=' .
+                    $this->tab . '&module_name=' .
+                    $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules');
+            $this->context->smarty->assign([
+                'prestascansecurity_tokenfc' => $tokenFC,
+                'prestascansecurity_shopurl' => \PrestaScan\Tools::getShopUrl(),
+                'prestascansecurity_e_firstname' => Context::getContext()->employee->firstname,
+                'prestascansecurity_e_lastname' => Context::getContext()->employee->lastname,
+                'prestascansecurity_e_email' => $this->context->employee->email,
+                // For localhost development (see Oauth)
+                'prestascansecurity_localoauth' => Tools::getValue('localoauth') ? 1 : 0,
+                // For localhost development (see Oauth)
+                'webcron_token' => Configuration::get('PRESTASCAN_WEBCRON_TOKEN'),
+                'ps_shop_urls' => implode(';', array_map('urlencode', $this->getShopUrls())),
+                // We retrive the module configuration URL in order to redirect into it after email verification
+                // This URL will be kept localy in a cookie during registration
+                'psscan_urlconfigbo' => urlencode($urlConfigBo),
+            ]);
+        }
     }
 
     protected function getShopUrls()
@@ -407,7 +507,8 @@ class Prestascansecurity extends Module
     {
         $vulnAlertHandler = new \PrestaScan\VulnerabilityAlertHandler($this);
         $mediaJsDef = array(
-            'question_to_this_action' => $this->l('Are you sure to perform this action?'),
+            'question_to_this_action' => $this->l('Removing or uninstalling modules in PrestaShop may pose risks if not done carefully, potentially causing system instability or data loss. Make sure to do this action first in a development environment. Contact your agency or our experts if required.'),
+            'checkbox_risk_label' => $this->l('I understand the risks associated with removing or uninstalling modules in PrestaShop and agree to proceed with caution, prioritizing a development environment.'),
             'question_to_logout' => $this->l('Are you sure to log out?'),
             'js_error_occured' => $this->l('An error occured while generating the report. This may be due to a timeout. Please try again.'),
             'question_to_logout' => $this->l('Are you sure to log out?'),
@@ -421,7 +522,11 @@ class Prestascansecurity extends Module
             'banner_vulnerability_more_action' => $this->l('This alert is triggered because a new vulnerability was discovered in PrestaShop for this module. Your shop may be vulnerable if the module is not patched yet. Please contact your agency or our team of experts to fix the issue. Please redo a full scan of your module to get more details about the vulnerability.'),
             'banner_vulnerability_more_details' => $this->l('More details about this issue:'),
             'alert_new_modules_vulnerability' => !empty($moduleNewVulnerabilitiesAlert) ? true : false,
-            'text_error_not_logged_in' => $this->l('To launch a scan please log in or create an account. Having an account allows us to securely perform scans on your behalf and deliver accurate results. Click on the Login button on the top right corner to sign in or create a new account.'),
+            'text_close' => $this->l('Close'),
+            'text_refresh_status' => $this->l('Refresh status'),
+            'text_refresh_module_status_required' => $this->l('It\'s requested to update the module in order to run a new scan.') . ' ' . $this->l('If you updated your module manually and still get this message, try refreshing the status of your module by clicking on the bouton "Refresh status" bellow.'),
+            'text_error_not_logged_in' => $this->l('To launch a scan please log in or create an account. Having an account allows us to securely perform scans on your behalf and deliver accurate results.'),
+            'text_login_btn' => $this->l('Log in or create an account'),
         );
 
         // Check cookie if update module is running
@@ -450,7 +555,6 @@ class Prestascansecurity extends Module
         ];
 
         $cssFiles = [
-            'views/css/admin.css',
             'views/css/datatables.1.10.25.css',
             'views/css/buttons.dataTables.min.css',
             'views/css/jquery-ui.min.css',
@@ -459,16 +563,16 @@ class Prestascansecurity extends Module
         ];
 
         foreach ($jsFiles as $jsFile) {
-            $this->context->controller->addJS($this->_path . $jsFile);
+            $this->context->controller->addJS($this->_path . $jsFile, false);
         }
 
         foreach ($cssFiles as $cssFile) {
             $this->context->controller->addCSS($this->_path . $cssFile);
         }
 
-        if (version_compare(_PS_VERSION_, '1.6.0.0', '>=')) {
-            $this->context->controller->addCSS($this->_path . 'views/css/admin.css');
-        } else {
+        $this->context->controller->addCSS($this->_path . 'views/css/admin.css');
+        if (version_compare(_PS_VERSION_, '1.6', '<')) {
+            // Add custom CSS for PS 1.5
             $this->context->controller->addCSS($this->_path . 'views/css/admin_1.5.css');
         }
     }

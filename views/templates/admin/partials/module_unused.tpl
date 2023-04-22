@@ -1,11 +1,9 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
- * 
+ *
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
- * 
- * @author Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +15,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * @author    Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
+ * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  *}
 
 {assign var='scan_text' value={l s='Launch the Scan to check the status of your unused modules' mod='prestascansecurity'}}
@@ -35,7 +37,7 @@
 {/if}
 
 {if !empty($progressScans['modules_unused'])}
-    {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_in_progress.tpl"}
+    {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_in_progress.tpl" mustcancel=$progressScans['modules_unused'] datatype='modules_unused'}
 {elseif !empty($modules_unused_results)}
     <div class="result_container col-md-4">        
         {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_result.tpl"
@@ -92,7 +94,7 @@
 
     {assign var='infopanel_title' value={l s='Remove uninstalled or disabled modules' mod='prestascansecurity'}}
     {assign var='infopanel_message' value={l s='Keeping disabled or uninstalled modules in your PrestaShop can pose security risks. Disabled and uninstalled modules may contain outdated code or unpatched vulnerabilities that can be exploited by attackers. Regularly removing unused modules reduces potential attack surfaces, ensuring a more secure and efficient online store experience. Maintain your store\'s integrity and safeguard customer data by keeping only the necessary, active modules.' mod='prestascansecurity'}}
-    {assign var='infopanel_message2' value={l s='Removing modules in PrestaShop may pose risks if not done carefully, potentially causing system instability or data loss. Make sure to do this action first in a development environment. Contact your agency or join our experts.' mod='prestascansecurity'}}
+    {assign var='infopanel_message2' value={l s='Removing modules in PrestaShop may pose risks if not done carefully, potentially causing system instability or data loss. Make sure to do this action first in a development environment. Contact your agency or our experts if required.' mod='prestascansecurity'}}
 
     {include
         file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}layouts/information_important.tpl"

@@ -1,11 +1,9 @@
 {*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
- * 
+ *
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
- * 
- * @author Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +15,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * @author    Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
+ * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  *}
 
 {assign var='scan_text' value={l s='Launch the Scan to check the status of your directories' mod='prestascansecurity'}}
@@ -25,12 +27,12 @@
 {assign var='directorie_result_title' value={l s='Directorie(s) at risk' mod='prestascansecurity'}}
 
 {if !empty($progressScans['directories_listing'])}
-    {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_in_progress.tpl"}
+    {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_in_progress.tpl" mustcancel=$progressScans['directories_listing'] datatype='directories_listing'}
 {elseif !empty($directories_listing_results)}
     {assign var='scan_result_item_type' value={l s='Directories(s)' mod='prestascansecurity'}}
     {assign var='scan_result_total' value=$directories_listing_results.summary.scan_result_fail_total}
     {assign var='scan_result_text' value={l s='on %d directories may be at risk on your PrestaShop' sprintf=[$directories_listing_results.summary.scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
-    {assign var='file_action' value={l s='Contact your agency or contact our experts to verify this directory' mod='prestascansecurity'}}
+    {assign var='file_action' value={l s='If you are able to view files in this directory by accessing the URL, it could indicate improper configurations or the presence of malware, potentially putting your website at risk. Please contact your web agency or our experts for assistance if required.' mod='prestascansecurity'}}
     <div class="result_container col-md-4">
         {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/scan_result.tpl"
             scanType='directories_listing'

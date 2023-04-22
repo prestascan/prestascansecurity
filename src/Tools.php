@@ -95,15 +95,7 @@ class Tools
 
     public static function getShopUrl()
     {
-        // @todo :
-        // - We need the FO URLs, however this function might be called from the BO. The FO and BO URL might be different...
-        // - The module doesn't need to display different configuration/results for each shop, so we need to retrive the default shop URL ? Check if maintenance ?
-        // Note : It should support localhost with custom port
-
-        $protocol = (!empty($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on' || $_SERVER['HTTPS'] == '1')) ? 'https://' : 'http://';
-        $server = $_SERVER['SERVER_NAME'];
-        $port = $_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 81 ? ':'.$_SERVER['SERVER_PORT'] : '';
-        return $protocol . $server . $port;
+        return \Context::getContext()->shop ->getBaseUrl(true, true);
     }
 
     public static function deleteReport($filename)
@@ -131,10 +123,14 @@ class Tools
         \Configuration::deleteByName('PRESTASCAN_UPDATE_VERSION_AVAILABLE');
         \Configuration::deleteByName('PRESTASCAN_HAS_UPDATE_VERSION');
         \Configuration::deleteByName('PRESTASCAN_LAST_VERSION_CHECK');
+        \Configuration::deleteByName('PRESTASCAN_SCAN_MAX_RUN_TIME');
+        \Configuration::deleteByName('PRESTASCAN_BANNER_RESPONSE');
+        \Configuration::deleteByName('PRESTASCAN_BANNER_LAST_CHECK');
 
         if ($uninstall) {
             \Configuration::deleteByName('PRESTASCAN_SEC_HASH');
             \Configuration::deleteByName('PRESTASCAN_WEBCRON_TOKEN');
+            \Configuration::deleteByName('PRESTASCAN_FIX_1_0_4');
         }
         
         self::deleteCacheFiles();
@@ -306,7 +302,8 @@ class Tools
                 continue;
             }
             if (!isset($scan['summary']['scan_result_criticity'])) {
-                var_dump($scan['summary']);
+                // Fallback. Should not happen
+                $scan['summary']['scan_result_criticity'] = 'low';
             }
             $scanCriticity = $scan['summary']['scan_result_criticity'];
 
@@ -317,5 +314,48 @@ class Tools
         }
 
         return is_null($highestCriticityScan) ? $scans[0] : $highestCriticityScan;
+    }
+
+    public static function fixMissingUpgrade()
+    {
+        // In versions < 1.0.4, the upgrade system is not loading /upgrade/update-XX scripts
+        // To avoid broken install, we will manually run this upgrade when the auto upgrade didn't run properly
+        if (\Configuration::get('PRESTASCAN_FIX_1_0_4')) {
+            return true;
+        }
+
+        // Add "suggest_cancel" in the enum
+        $query = 'ALTER TABLE `'._DB_PREFIX_.'prestascan_queue`
+            CHANGE `state` `state` ENUM(\'progress\',\'cancel\',\'completed\',\'error\',\'toretrieve\',\'suggest_cancel\')
+            CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL';
+
+        if (!\Db::getInstance()->execute($query)) {
+            return false;
+        }
+
+        \Configuration::updateGlobalValue('PRESTASCAN_FIX_1_0_4', true);
+
+        return true;
+    }
+
+    public static function createLockFile($lockFileName)
+    {
+        $sep = DIRECTORY_SEPARATOR;
+        $lockFilePath = _PS_MODULE_DIR_ . 'prestascansecurity' . $sep . 'cache' . $sep . $lockFileName;
+        $fp = fopen($lockFilePath, 'w+');
+        return flock($fp, LOCK_EX | LOCK_NB);
+    }
+
+    public static function getTimeTooLongParameter()
+    {
+        // If no time is supplied, get the defaut scan run time from the database
+        if ($time = \Configuration::get('PRESTASCAN_SCAN_MAX_RUN_TIME')) {
+            return $time;
+        }
+
+        // If the configuration key does not exist, default to 5 mins
+        $time = 5;
+        \Configuration::updateGlobalValue('PRESTASCAN_SCAN_MAX_RUN_TIME', $time);
+        return $time;
     }
 }

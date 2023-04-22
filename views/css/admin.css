@@ -1,11 +1,9 @@
 /*
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
- * 
+ *
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
- * 
- * @author Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -738,7 +736,22 @@
     background: #3ad29f;
     color: white;
 }
-
+.ui-dialog.ui-widget.ui-widget-content .ui-dialog-buttonpane .ui-dialog-buttonset button.danger{
+    background: #e4999a;
+    color: white;
+}
+.ui-dialog.ui-widget.ui-widget-content .ui-dialog-buttonpane .ui-dialog-buttonset button.danger.validated {
+    background: #f65356;
+    color: white;
+}
+label.chkConfirmModuleUninstall {
+    font-weight: bold;
+}
+input#chkConfirmModuleUninstall {
+    position: relative;
+    right: 5px;
+    top: 2px;
+}
 /* Dashboard */
 #prestascansecurity_main_container #tab-report-home h2.scan_title {
     font-weight: 600;
@@ -1190,6 +1203,7 @@ table#coreVulnerabilities.dataTable .cve {
 }
 #alert_vulnerabilities_banner {
     background-color: red;
+    position: relative;
 }
 #alert_vulnerabilities_banner p {
     padding: 10px 15px;
@@ -1223,4 +1237,26 @@ table#coreVulnerabilities.dataTable .cve {
 }
 #prestascansecurity_main_container p.button-center {
     margin: 0 auto;
+}
+#prestascansecurity_main_container .scan_in_progress p.msg-alert {
+    color: red;
+}
+#prestascansecurity_main_container .btn.btn-default.btn-red{
+    border-color: red;
+    color: red;
+}
+#prestascansecurity_main_container .btn.btn-default.btn-red:hover{
+    background: initial;
+}
+#prestascansecurity_main_container .scan_in_progress .scan_in_run{
+    display: block;
+}
+#prestascansecurity_main_container .scan_in_progress .scan_too_long_cancel{
+    display: none;
+}
+#prestascansecurity_main_container .scan_in_progress.suggest_cancel .scan_in_run{
+    display: none;
+}
+#prestascansecurity_main_container .scan_in_progress.suggest_cancel .scan_too_long_cancel{
+    display: block;
 }

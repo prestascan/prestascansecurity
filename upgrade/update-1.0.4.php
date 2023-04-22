@@ -1,4 +1,5 @@
-{*
+<?php
+/**
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  *
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
@@ -19,12 +20,34 @@
  * @author    Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- *}
+ */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
-<div class="prestascan_footer">
-    <div class='link_footer'>
-        <a href="https://security.prestascan.com/terms-of-service" target="_blank">CGV</a>
-        &nbsp;-&nbsp;
-        <a href="https://security.prestascan.com/privacy-policy" target="_blank">Mentions légales et RGPD</a>
-    </div
-</div>
+/**
+ * Update main function for module
+ *
+ * @param Prestascansecurity $module
+ *
+ * @return bool
+ */
+function upgrade_module_1_0_4($module)
+{
+    // Add "suggest_cancel" in the enum
+    $query = 'ALTER TABLE `'._DB_PREFIX_.'prestascan_queue`
+        CHANGE `state` `state` ENUM(\'progress\',\'cancel\',\'completed\',\'error\',\'toretrieve\',\'suggest_cancel\')
+        CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL';
+
+    if (!Db::getInstance()->execute($query)) {
+        return false;
+    }
+
+    // Ability to cancel jobs - Define timeout value in minute
+    \Configuration::updateGlobalValue('PRESTASCAN_SCAN_MAX_RUN_TIME', 5);
+
+    // Flag to check if the upgrade was correctly run (to fix an issue when upgrade is done for versions > 1.0.3)
+    \Configuration::updateGlobalValue('PRESTASCAN_FIX_1_0_4', true);
+
+    return true;
+}
