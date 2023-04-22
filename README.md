@@ -61,8 +61,8 @@ As the security targets all kinds of merchants, using sometimes outdated version
 | -------- | ------ | ------ |
 | **8.X** (8.0.2) | :heavy_check_mark: | Stable
 | **1.7.X** (1.7.8.8) | :heavy_check_mark: | Stable
-| **1.6.1.X*** (1.6.1.24) | :heavy_check_mark: | Stable
-| **1.6.0.X*** (1.6.0.9) | :heavy_check_mark: | Stable
+| **1.6.1.X** (1.6.1.24) | :heavy_check_mark: | Stable
+| **1.6.0.X** (1.6.0.9) | :heavy_check_mark: | Stable
 | **1.5** | :no_good:  | Not supported as of now due to JS issues
 
 ## Features
@@ -72,9 +72,9 @@ As the security targets all kinds of merchants, using sometimes outdated version
 - [x] Be alerted :warning: when a new vulnerability is discovered in your module (including back office)
 - [x] List known vulnerabilities in PrestaShop Core for your current version
 - [x] List unprotected directories
+- [x] Email notification when a new vulnerability is discovered
 
 ### Exciting upcoming features !
-- [ ] Email notification when a new vulnerability is discovered
 - [ ] BackOffice alert notifications when a new PrestaShop core vulnerability is discovered
 - [ ] Perform scans of your files to detect known malware or suspicious patterns
 - [ ] List all modified and added files
