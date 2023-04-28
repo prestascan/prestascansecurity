@@ -6,3 +6,4 @@ md5_*.xml
 /tests/
 *.sublime-*
 src/Api/TestGenericProvider.php
+*.lock

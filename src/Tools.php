@@ -98,6 +98,34 @@ class Tools
         return \Context::getContext()->shop ->getBaseUrl(true, true);
     }
 
+    public static function enforeHttpsIfAvailable($url)
+    {
+        // We check if the $url is in http
+        if (strpos($url, 'https://') === 0) {
+            // The url is already in https, we return it directly
+            return $url;
+        }
+
+        // Check if HTTPS is available
+        // Why ? Because this might be mistakenly in http depending of the shop configuration and PS version.
+        // For exemple, before PS 1.6.1, https usage with Shop::getShopUrl() was missing checks for https
+        // https://github.com/PrestaShop/PrestaShop-1.6/commit/d3fc2ca219df5db8efd021c8b39ade6270cb656c
+        // Also, before PS 1.6.0.12, https usage with Tools::usingSecureMode() was missing checks for `HTTP_X_FORWARDED_PROTO`
+        // https://github.com/PrestaShop/PrestaShop-1.6/commit/2fec9c0c99f4cd0c2c416bd13d29dc1b8bf3ceb1
+        $https = \Tools::usingSecureMode();
+        if (version_compare(_PS_VERSION_, '1.6.0.12', '<=') && !$https && isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+            $https = Tools::strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) == 'https';
+        }
+
+        // If HTTPS is available, replace 'http://' with 'https://'
+        if ($https) {
+            $url = str_replace('http://', 'https://', $url);
+        }
+
+        // Return the (possibly updated) URL
+        return $url;
+    }
+
     public static function deleteReport($filename)
     {
         if (file_exists($filename)) {

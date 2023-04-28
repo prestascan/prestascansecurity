@@ -287,27 +287,20 @@ class Prestascansecurity extends Module
             return $error;
         }
 
-        $dummyData = Tools::getValue('dummy') ? true : false;
-
         $vulnAlertHandler = new \PrestaScan\VulnerabilityAlertHandler($this);
         $moduleNewVulnerabilitiesAlert = $vulnAlertHandler->getNewVulnerabilityAlerts();
 
         $this->includeAdminResources($moduleNewVulnerabilitiesAlert);
-        $this->assignAdminVariables($dummyData, $moduleNewVulnerabilitiesAlert);
-        $this->displayInitialScanAndScanProgress($dummyData);
+        $this->assignAdminVariables($moduleNewVulnerabilitiesAlert);
+        $this->displayInitialScanAndScanProgress();
 
         // Check if user is connected
         $isLogged = $this->isUserLoggedIn();
 
-        // Simulate log in for dummy data
-        if ($dummyData) {
-            $isLogged = true;
-        }
-
         $this->context->smarty->assign('prestascansecurity_isLoggedIn', $isLogged);
 
         // check if module update is available
-        if ($isLogged && !$dummyData) {
+        if ($isLogged) {
             $updateObj = new \PrestaScan\Update($this->context, $this);
             $updateObj->checkForModuleUpdate();
             $updateAvailable = Configuration::get('PRESTASCAN_UPDATE_VERSION_AVAILABLE') ? true : false;
@@ -385,7 +378,7 @@ class Prestascansecurity extends Module
         return $this->isLoggedIn;
     }
 
-    protected function displayInitialScanAndScanProgress($dummyData)
+    protected function displayInitialScanAndScanProgress()
     {
         $displayInitialScan = true;
         $completedJobs = \PrestaScanQueue::getJobsByState(\PrestaScanQueue::$actionname['COMPLETED']);
@@ -403,13 +396,11 @@ class Prestascansecurity extends Module
             }
         }
 
-        $displayInitialScan = $dummyData ? false : $displayInitialScan;
-
         $this->context->smarty->assign('displayInitialScan', $displayInitialScan);
         $this->context->smarty->assign('progressScans', $progressScans);
     }
 
-    protected function assignAdminVariables($dummyData, $moduleNewVulnerabilitiesAlert)
+    protected function assignAdminVariables($moduleNewVulnerabilitiesAlert)
     {
         $this->assignReportVariables();
         $this->assignSmartyStaticVariables();
@@ -483,7 +474,7 @@ class Prestascansecurity extends Module
                 'ps_shop_urls' => implode(';', array_map('urlencode', $this->getShopUrls())),
                 // We retrive the module configuration URL in order to redirect into it after email verification
                 // This URL will be kept localy in a cookie during registration
-                'psscan_urlconfigbo' => urlencode($urlConfigBo),
+                'psscan_urlconfigbo' => urlencode(\PrestaScan\Tools::enforeHttpsIfAvailable($urlConfigBo)),
             ]);
         }
     }
@@ -497,7 +488,7 @@ class Prestascansecurity extends Module
         foreach (Shop::getShops(true) as $shopId) {
             $shop = new Shop($shopId['id_shop']);
             foreach ($shop->getUrls() as $u) {
-                $shopUrls[] = $http . $u['domain_ssl'] . $u['physical_uri'] . $u['virtual_uri'];
+                $shopUrls[] = \PrestaScan\Tools::enforeHttpsIfAvailable($http . $u['domain_ssl'] . $u['physical_uri'] . $u['virtual_uri']);
             }
         }
         return $shopUrls;
