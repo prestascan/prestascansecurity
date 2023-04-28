@@ -169,9 +169,11 @@ class Oauth
 
     public static function getOauth2RedirectUrl()
     {
-        $url = \PrestaScan\Tools::getShopUrl() . '/?fc=module&module=prestascansecurity&controller=oauth2';
-        // Remove potential double slash
-        $url = str_replace("//","/", $url);
+        $url = \PrestaScan\Tools::getShopUrl();
+        // Check if the URL ends with a slash, if not, add a slash
+        $url = substr($url, -1) !== '/' ? $url . '/' : $url;
+        // Append the query string
+        $url .= '?fc=module&module=prestascansecurity&controller=oauth2';
         // Enfore https and return
         return \PrestaScan\Tools::enforeHttpsIfAvailable($url);
     }
