@@ -33,7 +33,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         $this->author = 'PrestaScan';
         $this->need_instance = false;
         $this->bootstrap = true;
@@ -445,38 +445,36 @@ class Prestascansecurity extends Module
             return true;
         }
 
-        if (!$this->isUserLoggedIn()) {
-            // If we are not logged in, we will display the data for the registration
-            // Token used to communicate with the OAuth2 FrontController
-            $moduleHash = Configuration::get('PRESTASCAN_SEC_HASH');
-            $tokenFC = \PrestaScan\Tools::getHashByName('FCOauth', $moduleHash);
-            $adminLink = $this->context->link->getAdminLink('AdminModules', false);
-            if (strpos($adminLink, 'http') === false) {
-                // Depending of the PS version, the getAdminLink behavior is not the same.
-                // In some version, it will return the full url, but on other version only
-                // the part after the shop URL.
-                $adminLink = \PrestaScan\Tools::getShopUrl() . basename(_PS_ADMIN_DIR_) . '/' . $adminLink;
-            }
-            $urlConfigBo = $adminLink . '&configure=' .
-                    $this->name .'&tab_module=' .
-                    $this->tab . '&module_name=' .
-                    $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules');
-            $this->context->smarty->assign([
-                'prestascansecurity_tokenfc' => $tokenFC,
-                'prestascansecurity_shopurl' => \PrestaScan\Tools::getShopUrl(),
-                'prestascansecurity_e_firstname' => Context::getContext()->employee->firstname,
-                'prestascansecurity_e_lastname' => Context::getContext()->employee->lastname,
-                'prestascansecurity_e_email' => $this->context->employee->email,
-                // For localhost development (see Oauth)
-                'prestascansecurity_localoauth' => Tools::getValue('localoauth') ? 1 : 0,
-                // For localhost development (see Oauth)
-                'webcron_token' => Configuration::get('PRESTASCAN_WEBCRON_TOKEN'),
-                'ps_shop_urls' => implode(';', array_map('urlencode', $this->getShopUrls())),
-                // We retrive the module configuration URL in order to redirect into it after email verification
-                // This URL will be kept localy in a cookie during registration
-                'psscan_urlconfigbo' => urlencode(\PrestaScan\Tools::enforeHttpsIfAvailable($urlConfigBo)),
-            ]);
+        // If we are not logged in, we will display the data for the registration
+        // Token used to communicate with the OAuth2 FrontController
+        $moduleHash = Configuration::get('PRESTASCAN_SEC_HASH');
+        $tokenFC = \PrestaScan\Tools::getHashByName('FCOauth', $moduleHash);
+        $adminLink = $this->context->link->getAdminLink('AdminModules', false);
+        if (strpos($adminLink, 'http') === false) {
+            // Depending of the PS version, the getAdminLink behavior is not the same.
+            // In some version, it will return the full url, but on other version only
+            // the part after the shop URL.
+            $adminLink = \PrestaScan\Tools::getShopUrl() . basename(_PS_ADMIN_DIR_) . '/' . $adminLink;
         }
+        $urlConfigBo = $adminLink . '&configure=' .
+                $this->name .'&tab_module=' .
+                $this->tab . '&module_name=' .
+                $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules');
+        $this->context->smarty->assign([
+            'prestascansecurity_tokenfc' => $tokenFC,
+            'prestascansecurity_shopurl' => \PrestaScan\Tools::getShopUrl(),
+            'prestascansecurity_e_firstname' => Context::getContext()->employee->firstname,
+            'prestascansecurity_e_lastname' => Context::getContext()->employee->lastname,
+            'prestascansecurity_e_email' => $this->context->employee->email,
+            // For localhost development (see Oauth)
+            'prestascansecurity_localoauth' => Tools::getValue('localoauth') ? 1 : 0,
+            // For localhost development (see Oauth)
+            'webcron_token' => Configuration::get('PRESTASCAN_WEBCRON_TOKEN'),
+            'ps_shop_urls' => implode(';', array_map('urlencode', $this->getShopUrls())),
+            // We retrive the module configuration URL in order to redirect into it after email verification
+            // This URL will be kept localy in a cookie during registration
+            'psscan_urlconfigbo' => urlencode(\PrestaScan\Tools::enforeHttpsIfAvailable($urlConfigBo)),
+        ]);
     }
 
     protected function getShopUrls()
