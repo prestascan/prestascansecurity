@@ -162,7 +162,7 @@ class Provider
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if (curl_errno($ch)) {
-            if (curl_errno() === 28) {
+            if (curl_errno($ch) === 28) {
                 // timeout
                 throw new \Exception('Request timeout. It appears that our server is currently not reachable. This may be due to an unusually high volume of demand. Please try again later');
             } else {
