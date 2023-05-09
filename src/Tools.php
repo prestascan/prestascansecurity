@@ -386,4 +386,29 @@ class Tools
         \Configuration::updateGlobalValue('PRESTASCAN_SCAN_MAX_RUN_TIME', $time);
         return $time;
     }
+
+    /**
+    * Normalize versions for version_compare
+    * Eg: 1.0 is different of 1.0.0 based on version_compare
+    */
+    public static function versionCompareExtended($ver1, $ver2, $operator = null)
+    {
+        $normalizedVer1 = self::normalizeVersion($ver1, max(substr_count($ver1, '.'), substr_count($ver2, '.')));
+        $normalizedVer2 = self::normalizeVersion($ver2, max(substr_count($ver1, '.'), substr_count($ver2, '.')));
+
+        if ($operator !== null) {
+            return version_compare($normalizedVer1, $normalizedVer2, $operator);
+        }
+
+        return version_compare($normalizedVer1, $normalizedVer2);
+    }
+
+    private static function normalizeVersion($version, $maxDots)
+    {
+        $parts = explode('.', $version);
+        while (count($parts) <= $maxDots) {
+            $parts[] = '0';
+        }
+        return implode('.', $parts);
+    }
 }
