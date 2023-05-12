@@ -23,7 +23,7 @@
 
 **PrestaScan Security** is a free and open-source module that helps you secure your PrestaShop website by identifying malware and known vulnerabilities in the PrestaShop core and modules. The module is easy to install and use, and it keeps you updated on the latest security threats to your website. It is compatible with PrestaShop 1.6, 1.7, and 8. Our team of security experts constantly monitors and audits modules to ensure the best protection for your online store.
 
-This module is fueled by the collective energy of the members of the Friends Of PrestaShop security cell. Here is the list of the most significant contributors in terms of security research, publication of CVE, or development:
+This module is fueled by the collective energy of the members of the Friends Of Presta security cell. Here is the list of the most significant contributors in terms of security research, publication of CVE, or development:
 
 <p align="center">
     <a href="https://www.touchweb.fr/" target="_blank"><img class="partner1" alt="TouchWeb Infogérance E-commerce" src="./views/img/partners/partner1.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;
