@@ -75,25 +75,25 @@
             <div class="col-md-4">
                 <h2>{$aScanResult.total_critical}</h2>
                 <p>
-                    <span style="color:#F45454">{l s='critical' mod='prestascansecurity'}</span>
-                    <br/>
                     {l s='Vulnerabilities' mod='prestascansecurity'}
+                    <br/>
+                    <span style="color:#F45454">{l s='critical' mod='prestascansecurity'}</span>
                 </p>
             </div>
             <div class="col-md-4">
                 <h2>{$aScanResult.total_high}</h2>
                 <p>
-                    <span style="color:#FFA801">{l s='high' mod='prestascansecurity'}</span>
-                    <br/>
                     {l s='Vulnerabilities' mod='prestascansecurity'}
+                    <br/>
+                    <span style="color:#FFA801">{l s='high' mod='prestascansecurity'}</span>
                 </p>
             </div>
             <div class="col-md-4">
                 <h2>{$aScanResult.total_medium + $aScanResult.total_low}</h2>
                 <p>
-                    <span style="color:#3AD29F">{l s='medium and low' mod='prestascansecurity'}</span>
-                    <br/>
                     {l s='Vulnerabilities' mod='prestascansecurity'}
+                    <br/>
+                    <span style="color:#3AD29F">{l s='medium and low' mod='prestascansecurity'}</span>
                 </p>
             </div>
         </div>
