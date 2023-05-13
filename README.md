@@ -150,6 +150,10 @@ The data we are collecting at this time are:
 
 We do not send the content of your files to our server. Scans of the files will be performed locally.<br>
 
+### Customize the contact-us URL
+
+As an agency, you may replace the `/install/custom_config.php` file is order to set your own contact-us or ticket system URL.
+
 ## Acknowledgements
 
 Data used for the modules vulnerabilities scans are historically coming from forensic analysis by [Profileo](https://www.profileo.com/) and [772424.com](https://www.772424.com/).<br>
