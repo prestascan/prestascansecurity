@@ -1,4 +1,5 @@
-{*
+<?php
+/**
  * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  *
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
@@ -19,10 +20,10 @@
  * @author    Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- *}
+ */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
-{assign var='scan_text' value={l s='The scanning of infected and vulnerable files is currently being done manually by our team of experts. However, we are actively working to integrate this feature into this module. In the meantime, you can contact your agency to check and clean your website or seek assistance from our expert team.' mod='prestascansecurity'}}
-{assign var='scan_text_btn' value={l s='Contact us' mod='prestascansecurity'}}
-{assign var='dataAction' value="generateInfectedFilesReport"}
-
-{include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/start_scan_overlay.tpl" aTextNormal=true aTextBtn=$scan_text_btn aText=$scan_text dataAction=$dataAction dataLink=$urlContact}
+$customConfig = [];
+$customConfig['contact-us'] = 'https://www.prestascan.com/fr/contactez-nous';

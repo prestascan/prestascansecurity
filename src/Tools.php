@@ -366,10 +366,16 @@ class Tools
         return true;
     }
 
+    public static function getModulePath()
+    {
+        $sep = DIRECTORY_SEPARATOR;
+        return _PS_MODULE_DIR_ . 'prestascansecurity' . $sep;
+    }
+
     public static function createLockFile($lockFileName)
     {
         $sep = DIRECTORY_SEPARATOR;
-        $lockFilePath = _PS_MODULE_DIR_ . 'prestascansecurity' . $sep . 'cache' . $sep . $lockFileName;
+        $lockFilePath = self::getModulePath() . 'cache' . $sep . $lockFileName;
         $fp = fopen($lockFilePath, 'w+');
         return flock($fp, LOCK_EX | LOCK_NB);
     }
@@ -410,5 +416,18 @@ class Tools
             $parts[] = '0';
         }
         return implode('.', $parts);
+    }
+
+    public static function getCustomConfigValue($configName)
+    {
+        $sep = DIRECTORY_SEPARATOR;
+        $customConfigFilePath = self::getModulePath() . 'install' . $sep . 'custom_config.php';
+        include($customConfigFilePath);
+
+        if (isset($customConfig) && isset($customConfig[$configName])) {
+            return $customConfig[$configName];
+        }
+
+        return false;
     }
 }

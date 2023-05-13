@@ -53,7 +53,7 @@
                 <td width="20%" style="color:{if $aFile[0].status == 'fail' || $aFile[0].status == 'fail_curl'}#F45454{else}#3AD29F{/if}"><b>{if $aFile[0].status == 'fail'}{l s='Fail' mod='prestascansecurity'}{elseif $aFile[0].status == 'fail_curl'}{l s='Error' mod='prestascansecurity'}{else}{l s='Pass' mod='prestascansecurity'}{/if}</b></td>
                 <td width="20%">
                     {if $aFile[0].status == 'fail'}
-                        <a href="https://www.prestascan.com/fr/contactez-nous" target="_blank" class="eoaction btntooltip">{l s='Solve' mod='prestascansecurity'}<span class="tooltiptext">{$file_action}</span></a>
+                        <a href="{$urlContact}" target="_blank" class="eoaction btntooltip">{l s='Solve' mod='prestascansecurity'}<span class="tooltiptext">{$file_action}</span></a>
                     {/if}
                     {if $aFile[0].status == 'fail_curl'}
                         <div class="eoaction text-center">{l s='Error : Directory couldn\'t be scanned' mod='prestascansecurity'}</div>

@@ -37,7 +37,7 @@
         <a href="#tab-report-core-vulnerabilities" data-toggle="tab">{l s='PrestaShop vulnerabilities' mod='prestascansecurity'}</a>
     </li>
     <li id="contact" class="menu_element floatright">
-        <a href="https://www.prestascan.com/fr/contactez-nous" target="_blank"><i class="icon-envelope"></i> <span>{l s='Contact' mod='prestascansecurity'}<span></a>
+        <a href="{$urlContact}" target="_blank"><i class="icon-envelope"></i> <span>{l s='Contact' mod='prestascansecurity'}<span></a>
     </li>
     <li id="connexion" class="menu_element floatright">
         {if $prestascansecurity_isLoggedIn}

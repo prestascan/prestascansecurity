@@ -94,8 +94,7 @@ class Prestascansecurity extends Module
 
     public function uninstallDb()
     {
-        $sql = array();
-        include dirname(__FILE__) . '/sql_install.php';
+        include \PrestaScan\Tools::getModulePath() . 'install/sql_install.php';
         foreach (array_keys($sql) as $name) {
             Db::getInstance()->execute('DROP TABLE IF EXISTS ' . $name);
         }
@@ -426,6 +425,7 @@ class Prestascansecurity extends Module
             'prestascansecurity_reports_ajax' => $this->context->link->getAdminLink('AdminPrestascanSecurityReports'),
             'prestascansecurity_tpl_path' => _PS_MODULE_DIR_ . 'prestascansecurity/views/templates/admin/',
             'urlmodule' => $this->getPathUri(),
+            'urlContact' => \PrestaScan\Tools::getCustomConfigValue('contact-us'),
         ]);
     }
 
