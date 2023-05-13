@@ -24,6 +24,9 @@
     position: relative;    
     font-size: 14px;
 }
+#prestascansecurity_main_container .hide {
+    display: none;
+}
 #prestascansecurity_main_container h2 {
     font-family: helvetica,arial,sans-serif; 
     font-size: 24px;
@@ -90,6 +93,9 @@
     padding: 5px 35px;
     text-align: center;
     text-decoration: none;
+}
+#prestascansecurity_main_container .nav.nav-tabs li.active a {
+    z-index: unset !important;
 }
 #prestascansecurity_main_container ul.nav.nav-tabs.menu_container {
     margin: 12px 0 25px;
@@ -629,6 +635,7 @@
 
 #prestascansecurity_main_container .module_details .container_module_details_descr {
     display: table;
+    width: 90%;
 }
 #prestascansecurity_main_container .module_details .container_module_details_descr .module_detail_descr {
     display: table-cell;
@@ -746,11 +753,19 @@
 }
 label.chkConfirmModuleUninstall {
     font-weight: bold;
+    text-align: center;
+    width: 100%;
 }
 input#chkConfirmModuleUninstall {
     position: relative;
     right: 5px;
     top: 2px;
+}
+label.chkConfirmModuleUninstall input {
+    position: relative;
+    right: 4px;
+    top: 2px;
+    margin: 0 3px 0 0 !important;
 }
 /* Dashboard */
 #prestascansecurity_main_container #tab-report-home h2.scan_title {

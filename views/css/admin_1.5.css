@@ -918,3 +918,39 @@ table#coreVulnerabilities.dataTable .cve {
         width: 98%;
     }
 }
+
+div#flash-message .alert.alert-success {
+    border-radius: 8px;
+    background: #DFF2BF url(/img/admin/icon-valid.png) no-repeat scroll 6px 6px;
+    border: 1px solid #4F8A10;
+    color: #4F8A10;
+}
+div#flash-message .alert button.close {
+    display: none;
+}
+div#flash-message .alert-text {
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: normal;
+    margin: 0;
+    padding: 0 5px 0 28px;
+}
+div#flash-message .alert-text p {
+    color: #4F8A10;
+}
+
+// Modal
+#prestascansecurity_main_container .modal_body {
+    padding: 10px;
+    width: calc(100% - 20px);
+}
+#prestascansecurity_main_container .modal_header {
+    top: 10px;
+}
+#prestascansecurity_main_container .modal_header span.closeModal {
+    font-size: 20px;
+}
+label.chkConfirmModuleUninstall input {
+    right: 1px;
+    top: -3px;
+}

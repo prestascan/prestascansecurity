@@ -104,8 +104,6 @@
 		{include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}layouts/footer.tpl"}
 	</div>
 
-	<div id="popupDialog" title="">
-
-	</div>
+	{include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/modal.tpl"}
 </div>
 <div class="ui-widget-overlay" style="width: 100%; height: 100%;display:none;"></div>

@@ -31,8 +31,6 @@ $(function () {
         updateModuleBtn : $("#updateModuleBtn"),
         // Action to delete or disable a module
         deleteOrDisableModuleBtn : $(".module_detail_actions a"),
-        // Action to check approval for delete or disable a module
-        popupDialog : $("#popupDialog"),
         // Core Vulnerabilities table
         coreVulnerabilitiesTable : $('#coreVulnerabilities tbody'),
         // Dismiss alert banner
@@ -42,15 +40,18 @@ $(function () {
         // Cancel job action
         cancelJobAction : $("#prestascansecurity_main_container .scan_in_progress.suggest_cancel a.cancel-job-action"),
         // Home container
-        homeContainer : $('#tab-report-home')
+        homeContainer : $('#tab-report-home'),
+        // Connexion and config buttons
+        connexionCfgBtn : $('#connexion')
       },
       cssSelector : {
         buttonReportGenerate : ".btn-generate-report",
-        popupDialog : "#popupDialog",
         alertModuleVulnerabilitiesBanner : "#alert_vulnerabilities_banner",
         btnDetailSummaryDashboard : ".report-result-child a",
         btnMainMenuElement : ".menu_element",
-        btnSubMenuElement : ".menu-sous-element a"
+        btnSubMenuElement : ".menu-sous-element a",
+        btnLogOut : ".logout a",
+        arrowModuleExpand : ".module-details i.arrow-icons"
       },
       dataTables : {
         coreVulnerabilitiesDT : false
@@ -71,135 +72,64 @@ $(function () {
       prestascanSecurity_Tools.moveAlertTop();
     },
     initHandlers : function() {
-
-      // Click on the menu item
-      this.config.jQuerySelectors.container.on(
-        'click',
-        this.config.cssSelector.btnMainMenuElement,
-        this.handleMenuClick
-      );
-
-      // Click on the sub menu item
-      this.config.jQuerySelectors.container.on(
-        'click',
-        this.config.cssSelector.btnSubMenuElement,
-        this.handleSubMenuClick
-      );
-
-      // Click on the links in the dashboard
-      this.config.jQuerySelectors.homeContainer.on(
-        'click',
-        this.config.cssSelector.btnDetailSummaryDashboard,
-        this.handleDashboardLinkDetail
-      );
-
-      // Click on the scan button
-      this.config.jQuerySelectors.container.on(
-        'click',
-        this.config.cssSelector.buttonReportGenerate,
-        this.handlerGenerateReport
-      );
-
-      // Click on the update button
-      this.config.jQuerySelectors.updateModuleBtn.on(
-        'click',
-        this.processUpdateModule.bind(window.prestascanSecurity)
-      );
-
-      // Click to disable or delete a module
-      this.config.jQuerySelectors.deleteOrDisableModuleBtn.on(
-        'click',
-        this.processDisableOrDeleteModule
-      );
-
-      // Click to disable or delete a module
-      this.config.jQuerySelectors.popupDialog.on(
-        'click',
-        this.processPopupDialogClick
-      );
-
-      // Datatable : Click to expand a row
-      this.config.jQuerySelectors.coreVulnerabilitiesTable.on(
-        'click',
-        'td.dt-control',
-        this.processExpandRowDataTable
-      );
-
-      // Click to dismiss module alert banner
-      this.config.jQuerySelectors.dismissAlertBanner.on(
-          'click',
-          this.processDismissAlert
-      );
-
-      // click more action alert module vulnerable
-      this.config.jQuerySelectors.moreActionAlertModule.on(
-          'click',
-          this.popupMoreActionAlertBanner
-      );
-      // click cancel job
-      this.config.jQuerySelectors.cancelJobAction.on(
-        'click',
-        $(this),
-        this.processCancelJobAction
-      );
+      var $sel = this.config.jQuerySelectors;
+      var $css = this.config.cssSelector;
+      this.bindClick($sel.container, $css.btnMainMenuElement, this.handleMenuClick); // Click on the menu item
+      this.bindClick($sel.container, $css.btnSubMenuElement, this.handleSubMenuClick); // Click on the sub menu item
+      this.bindClick($sel.homeContainer, $css.btnDetailSummaryDashboard, this.handleDashboardLinkDetail); // Click on the links in the dashboard
+      this.bindClick($sel.container, $css.buttonReportGenerate, this.handlerGenerateReport); // Click on the scan button
+      this.bindClick($sel.updateModuleBtn, null, this.processUpdateModule.bind(window.prestascanSecurity)); // Click on the update button
+      this.bindClick($sel.deleteOrDisableModuleBtn, null, this.processDisableOrDeleteModule); // Click to disable or delete a module
+      this.bindClick($sel.coreVulnerabilitiesTable, 'td.dt-control', this.processExpandRowDataTable); // Datatable : Click to expand a row
+      this.bindClick($sel.dismissAlertBanner, null, this.processDismissAlert); // Click to dismiss module alert banner
+      this.bindClick($sel.moreActionAlertModule, null, this.popupMoreActionAlertBanner); // click more action alert module vulnerable
+      this.bindClick($sel.cancelJobAction, null, this.processCancelJobAction);  // click cancel job
+      this.bindClick($sel.connexionCfgBtn, $css.btnLogOut, this.handleLogOut); // Click on the menu item
+      this.bindClick($sel.container, $css.arrowModuleExpand, this.handleCollapsableModuleDetails); // Handle expand and collapsable list
+    },
+    bindClick : function (el, sel, handler) {
+      el.on('click', sel, handler);
     },
     showModuleUpdatedConfirmationPopup : function() {
       if (typeof module_updated_confirmation_message !== 'undefined' && module_updated_confirmation_message != '') {
-        window.prestascanSecurity_Tools.createPopupDialog(module_updated_confirmation_message, []);
+        window.prestascanSecurity_Modal.createDialog(module_updated_confirmation_message, []);
       }
     },
     processExpandRowDataTable : function() {
-        var tr = $(this).closest('tr');
-        var description_text = $(this).closest('tr').find('input.description').val();
-        var row = window.prestascanSecurity.config.dataTables.coreVulnerabilitiesDT.row(tr);
+      var tr = $(this).closest('tr');
+      var description_text = $(this).closest('tr').find('input.description').val();
+      var row = window.prestascanSecurity.config.dataTables.coreVulnerabilitiesDT.row(tr);
 
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        } else {
-            // Open this row
-            row.child(window.prestascanSecurity_Tools.format(description_text)).show();
-            tr.addClass('shown');
-        }
-    },
-    processPopupDialogClick : function(e) {
-      var $target = $(e.target);
-      if ($target.hasClass('chkConfirmModuleUninstall') || $target.parent().hasClass('chkConfirmModuleUninstall'))
-      {
-        // It's a click on the checkbox to confirm deletion of or unsinstall of modules
-        // Retrieve the good element (the checkbox)
-        $element = $target.hasClass('chkConfirmModuleUninstall') ? $target.parent() : $target;
-        if ($element .is(':checked')) {
-          $('.ui-dialog-buttonset button.danger').addClass('validated');
-        } else {
-          $('.ui-dialog-buttonset button.danger').removeClass('validated');
-        }
+      if (row.child.isShown()) {
+          // This row is already open - close it
+          row.child.hide();
+          tr.removeClass('shown');
+      } else {
+          // Open this row
+          row.child(window.prestascanSecurity_Tools.format(description_text)).show();
+          tr.addClass('shown');
       }
     },
     processDisableOrDeleteModule : function() {
-      var $moduleToAction = $(this);
+      var params = {
+          action : $(this).data("action"),
+          modulename : $(this).data("modulename"),
+      };
       var buttons = [
         {
           text : text_yes,
-          class: "danger",
-          click: function(e) {
-            var $target = $(e.target);
-            if ($target.hasClass('validated')) {
-              window.prestascanSecurity.handleActionModuleUnused($moduleToAction);
-            }
-          }
+          class: "danger disabled",
+          click: "prestascanSecurity.modal_fn_actionModuleUnused",
+          additionalparams : params,
         },
         {
           text: text_cancel,
           class: "return",
-          click:function() {
-            $(this).dialog("close");
-          }
+          click: "prestascanSecurity_Modal.closeDialog",
         }
       ];
       var customHtml = '<label class="chkConfirmModuleUninstall" for="chkConfirmModuleUninstall"><input type="checkbox"> '+checkbox_risk_label+'</label>';
-      window.prestascanSecurity_Tools.createPopupDialog(question_to_this_action, buttons, customHtml);
+      window.prestascanSecurity_Modal.createDialog(question_to_this_action, buttons, customHtml);
     },
     handleActionModuleUnused : function($obj) {
       var type = $obj.data("action");
@@ -215,12 +145,14 @@ $(function () {
         dataType: 'json',
         success: function (response) {
           // Close existing popups
-          window.prestascanSecurity_Tools.closeExistingPopup();
+          window.prestascanSecurity_Modal.closeDialog();
           if(response.error && typeof response.statusText != 'undefined' && response.statusText != '' ) {
-            window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
+            window.prestascanSecurity_Modal.createDialog(response.statusText, []);
           }
           if(response.success) {
-            $obj.parent().parent().parent().parent().remove();
+            if ($('#module-'+name).length) {
+              $('#module-'+name).remove();
+            }
             $(window).scrollTop(0);
             $("#flash-message").append(
                 '<div class="alert alert-success d-print-none" role="alert">\n' +
@@ -246,12 +178,9 @@ $(function () {
       if (!prestascansecurity_isLoggedIn) {
         var buttons = [{
               text : text_login_btn,
-              click: function() {
-                $('.ui-dialog-titlebar-close').trigger( "click" );
-                openOauthPsScan();
-              }
+              click: "prestascanSecurity.modal_fn_generateReport",
           }];
-        window.prestascanSecurity_Tools.createPopupDialog(text_error_not_logged_in, buttons);
+        window.prestascanSecurity_Modal.createDialog(text_error_not_logged_in, buttons);
         return;
       }
       window.prestascanSecurity.loadReport($(this).data('action'));
@@ -302,7 +231,7 @@ $(function () {
         if (res.statusText == 'refresh_module_status_required') {
           window.prestascanSecurity.displayRefreshModuleStatusPopup();
         } else {
-          window.prestascanSecurity_Tools.createPopupDialog(res.statusText, []);
+          window.prestascanSecurity_Modal.createDialog(res.statusText, []);       
         }
       } else if (typeof res.iterator !== "undefined") {
         // progress
@@ -317,9 +246,10 @@ $(function () {
     },
     loadReportError : function(res) {
       if (res.status === 200) {
-        window.prestascanSecurity_Tools.createPopupDialog(res.responseText, []);
+        window.prestascanSecurity_Modal.createDialog(res.responseText, []);
+
       } else {
-        window.prestascanSecurity_Tools.createPopupDialog(js_error_occured, []);
+        window.prestascanSecurity_Modal.createDialog(js_error_occured, []);
       }
     },
     postJsonAjax : function(url, data, handlerSuccess, handlerError) {
@@ -351,22 +281,16 @@ $(function () {
             window.location.reload();
           }
           else {
-            window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
+            window.prestascanSecurity_Modal.createDialog(response.statusText, []);
           }
         },
         error: function (response) {
-          window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
+          window.prestascanSecurity_Modal.createDialog(response.statusText, []);
         },
         complete: function () {
           return true;
         }
       });
-    },
-    handlerSuccessGetJobsInProgress : function(res) {
-
-    },
-    handlerErrorGetJobsInProgress : function(res) {
-
     },
     checkJobsProgression : function() {
 
@@ -393,17 +317,15 @@ $(function () {
             // Do not use `this` to access the object in ajax reply
             var buttons = [{
                 text : text_reload,
-                click: function() {
-                  window.location.reload();
-                }
+                click : "prestascanSecurity.modal_fn_reload",
             }];
-            window.prestascanSecurity_Tools.createPopupDialog(response.statusText, buttons);
+            window.prestascanSecurity_Modal.createDialog(response.statusText, buttons);
           } else if (response.success && typeof response.data != 'undefined' && typeof response.data == 'array') {
             var dt = response.data;
             dt.every(function (tab) {
               if ($("#" + tab + " .scan_in_progress").length == 0) {
                 // Do not use `this` to access the object in ajax reply
-                window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
+                window.prestascanSecurity_Modal.createDialog(response.statusText, []);
                 return false;
               }
             });
@@ -418,7 +340,7 @@ $(function () {
         },
         error: function (response) {
           // Do not use `this` to access the object in ajax reply
-          window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
+          window.prestascanSecurity_Modal.createDialog(response.statusText, []);
         },
         complete: function () {
           return true;
@@ -495,19 +417,15 @@ $(function () {
         {
           text : text_yes_dismiss,
           class: "confirm",
-          click: function() {
-            window.prestascanSecurity.handleActionDismissAlert($(window.prestascanSecurity.config.jQuerySelectors.dismissAlertBanner).attr('data-alertId'));
-          }
+          click : "prestascanSecurity.modal_fn_dismissAlert",
         },
         {
           text: text_cancel,
           class: "return",
-          click:function() {
-            $(this).dialog("close");
-          }
+          click: "prestascanSecurity_Modal.closeDialog",
         }
       ];
-      window.prestascanSecurity_Tools.createPopupDialog(question_to_this_dismiss_action, buttons);
+      window.prestascanSecurity_Modal.createDialog(question_to_this_dismiss_action, buttons);
     },
     handleActionDismissAlert : function (alertId) {
       if (!prestascansecurity_isLoggedIn) {
@@ -521,10 +439,10 @@ $(function () {
         dataType: 'json',
         success: function (response) {
 
-          window.prestascanSecurity_Tools.closeExistingPopup();
+          window.prestascanSecurity_Modal.closeDialog();
 
           if(response.error && typeof response.statusText != 'undefined' && response.statusText != '' ) {
-            window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
+            window.prestascanSecurity_Modal.createDialog(response.statusText, []);
           }
           if(response.success) {
             window.location.reload();
@@ -532,7 +450,7 @@ $(function () {
           }
         },
         error: function (response) {
-          window.prestascanSecurity_Tools.closeExistingPopup();
+          window.prestascanSecurity_Modal.closeDialog();
           alert(response.responseJSON.statusText);
           return true;
         }
@@ -543,7 +461,7 @@ $(function () {
       var pscan = window.prestascanSecurity;
       var description = $(pscan.config.cssSelector.alertModuleVulnerabilitiesBanner).data('description');
       description = "<strong>"+banner_vulnerability_more_action+"</strong></br></br>"+banner_vulnerability_more_details+"</br>"+description;
-      window.prestascanSecurity_Tools.createPopupDialog(description, []);
+      window.prestascanSecurity_Modal.createDialog(description, []);
     },
     handleDashboardLinkDetail : function(e) {
       e.preventDefault();
@@ -574,6 +492,38 @@ $(function () {
       $(activesubtab).addClass('active');
       return false;
     },
+    handleCollapsableModuleDetails : function() {
+      window.prestascanSecurity.initListingsOverlay();
+      if ($(this).hasClass('arrow-down')) {
+        // Slide UP all other modules
+        var config = window.prestascanSecurity.config;
+        $container = config.jQuerySelectors.container;
+        $container.find(".module_block").find(config.cssSelector.arrowModuleExpand).removeClass('arrow-up').addClass('arrow-down').html('&#8964;');
+        $container.find(".module_details").slideUp();
+        // Slide down current module
+        $(this).removeClass('arrow-down').addClass('arrow-up').html('&#8963;');
+        $(this).parents('.module_block').find('.module_details').slideDown();
+      } else {
+        // Already expanded, we want to collapse the current module
+        $(this).removeClass('arrow-up').addClass('arrow-down').html('&#8964;');
+        $(this).parents('.module_block').find('.module_details').slideUp();
+      }
+    },
+    handleLogOut : function () {
+      var buttons = [
+        {
+          text : text_confirm_log_me_out,
+          class: "confirm logout",
+          click: "prestascanSecurity.modal_fn_logout",
+        },
+        {
+          text: text_cancel,
+          class: "return logout",
+          click: "prestascanSecurity_Modal.closeDialog",
+        }
+      ];
+      window.prestascanSecurity_Modal.createDialog(question_to_logout, buttons);
+    },
     processCancelJobAction : function(elem)
     {
       if(!prestascansecurity_isLoggedIn) {
@@ -590,42 +540,17 @@ $(function () {
         dataType: 'json',
         success: function (response) {
           if(response.error && typeof response.statusText != 'undefined' && response.statusText != '' ) {
-            window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
+            window.prestascanSecurity_Modal.createDialog(response.statusText, []);
           }
           if(response.success) {
             // Do not use `this` to access the object in ajax reply
-            var $popupDialog = $(window.prestascanSecurity.config.cssSelector.popupDialog);
-            $popupDialog.attr("title", "");
-            $popupDialog.find("*").remove();
-            $popupDialog.append("<p>" + response.statusText + "</p>");
-            $popupDialog.dialog({
-              minHeight: 0,
-              buttons: [
-                {
-                  text : text_reload,
-                  click: function() {
-                    window.location.reload();
-                  }
-                }
-              ],
-              open: function (event, ui) {
-                $(".ui-widget-overlay").css({
-                  opacity: 0.5,
-                  filter: "Alpha(Opacity=20)",
-                  backgroundColor: "black",
-                  display:"block",
-                  'z-index': 100
-                });
-                $(".ui-dialog").css({
-                  'z-index': 101
-                });
-              },
-              close: function (event, ui) {
-                $(".ui-widget-overlay").css({
-                  display:"none"
-                });
+            var buttons = [
+              {
+                text : text_reload,
+                click : "prestascanSecurity.modal_fn_reload",
               }
-            });
+            ];
+            window.prestascanSecurity_Modal.createDialog(response.statusText, buttons);
           }
         },
         error: function (response) {
@@ -639,19 +564,15 @@ $(function () {
         {
           text : text_refresh_status,
           class: "confirm",
-          click: function() {
-            window.prestascanSecurity.handleRefreshModuleStatus();
-          }
+          click : "prestascanSecurity.modal_fn_refreshModuleStatus",
         },
         {
           text: text_close,
           class: "return",
-          click:function() {
-            $(this).dialog("close");
-          }
+          click: "prestascanSecurity_Modal.closeDialog",
         }
       ];
-      window.prestascanSecurity_Tools.createPopupDialog(text_refresh_module_status_required, buttons);
+      window.prestascanSecurity_Modal.createDialog(text_refresh_module_status_required, buttons);
     },
     handleRefreshModuleStatus : function () {
       $.ajax({
@@ -667,12 +588,58 @@ $(function () {
           }
         },
         error: function (response) {
-          window.prestascanSecurity_Tools.closeExistingPopup();
+          window.prestascanSecurity_Modal.closeDialog();
           alert(response.responseJSON.statusText);
           return true;
         }
       });
     },
+    modal_fn_generateReport : function () {
+      // $('.ui-dialog-titlebar-close').trigger( "click" );
+      window.prestascanSecurity_Modal.closeDialog();
+      openOauthPsScan();
+    },
+    modal_fn_reload : function () {
+      window.location.reload();
+    },
+    modal_fn_dismissAlert : function () {
+      window.prestascanSecurity.handleActionDismissAlert($(window.prestascanSecurity.config.jQuerySelectors.dismissAlertBanner).attr('data-alertId'));
+    },
+    modal_fn_refreshModuleStatus : function () {
+      window.prestascanSecurity.handleRefreshModuleStatus();
+    },
+    modal_fn_actionModuleUnused : function (e) {
+      var $target = $(e.target);
+      if ($target.hasClass('validated')) {
+        window.prestascanSecurity.handleActionModuleUnused($target);
+      }
+    },
+    modal_fn_logout : function () {
+      $.ajax({
+        type: 'GET',
+        cache: 'false',
+        // url: this.config.jQuerySelectors.container.data('urlreports'),
+        url: $('#prestascansecurity_main_container').data('urlreports'),
+        data: {action: 'logoutUser', ajax: true},
+        dataType: 'json',
+        success: function (response) {
+          if (response.error || (response.success && !response.data && response.statusText != '')) {
+            window.prestascanSecurity_Modal.createDialog(response.error, []);
+          } else {
+            if (response.success) {
+              window.location.reload();
+            }
+          }
+        },
+        error: function (response) {
+          window.prestascanSecurity_Modal.createDialog(response.statusText, []);
+          clearInterval(window.prestascanSecurity.config.checkScanJobsProgresion);
+        },
+        complete: function () {
+          return true;
+        }
+      });
+    }
   } // window.prestascanSecurity
   
   var prestascanSecurity_Tools = window.prestascanSecurity_Tools = {
@@ -722,189 +689,7 @@ $(function () {
 
       window.prestascanSecurity_Tools.addUrlParameter("activetab", activesubtab);
     },
-    closeExistingPopup : function() {
-      $("#popupDialog").dialog('close');
-    },
-    createPopupDialog : function(mainContent, buttons, customHtml) {
-      var $popupDialog = $(window.prestascanSecurity.config.cssSelector.popupDialog);
-      $popupDialog.attr("title", "");
-      $popupDialog.find("*").remove();
-      $popupDialog.append("<p>"+mainContent+"</p>");
-      if (customHtml !== undefined) {
-        $popupDialog.append(customHtml);
-      }
-      $popupDialog.dialog({
-        resizable: false,
-        height: "auto",
-        width: 280,
-        modal: true,
-        buttons: buttons,
-        open: function (event, ui) {
-          $(".ui-widget-overlay").css({
-            opacity: 0.5,
-            filter: "Alpha(Opacity=20)",
-            backgroundColor: "black",
-            display:"block",
-            'z-index': 100
-          });
-          $(".ui-dialog").css({
-            'z-index': 101
-          });
-        },
-        close: function (event, ui) {
-            $(".ui-widget-overlay").css({
-                display:"none"
-            });
-        }
-      });
-
-    },
   } // window.prestascanSecurity_Tools
 
   prestascanSecurity.init();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|S|T|O|P|!|!|!| |C|O|D|I|N|G|
-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|B|E|Y|O|N|D| |T|H|I|S| |L|I|N|E|
-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-*/
-
-
-// If you need to add code, please add it in the jquery object above.
-// No new code below
-// Code below will be deleted/converted above.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-$(document).ready(function () {
-  var $PrestascanSecurity = window.prestascanSecurity.config.jQuerySelectors.container;
-  var $arrowModuleDetails = window.prestascanSecurity.config.jQuerySelectors.container.find(".module-details i");
-  var $moduleDetails = window.prestascanSecurity.config.jQuerySelectors.container.find(".module_details");
-  
-  $arrowModuleDetails.each(function(index) {
-    $(this).on("click", function(){
-
-      window.prestascanSecurity.initListingsOverlay();
-      if ($(this).hasClass('arrow-down')) {
-        $arrowModuleDetails.removeClass('arrow-up').addClass('arrow-down');
-        $arrowModuleDetails.html('&#8964;');
-        $moduleDetails.slideUp();
-
-        $(this).removeClass('arrow-down').addClass('arrow-up');
-        $(this).html('&#8963;');
-        $(this).parent().parent().parent().find('.module_details').slideDown();
-      }
-      else {
-        $(this).removeClass('arrow-up').addClass('arrow-down');
-        $(this).html('&#8964;');
-        $(this).parent().parent().parent().find('.module_details').slideUp();
-      }
-    });
-  });
-
-
-  $("#connexion .logout a").on('click', function () {
-    $("#popupDialog").attr("title", "");
-    $("#popupDialog *").remove();
-    $("#popupDialog").append("<p>"+question_to_logout+"</p>");
-    $("#popupDialog").dialog({
-      resizable: false,
-      height: "auto",
-      width: 280,
-      modal: true,
-      buttons: [
-        {
-          text : text_confirm_log_me_out,
-          class: "confirm",
-          click: function() {
-             $.ajax({
-              type: 'GET',
-              cache: 'false',
-              // url: this.config.jQuerySelectors.container.data('urlreports'),
-              url: $('#prestascansecurity_main_container').data('urlreports'),
-              data: {action: 'logoutUser', ajax: true},
-              dataType: 'json',
-              success: function (response) {
-                if (response.error || (response.success && !response.data && response.statusText != '')) {
-                  window.prestascanSecurity_Tools.createPopupDialog(response.error, []);
-                } else {
-                  if (response.success) {
-                    window.location.reload();
-                  }
-                }
-              },
-              error: function (response) {
-                window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
-                clearInterval(window.prestascanSecurity.config.checkScanJobsProgresion);
-              },
-              complete: function () {
-                return true;
-              }
-            });
-          }
-        },
-        {
-          text: text_cancel,
-          class: "return",
-          click:function() {
-              $(this).dialog("close");
-          }
-        }
-      ],
-      open: function (event, ui) {
-        $(".ui-widget-overlay").css({
-          opacity: 0.5,
-          filter: "Alpha(Opacity=20)",
-          backgroundColor: "black",
-          display:"block",
-          'z-index': 100
-        });
-        $(".ui-dialog").css({
-          'z-index': 101
-        });
-      },
-      close: function (event, ui) {
-          $(".ui-widget-overlay").css({
-              display:"none"
-          });
-      }
-    });
-  });
-
-});
-
-

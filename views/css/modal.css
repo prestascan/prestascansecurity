@@ -1,0 +1,127 @@
+/*
+ * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
+ *
+ * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
+ * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author    Profileo Group - Complete list of authors and contributors to this software can be found in the AUTHORS file.
+ * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
+ * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
+ */
+
+#prestascansecurity_main_container .modal {
+    background-color: rgba(0,0,0,0.4); 
+    display: none; 
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%;  
+    overflow: auto; 
+}
+#prestascansecurity_main_container .modal_header {
+    position: absolute;
+    right: 15px;
+    top: 4px;
+}
+#prestascansecurity_main_container .modal_header span.closeModal {
+    font-weight: bold;
+    font-size: 24px;
+}
+#prestascansecurity_main_container .modal_header span.closeModal:hover,
+#prestascansecurity_main_container .modal_header span.closeModal:focus {
+    cursor: pointer;
+}
+#prestascansecurity_main_container .modal_content {
+    background-color: #fefefe;
+    border-radius: 15px;
+    border: none;
+    margin: auto;
+    padding: 20px 15px;
+    position: relative;
+    width: 300px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    /* -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s*/
+}
+#prestascansecurity_main_container .modal_body {
+    color: #727272;
+    display: inline-block;
+    font-family: "Open Sans",helvetica,arial,sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.42857;
+    text-align: center;
+    padding: 15px 10px 10px;
+    width: 100%;
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+#prestascansecurity_main_container .modal-buttonset {
+    clear: both;
+    float: none;
+    padding-top: 10px;
+    text-align: center;
+}
+#prestascansecurity_main_container .modal-buttonset button.modal-button {
+    background: #dddbdb;
+    border: none;
+    border-radius: 15px;
+    color: #454545;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 7px 30px;
+    margin: 0.5em 0.2em 0 0.2em;
+}
+#prestascansecurity_main_container .modal-buttonset.no_buttons {
+    display: none;
+}
+#prestascansecurity_main_container .modal-buttonset.single_button button.modal-button {
+    width: auto;
+}
+#prestascansecurity_main_container .modal-buttonset.two_buttons button.modal-button {
+    display: inline-block;
+    padding: 7px 10px;
+    text-align: center;
+    width: calc(50% - 0.4em);
+}
+#prestascansecurity_main_container .modal-buttonset button.modal-button.confirm {
+    background: #3ad29f;
+    color: white;
+}
+#prestascansecurity_main_container .modal-buttonset button.modal-button.danger {
+    background: #f65356;
+    color: white;
+}
+#prestascansecurity_main_container .modal-buttonset button.modal-button.danger.disabled {
+    background: #e4999a;
+    color: white;
+}
+#prestascansecurity_main_container .modal-buttonset button.modal-button.logout {
+    width: 75% !important;
+}

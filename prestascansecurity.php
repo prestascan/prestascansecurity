@@ -44,7 +44,7 @@ class Prestascansecurity extends Module
         $this->description = $this->l('Scan your PrestaShop website to identify malwares and known vulnerabilities in PrestaShop core and modules');
 
         $this->confirmUninstall = $this->l('Are you sure to uninstall this module?');
-        $this->ps_versions_compliancy = ['min' => '1.6.0', 'max' => _PS_VERSION_];
+        $this->ps_versions_compliancy = ['min' => '1.5.0', 'max' => _PS_VERSION_];
 
         require_once __DIR__ . '/vendor/autoload.php';
     }
@@ -181,47 +181,29 @@ class Prestascansecurity extends Module
 
     protected function createTabs()
     {
-        // In PS 1.5, this may trigger a fatal error. You will need to manually add a Menu (in Adminsitration > Menu),
-        // with the following details :
-        // Name : AdminPrestascanSecurityReports
-        // Classe : AdminPrestascanSecurityReports
-        // Module : PrestascanSecurity
-        // Active : No
-
-        $tabs = array(
-            'AdminPrestascanSecurityReports',
-            'AdminPrestascanSecurityFileviewer',
-        );
-
         $result = true;
-        foreach ($tabs as $tabName) {
-            $tab = new Tab();
-            $tab->active = 1;
-            $tab->class_name = $tabName;
-            $tab->name = array();
-            foreach (Language::getLanguages(true) as $lang) {
-                $tab->name[$lang['id_lang']] = $this->l('Ajax PrestaScan Security');
-            }
-            $tab->id_parent = -1;
-            $tab->module = $this->name;
-            $result = $result ? (bool) $tab->add() : $result;
+        $tab = new Tab();
+        $tab->active = 1;
+        $tab->class_name = 'AdminPrestascanSecurityReports';
+        $tab->name = array();
+        foreach (Language::getLanguages(true) as $lang) {
+            $tab->name[$lang['id_lang']] = $this->l('Ajax PrestaScan Security');
         }
+        if (version_compare(_PS_VERSION_, '1.6.0', '<')) {
+            $tab->id_parent = 0;
+        } else {
+            $tab->id_parent = -1;
+        }
+        $tab->module = $this->name;
 
-        return $result;
+        return $result ? (bool) $tab->add() : $result;          
     }
 
     protected function removeTabs()
     {
-        $tabs = array(
-            'AdminPrestascanSecurityReports',
-            'AdminPrestascanSecurityFileviewer',
-        );
-
-        foreach ($tabs as $tabName) {
-            if ($tab_id = (int) Tab::getIdFromClassName($tabName)) {
-                $tab = new Tab($tab_id);
-                $tab->delete();
-            }
+        if ($tab_id = (int) Tab::getIdFromClassName('AdminPrestascanSecurityReports')) {
+            $tab = new Tab($tab_id);
+            $tab->delete();
         }
 
         return true;
@@ -535,6 +517,7 @@ class Prestascansecurity extends Module
         $jsFiles = [
             'views/js/reports.js?v=' . $this->version,
             'views/js/authentication.js?v=' . $this->version,
+            'views/js/modal.js?v=' . $this->version,
             'views/js/datatables.1.10.25.js',
             'views/js/dataTables.buttons.min.js',
             'views/js/file-size.js',
@@ -549,6 +532,7 @@ class Prestascansecurity extends Module
             'views/css/jquery-ui.min.css',
             'views/css/jquery-ui.structure.min.css',
             'views/css/jquery-ui.theme.min.css',
+            'views/css/modal.css',
         ];
 
         foreach ($jsFiles as $jsFile) {
