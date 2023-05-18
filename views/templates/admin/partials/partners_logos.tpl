@@ -21,9 +21,9 @@
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  *}
 
-<div class="partner_logo_container col-md-12">
+<div class="partner_logo_container">
     <div class="partner_logo">
-        <div class="partner_texte col-md-5">{l s='So far, over 300 modules have been analysed thanks to the diligent efforts of our partners:' mod='prestascansecurity'}</div>
+        <div class="partner_texte col-md-5">{l s='This module is powered by the collective energy of:' mod='prestascansecurity'}</div>
         <div class="partner_logos col-md-7">
             <a href="https://www.touchweb.fr/" target="_blank"><img class="partner1" alt="TouchWeb Infogérance E-commerce" src="/modules/prestascansecurity/views/img/partners/partner1.png"/></a>
             <a href="https://www.202-ecommerce.com/" target="_blank"><img class="partner3" alt="202 Ecommerce" src="/modules/prestascansecurity/views/img/partners/partner3.png"/></a>

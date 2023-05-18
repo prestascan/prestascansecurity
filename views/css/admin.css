@@ -194,6 +194,7 @@
     color: #ffffff;
     clear: both;
     display: inline-block;
+    margin-bottom: 0;
     margin-top: 25px;
     font-size: 14px;
     padding: 12px 10px 2px;
@@ -203,9 +204,14 @@
     font-size: 16px;
     font-weight: bold;
 }
-
+#prestascansecurity_main_container .prestascansecurity_main_container.tab-content,
+#prestascansecurity_main_container .prestascan_footer {
+    display: inline-block;
+    width: 100%;
+}
 #prestascansecurity_main_container .prestascan_footer {
     clear: both;
+    margin-top: 10px;
 }
 #prestascansecurity_main_container .prestascan_footer .link_footer {
     float: right;
@@ -617,7 +623,8 @@
     background: #555; 
 }
 #prestascansecurity_main_container .module_results {
-  position: relative;
+    display: inline-block;
+    position: relative;
 }
 #prestascansecurity_main_container .scroll-overlay,
 #prestascansecurity_main_container #report-files-4 div.files_results.eoresults:after,
@@ -1171,18 +1178,25 @@ table#coreVulnerabilities.dataTable .cve {
     display: inline-block;
     padding: 10px;
     border-radius: 10px;
+    width: 100%;
 }
 #prestascansecurity_main_container .partner_texte {
     color: #333;
-    font-weight: 600;
+    font-weight: 700;
     padding: 10px 0 10px 10px;
 }
 #prestascansecurity_main_container .partner_logos {
-    text-align: center;
+    float: right;
+    text-align: right;
+}
+@media (max-width : 992px) {
+    #prestascansecurity_main_container .partner_logos {
+        float: none;
+        text-align: center;
+    }
 }
 #prestascansecurity_main_container .partner_logos img {
     padding: 0 10px;
-    margin-top: 12px;
     width: auto;
 }
 #prestascansecurity_main_container .partner_logos img.partner1 {

@@ -22,6 +22,8 @@
  *}
 
 <div class="prestascan_footer">
+    {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/partners_logos.tpl"}
+
     <div class='link_footer'>
         <a href="https://security.prestascan.com/terms-of-service" target="_blank">CGV</a>
         &nbsp;-&nbsp;

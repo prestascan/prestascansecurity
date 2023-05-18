@@ -88,7 +88,6 @@
                 {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/no_results.tpl" noResultText=$no_result_text}
             {/if}
         </div>
-        {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/partners_logos.tpl"}
     </div>
 
     {assign var='infopanel_title' value={l s='Maintain your modules updated' mod='prestascansecurity'}}
