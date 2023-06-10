@@ -104,7 +104,7 @@
                                 <p>{l s='No detail concerning this vulnerability' mod='prestascansecurity'}</p>
                             {/if}
                             <p>
-                                {if isset($aVulnerability.cve_link) && $aVulnerability.cve_link}<a href="{$aVulnerability.cve_link}" target="_blank" class="btn-green-white">{l s='Link to CVE' mod='prestascansecurity'}</a>{/if}
+                                {if isset($aVulnerability.cve) && $aVulnerability.cve}<a href="{$aVulnerability.cve}" target="_blank" class="btn-green-white">{l s='Link to CVE' mod='prestascansecurity'}</a>{/if}
                                 {if $aVulnerability.public_link}<a href="{$aVulnerability.public_link}" target="_blank" class="btn-green-white">{l s='More details' mod='prestascansecurity'}</a>{/if}
                             </p>
                         </li>
