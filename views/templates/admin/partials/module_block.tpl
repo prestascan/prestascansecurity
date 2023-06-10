@@ -74,35 +74,39 @@
         {else}
             <p class="module_description">{l s='Module description' mod='prestascansecurity'} : {$aModule.description}</p>
         {/if}
-        {if isset($alert_description)}
-            <p class='msg-alert'>{$alert_description|escape:'htmlall':'UTF-8'}</p>
-        {/if}
         {if isset($aType) && $aType == 'moduleVulnerable'}
             {if isset($aModule.vulnerabilities)}
                 <ul class="list-vulnerabilities-modules no-liste-style">
                     {foreach name=vulnerabilities from=$aModule.vulnerabilities item=aVulnerability}
                         <li class="vulnerability-status-{$aVulnerability.status}">
                             <p class="vulnerability-title"><span class="vulnerabilities_count level_{$aVulnerability.criticity} vulnerability_module" title="{if $aVulnerability.criticity == "high" || $aVulnerability.criticity == "critical"}{l s='High' mod='prestascansecurity'}{elseif $aVulnerability.criticity == "medium"}{l s='Medium' mod='prestascansecurity'}{else}{l s='Low' mod='prestascansecurity'}{/if}"></span><span>{$aVulnerability.type}</span></p>
-                            <p><span class="vulnerability-version">{l s='From version : ' mod='prestascansecurity'}</span>
+                            <p><span class="vulnerability-version">{l s='From version: ' mod='prestascansecurity'}</span>
                                 {if isset($aVulnerability.fromVersion) && $aVulnerability.fromVersion}
                                     {$aVulnerability.fromVersion}
                                 {else}
                                     {l s='unknown' mod='prestascansecurity'}
                                 {/if}
-                                {l s='to version : ' mod='prestascansecurity'}
+                                {l s='to version: ' mod='prestascansecurity'}
                                 {if isset($aVulnerability.toVersion) && $aVulnerability.toVersion}
                                     {$aVulnerability.toVersion}
                                 {else}
                                     {l s='unkown' mod='prestascansecurity'}
                                 {/if}
                             </p>
-                            {if (isset($aVulnerability.description[Context::getContext()->language->iso_code]))}
-                                <p>{$aVulnerability.description[Context::getContext()->language->iso_code]}</p>
-                            {elseif $aVulnerability.description !== null}
-                                <p>{if isset($aVulnerability.description["en"])}{$aVulnerability.description["en"]}{else}{$aVulnerability.description}{/if}</p>
-                            {else}
-                                <p>{l s='No detail concerning this vulnerability' mod='prestascansecurity'}</p>
-                            {/if}
+                            <p><span class="vulnerability-description">{l s='Description: ' mod='prestascansecurity'}</span>
+                                {if (isset($aVulnerability.description[Context::getContext()->language->iso_code]))}
+                                    {$aVulnerability.description[Context::getContext()->language->iso_code]}<
+                                {elseif $aVulnerability.description !== null}
+                                    {if isset($aVulnerability.description["en"])}{$aVulnerability.description["en"]}{else}{$aVulnerability.description}{/if}<
+                                {else}
+                                    <p>{l s='No detail concerning this vulnerability' mod='prestascansecurity'}
+                                {/if}
+                            </p>
+                            <p>
+                                {if isset($aType) && $aType == 'moduleVulnerable' && (isset($aVulnerability.author_discovery) && $aVulnerability.author_discovery!= "")}
+                                    <p><span class="vulnerability-author-discovery">{l s='Discovery Author(s): ' mod='prestascansecurity'}</span><span>{$aVulnerability.author_discovery}</span></p>
+                                {/if}
+                            </p>
                             <p>
                                 {if isset($aVulnerability.cve) && $aVulnerability.cve}<a href="{$aVulnerability.cve}" target="_blank" class="btn-green-white">{l s='Link to CVE' mod='prestascansecurity'}</a>{/if}
                                 {if $aVulnerability.public_link}<a href="{$aVulnerability.public_link}" target="_blank" class="btn-green-white">{l s='More details' mod='prestascansecurity'}</a>{/if}
@@ -111,6 +115,9 @@
                     {/foreach}
                 </ul>
             {/if}
+        {/if}
+        {if isset($alert_description)}
+            <p class='msg-alert'>{$alert_description|escape:'htmlall':'UTF-8'}</p>
         {/if}
     </div>
 </li>

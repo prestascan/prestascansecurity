@@ -74,7 +74,7 @@
         <div class="module_results eoresults col-md-6">
             <h2>{$module_result2_count} {$module_result2_title}</h2>
             <div class="btntooltip">?<span class="tooltiptext">{$tooltiptext2}</span></div>
-            {if $module_result2_count != 0} 
+            {if $module_result2_count != 0}
                 <div class="scroll-overlay"></div>
                 <ul id="modules" class="list-unstyled">
                     {if $modules_vulnerabilities_results.module_to_update}

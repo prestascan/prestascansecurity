@@ -136,6 +136,7 @@ class VulnerableModulesReport extends Report
                         // We have find one medium vulnerability.
                         $moduledata['criticity'] = 'medium';
                     }
+                    $moduledata['author_discovery'] = $vulnerability['author_discovery'];
                 }
                 $data['vulnerable'][] = $moduledata;
             }

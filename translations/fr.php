@@ -156,11 +156,13 @@ $_MODULE['<{prestascansecurity}prestashop>module_block_a27dfe771799a09fd55fea732
 $_MODULE['<{prestascansecurity}prestashop>module_block_655d20c1ca69519ca647684edbb2db35'] = 'Élevé';
 $_MODULE['<{prestascansecurity}prestashop>module_block_87f8a6ab85c9ced3702b4ea641ad4bb5'] = 'Moyen';
 $_MODULE['<{prestascansecurity}prestashop>module_block_28d0edd045e05cf5af64e35ae0c4c6ef'] = 'Faible';
-$_MODULE['<{prestascansecurity}prestashop>module_block_29ac8fbdafe6faf09f9b96a4efc6b154'] = 'De la version :';
+$_MODULE['<{prestascansecurity}prestashop>module_block_23bd99de956fedfcb19ea1fcdd6fc43a'] = 'De la version : ';
 $_MODULE['<{prestascansecurity}prestashop>module_block_ad921d60486366258809553a3db49a4a'] = 'inconnue';
-$_MODULE['<{prestascansecurity}prestashop>module_block_a55bc6525a4f7eff1f956c720a9126b4'] = 'à la version :';
+$_MODULE['<{prestascansecurity}prestashop>module_block_c4091f0d5acacdd482e6fd7c9a2b8f82'] = 'à la version : ';
 $_MODULE['<{prestascansecurity}prestashop>module_block_aaf0abac956e57b44fd99eaeb270e72f'] = 'inconnue';
+$_MODULE['<{prestascansecurity}prestashop>module_block_9464666cfb904fa92f13f018666e622b'] = 'Description : ';
 $_MODULE['<{prestascansecurity}prestashop>module_block_e2496e7540f5bf0a18c58aaf7ca61412'] = 'Aucun détail concernant cette vulnérabilité';
+$_MODULE['<{prestascansecurity}prestashop>module_block_434b3b9134ed394632d1fc8ab6032f53'] = 'Auteur(s) de la découverte : ';
 $_MODULE['<{prestascansecurity}prestashop>module_block_8d4ba4e55488346ac11a45f7b4c823f8'] = 'Lien vers le CVE';
 $_MODULE['<{prestascansecurity}prestashop>module_block_2b56b60f878922093facd42284848a0c'] = 'Plus de détails';
 $_MODULE['<{prestascansecurity}prestashop>directories_listing_28fcb6adfa1887a568e1e146fa8e7748'] = 'Lancez le scan pour vérifier l\'état de vos répertoires';

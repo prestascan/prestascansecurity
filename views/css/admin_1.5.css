@@ -651,6 +651,7 @@
 }
 #prestascansecurity_main_container #modules_vulnerabilities ul.list-vulnerabilities-modules li p.vulnerability-title,
 #prestascansecurity_main_container #modules_vulnerabilities ul.list-vulnerabilities-modules li p span.vulnerability-version,
+#prestascansecurity_main_container #modules_vulnerabilities ul.list-vulnerabilities-modules li p span.vulnerability-description,
 #prestascansecurity_main_container .title-module-details{
     font-weight: bold;
     color: #333;
