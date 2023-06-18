@@ -1,10 +1,12 @@
 <p align="center">
-    <img src="./views/img/logo.png">
+    <img src="./github_images/logo.png">
 </p>
 
-:gb: **PrestaScan Security** is a PrestaShop module allowing you to scan your PrestaShop website to identify malware and known vulnerabilities in PrestaShop core and modules.
+:gb: **PrestaScan Security** is a PrestaShop module allowing you to scan your PrestaShop website to identify malware and known vulnerabilities in PrestaShop core and modules.  
+**User guide**: https://security.profileo.com/advisories/prestascansecurity/
 
-:fr: **PrestaScan Security** est un module PrestaShop vous permettant de scanner votre site PrestaShop afin d'identifier les malwares et les vulnérabilités connues dans le cœur de PrestaShop et ses modules.
+:fr: **PrestaScan Security** est un module PrestaShop vous permettant de scanner votre site PrestaShop afin d'identifier les malwares et les vulnérabilités connues dans le cœur de PrestaShop et ses modules.  
+**Guide utilisateur** : https://security.profileo.com/fr/advisories/prestascansecurity/
 
 ![last release](https://badgen.net/github/release/prestascan/prestascansecurity)
 ![license](https://badgen.net/github/license/prestascan/prestascansecurity)
@@ -21,16 +23,20 @@
 
 ## General Information
 
+<p align="center">
+    <img src="./github_images/dashboard-en.png">
+</p>
+
 **PrestaScan Security** is a free and open-source module that helps you secure your PrestaShop website by identifying malware and known vulnerabilities in the PrestaShop core and modules. The module is easy to install and use, and it keeps you updated on the latest security threats to your website. It is compatible with PrestaShop 1.5 (upcoming), 1.6, 1.7, and 8. Our team of security experts constantly monitors and audits modules to ensure the best protection for your online store.
 
 This module is fueled by the collective energy of the members of the Friends Of Presta security cell. Here is the list of the most significant contributors in terms of security research, publication of CVE, or development:
 
 <p align="center">
-    <a href="https://www.touchweb.fr/" target="_blank"><img class="partner1" alt="TouchWeb Infogérance E-commerce" src="./views/img/partners/partner1.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://www.profileo.com/" target="_blank"><img class="partner2" alt="Profileo 100% E-commerce" src="./views/img/partners/partner2.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://www.202-ecommerce.com/" target="_blank"><img class="partner3" alt="202 Ecommerce" src="./views/img/partners/partner3.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://www.772424.com/" target="_blank"><img class="partner4" alt="772424 E-commerce hosting" src="./views/img/partners/partner4.png"></a>&nbsp;&nbsp;&nbsp;&nbsp; 
-    <a href="https://friends-of-presta.github.io/security-advisories/" target="_blank"><img class="partner5" alt="Friends Of Presta" src="./views/img/partners/partner5.png"></a>
+    <a href="https://www.touchweb.fr/" target="_blank"><img class="partner1" alt="TouchWeb Infogérance E-commerce" src="./github_images/partners/partner1.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://www.profileo.com/" target="_blank"><img class="partner2" alt="Profileo 100% E-commerce" src="./github_images/partners/partner2.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://www.202-ecommerce.com/" target="_blank"><img class="partner3" alt="202 Ecommerce" src="./github_images/partners/partner3.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://www.772424.com/" target="_blank"><img class="partner4" alt="772424 E-commerce hosting" src="./github_images/partners/partner4.png"></a>&nbsp;&nbsp;&nbsp;&nbsp; 
+    <a href="https://friends-of-presta.github.io/security-advisories/" target="_blank"><img class="partner5" alt="Friends Of Presta" src="./github_images/partners/partner5.png"></a>
 </p>
 
 ### Is the module free?
