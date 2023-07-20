@@ -22,13 +22,13 @@
  *}
 Redirecting...
 <form id="register_form" action="{$registration_url}" method="post" style="display:none;">
-    <input type="text" id="createclient" name="createclient" value="{$createclient}">
-    <input type="text" id="firstname" name="firstname" value="{$firstname}">
-    <input type="text" id="lastname" name="lastname" value="{$lastname}">
-    <input type="text" id="email" name="email" value="{$email}">
-    <input type="text" id="redirect" name="redirect" value="{$redirect}">
-    <input type="text" id="webcrontoken" name="webcrontoken" value="{$webcrontoken}">
-    <input type="text" id="ps_shop_urls" name="ps_shop_urls" value="{$ps_shop_urls}">
+    <input type="text" id="createclient" name="createclient" value="{$createclient|escape:'html':'UTF-8'}">
+    <input type="text" id="firstname" name="firstname" value="{$firstname|escape:'html':'UTF-8'}">
+    <input type="text" id="lastname" name="lastname" value="{$lastname|escape:'html':'UTF-8'}">
+    <input type="text" id="email" name="email" value="{$email|escape:'html':'UTF-8'}">
+    <input type="text" id="redirect" name="redirect" value="{$redirect|escape:'html':'UTF-8'}">
+    <input type="text" id="webcrontoken" name="webcrontoken" value="{$webcrontoken|escape:'html':'UTF-8'}">
+    <input type="text" id="ps_shop_urls" name="ps_shop_urls" value="{$ps_shop_urls|escape:'html':'UTF-8'}">
 </form>
 
 {literal}
