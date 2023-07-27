@@ -50,6 +50,12 @@ class PrestaScanVulnAlerts extends ObjectModel
     /** @var int state */
     public $employee_id_dismissed;
 
+    /** @var datetime date_add */
+    public $date_add;
+
+    /** @var datetime date_upd */
+    public $date_upd;
+
     /**
      * @see ObjectModel::$definition
      */

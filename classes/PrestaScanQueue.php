@@ -41,6 +41,12 @@ class PrestaScanQueue extends ObjectModel
     /** @var string error_message */
     public $error_message;
 
+    /** @var datetime date_add */
+    public $date_add;
+
+    /** @var datetime date_upd */
+    public $date_upd;
+    
     /**
      * @see ObjectModel::$definition
      */
