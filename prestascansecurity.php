@@ -78,7 +78,7 @@ class Prestascansecurity extends Module
     {
         $sql = array();
         $return = true;
-        include dirname(__FILE__) . '/sql_install.php';
+        include \PrestaScan\Tools::getModulePath() . 'install/sql_install.php';
         if (empty($sql)) {
             return true;
         }
