@@ -27,7 +27,7 @@
     <img src="./github_images/dashboard-en.png">
 </p>
 
-**PrestaScan Security** is a free and open-source module that helps you secure your PrestaShop website by identifying malware and known vulnerabilities in the PrestaShop core and modules. The module is easy to install and use, and it keeps you updated on the latest security threats to your website. It is compatible with PrestaShop 1.5 (upcoming), 1.6, 1.7, and 8. Our team of security experts constantly monitors and audits modules to ensure the best protection for your online store.
+**PrestaScan Security** is a free and open-source module that helps you secure your PrestaShop website by identifying malware and known vulnerabilities in the PrestaShop core and modules. The module is easy to install and use, and it keeps you updated on the latest security threats to your website. It is compatible with PrestaShop 1.5, 1.6, 1.7, and 8. Our team of security experts constantly monitors and audits modules to ensure the best protection for your online store.
 
 This module is fueled by the collective energy of the members of the Friends Of Presta security cell. Here is the list of the most significant contributors in terms of security research, publication of CVE, or development:
 
@@ -71,7 +71,7 @@ On the other hand, the cost of the development of the module has been significan
 
 ### Compatibility
 
-As the security targets all kinds of merchants, using sometimes outdated versions of PrestaShop, we do our best for the moment to keep the module at least compatible with PrestaShop 1.5, 1.6, 1.7, and 8. (Upcoming v.1.1.2 for PS 1.5.)
+As the security targets all kinds of merchants, using sometimes outdated versions of PrestaShop, we do our best for the moment to keep the module at least compatible with PrestaShop 1.5, 1.6, 1.7, and 8.
 
 | PrestaShop version tested | Status | Comments |
 | -------- | ------ | ------ |
@@ -79,7 +79,7 @@ As the security targets all kinds of merchants, using sometimes outdated version
 | **1.7.X** (1.7.8.8) | :heavy_check_mark: | Stable
 | **1.6.1.X** (1.6.1.24) | :heavy_check_mark: | Stable
 | **1.6.0.X** (1.6.0.9) | :heavy_check_mark: | Stable
-| **1.5** | :hourglass_flowing_sand: | ~~Not supported as of now due to JS issues~~ Upcoming in 1.1.2
+| **1.5** | :heavy_check_mark: | Stable (but will not be actively maintained)
 
 ## Features
 
