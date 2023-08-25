@@ -55,6 +55,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         if ($updateAvailable === true
             && Tools::getValue('action') !== 'updateModule'
             && Tools::getValue('action') !== 'logoutUser'
+            && Tools::getValue('action') !== 'dismmissedAlert'
         ) {
             // When an update is available, we return an error message
 
