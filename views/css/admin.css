@@ -1291,3 +1291,8 @@ table#coreVulnerabilities.dataTable .cve {
 #prestascansecurity_main_container .scan_in_progress.suggest_cancel .scan_too_long_cancel{
     display: block;
 }
+@media (max-width : 1700px) {
+    #prestascansecurity_main_container #tab-report-home h2.scan_title {
+        font-size: 24px;
+    }
+}
