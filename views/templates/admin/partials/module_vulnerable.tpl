@@ -25,6 +25,8 @@
 {assign var='dataAction' value="generateModuleReport"}
 {assign var='tooltiptext1' value={l s='This list displays modules flagged for known vulnerabilities. There may be false positives if there is uncertainty regarding the starting version of the vulnerability.' mod='prestascansecurity'}}
 {assign var='tooltiptext2' value={l s='This list displays modules that are not up to date or have not been updated by their authors for years.' mod='prestascansecurity'}}
+{assign var='tooltipReport' value={l s='Download the list of modules and share it with your developer' mod='prestascansecurity'}}
+
 {if !empty($modules_vulnerabilities_results)}
     {assign var='module_result1_title' value={l s='vulnerable module(s)' mod='prestascansecurity'}}
     {assign var='module_result1_count' value={$modules_vulnerabilities_results.vulnerable|count}}
@@ -58,6 +60,11 @@
             <h2>{$module_result1_count} {$module_result1_title}</h2>
             <div class="btntooltip">?<span class="tooltiptext">{$tooltiptext1}</span></div>
             {if $module_result1_count != 0}
+                <div class="btntooltip eoaction export-scan-results" data-type="modules_vulnerabilities" data-subtype="vulnerable" data-action="exportScanResults">
+                    <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
+                </div>
+            {/if}
+            {if $module_result1_count != 0}
                 <div class="scroll-overlay"></div>
                 <ul id="modules" class="list-unstyled">
                     {if $modules_vulnerabilities_results.vulnerable}
@@ -74,6 +81,11 @@
         <div class="module_results eoresults col-md-6">
             <h2>{$module_result2_count} {$module_result2_title}</h2>
             <div class="btntooltip">?<span class="tooltiptext">{$tooltiptext2}</span></div>
+            {if $module_result2_count != 0}
+                <div class="btntooltip eoaction export-scan-results" data-type="modules_vulnerabilities" data-subtype="module_to_update" data-action="exportScanResults">
+                    <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
+                </div>
+            {/if}
             {if $module_result2_count != 0}
                 <div class="scroll-overlay"></div>
                 <ul id="modules" class="list-unstyled">

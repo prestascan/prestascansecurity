@@ -25,6 +25,7 @@
 {assign var='dataAction' value="unusedModules"}
 {assign var='tooltiptext1' value={l s='This list displays installed modules that are disabled.' mod='prestascansecurity'}}
 {assign var='tooltiptext2' value={l s='This list displays uninstalled modules that remain on your file system. Modules will stay on your file system after uninstallation unless you explicitly specify their removal during the process.' mod='prestascansecurity'}}
+{assign var='tooltipReport' value={l s='Download the list of modules and share it with your developer' mod='prestascansecurity'}}
 
 {if !empty($modules_unused_results)}
     {assign var='module_result1_title' value={l s='Disabled module(s)' mod='prestascansecurity'}}
@@ -59,6 +60,11 @@
             <h2>{$module_result1_count} {$module_result1_title}</h2>
             <div class="btntooltip">?<span class="tooltiptext">{$tooltiptext1}</span></div>
             {if $module_result1_count != 0}
+                <div class="btntooltip eoaction export-scan-results" data-type="modules_unused" data-subtype="disabled" data-action="exportScanResults">
+                    <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
+                </div>
+            {/if}
+            {if $module_result1_count != 0}
                 <div class="scroll-overlay"></div>
                 <ul id="modules" class="list-unstyled">
                     {if $modules_unused_results.result.disabled}
@@ -75,6 +81,11 @@
         <div class="module_results eoresults col-md-6">
             <h2>{$module_result2_count} {$module_result2_title}</h2>
             <div class="btntooltip">?<span class="tooltiptext">{$tooltiptext2}</span></div>
+            {if $module_result2_count != 0}
+                <div class="btntooltip eoaction export-scan-results" data-type="modules_unused" data-subtype="not_installed" data-action="exportScanResults">
+                    <img src="/modules/prestascansecurity/views/img/"/><span class="tooltiptext">{$tooltipReport}</span>
+                </div>
+            {/if}
             {if $module_result2_count != 0} 
                 <div class="scroll-overlay"></div>
                 <ul id="modules" class="list-unstyled">

@@ -541,4 +541,95 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
 
         \PrestaScan\Tools::printAjaxResponse(true, false);
     }
+
+    public function ajaxProcessExportScanResults()
+    {
+        $type = Tools::getValue('type');
+        $subtype = Tools::getValue('subtype');
+        $lang_iso = Context::getContext()->language->iso_code;
+        $content = '';
+
+        if (empty($type) || empty($subtype)) {
+            self::dieWithError($this->module->l('Missing parameter. Please try again.', 'AdminPrestascanSecurityReportsController'));
+        }
+
+        $reports = new \PrestaScan\Reports\Report();
+
+        switch ($type) {
+            case 'modules_vulnerabilities':                
+                foreach ($reports->getReports() as $reportName => $reportCacheFile) {
+                    if ($reportName == $type && is_file($reportCacheFile)) {
+                        $report = unserialize(file_get_contents($reportCacheFile));
+                        $date = date('Y-m-d-H-m-s', $report['date_report']);
+                        $results = $report['report']['results'][$subtype];
+                        foreach ($results as $result) {
+                            $content .= $result['displayName'] . ' (' . $result['name'] . ') - ' . $result['version'] . ' - ' . $result['author'];
+                            $content .= "\n";
+
+                            if ($result['installed'] == 1) {
+                                $content .= $this->module->l('Installed - Active', 'AdminPrestascanSecurityReportsController');
+                                $content .= "\n";
+                            } else {
+                                $content .= $this->module->l('Not installed - Not active', 'AdminPrestascanSecurityReportsController');
+                                $content .= "\n";
+                            }
+
+                            if ($subtype == 'vulnerable') {
+                                $vulnerabilities = count($result['vulnerabilities']);
+                                $content .= $vulnerabilities . ' ' . $this->module->l('vulnerabilitie(s)', 'AdminPrestascanSecurityReportsController');
+                                $content .= "\n";
+
+                                $vulnerabilitycount = 1;
+                                foreach ($result['vulnerabilities'] as $vulnerability) {
+                                    $content .= '#' . $vulnerabilitycount . ' ' . $vulnerability['type'] . ' ' . $vulnerability['fromVersion'] . ' - ' . $vulnerability['toVersion'];
+                                    $content .= "\n";
+                                    $content .= $vulnerability['description'][$lang_iso];
+                                    $content .= "\n";
+                                    $content .= $vulnerability['cve'] . ' - ' . $vulnerability['public_link'];
+                                    $content .= "\n\n";
+
+                                    $vulnerabilitycount = $vulnerabilitycount+1;
+                                }
+                            }
+                            $content .= "\n";
+                        }
+                    }
+                }
+                break;
+            case 'modules_unused':
+                foreach ($reports->getReports() as $reportName => $reportCacheFile) {
+                    if ($reportName == $type && is_file($reportCacheFile)) {
+                        $report = unserialize(file_get_contents($reportCacheFile));                        
+                        $date = date('Y-m-d-H-m-s', $report['date_report']); 
+                        $results = $report['report']['results']['result'][$subtype];
+                        foreach ($results as $result) {
+                            $content .= $result['displayName'] . ' (' . $result['name'] . ') - ' . $result['version'] . ' - ' . $result['author'];
+                            $content .= "\n";
+                        }                 
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+
+        if ($subtype == 'module_to_update') {
+            $subtype = 'update';
+        } elseif ($subtype == 'not_installed') {
+            $subtype = 'uninstalled';
+        }
+
+        $filename = 'module_'.$subtype.'_'.$date.'.txt';
+        header('Content-type: application/txt');
+        header('Content-Disposition: attachment; filename=' . basename($filename));
+        header('Content-Length: ' . strlen($content));
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $data = [];
+        $data['content'] = $content;
+        $data['name'] = $filename;
+
+        \PrestaScan\Tools::printAjaxResponse(true, false, '', $data);
+    }
 }

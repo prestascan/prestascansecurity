@@ -51,7 +51,8 @@ $(function () {
         btnMainMenuElement : ".menu_element",
         btnSubMenuElement : ".menu-sous-element a",
         btnLogOut : ".logout a",
-        arrowModuleExpand : ".module-details i.arrow-icons"
+        arrowModuleExpand : ".module-details i.arrow-icons",
+        exportScanResults : ".eoaction.export-scan-results"
       },
       dataTables : {
         coreVulnerabilitiesDT : false
@@ -86,6 +87,7 @@ $(function () {
       this.bindClick($sel.cancelJobAction, null, this.processCancelJobAction);  // click cancel job
       this.bindClick($sel.connexionCfgBtn, $css.btnLogOut, this.handleLogOut); // Click on the menu item
       this.bindClick($sel.container, $css.arrowModuleExpand, this.handleCollapsableModuleDetails); // Handle expand and collapsable list
+      this.bindClick($sel.container, $css.exportScanResults, this.handleActionExportScanResults); // Click on export scan Results
     },
     bindClick : function (el, sel, handler) {
       el.on('click', sel, handler);
@@ -426,6 +428,32 @@ $(function () {
         }
       ];
       window.prestascanSecurity_Modal.createDialog(question_to_this_dismiss_action, buttons);
+    },
+    handleActionExportScanResults : function() {
+      console.log('handleActionExportScanResults');
+      $.ajax({
+        type: 'POST',
+        cache: 'false',
+        url: window.prestascanSecurity.config.jQuerySelectors.container.data('urlreports'),
+        data: { action: 'exportScanResults', ajax: true, type: $(this).data("type"), subtype: $(this).data("subtype") },
+        dataType : 'json',
+        success: function (response) {
+            var name = response.data.name;
+            var blob = new Blob([response.data.content], { type: 'text/plain' });
+            // Create a temporary URL to the Blob
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = name; // Set the desired file name
+
+            // Programmatically click the link to trigger download
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        },
+        error: function (response) {
+          return true;
+        }
+      });
     },
     handleActionDismissAlert : function (alertId) {
       if (!prestascansecurity_isLoggedIn) {
