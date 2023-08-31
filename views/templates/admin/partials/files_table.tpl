@@ -117,13 +117,13 @@
             <tr>
                 <input type="hidden" class="description" name="description" value="{$aFileDescription|escape:'html'}"/>
                 <td width="5%" class="dt-control"></td>  
-                <td width="20%" class="cve"><strong>{$aFile.cve.value}</strong></td>
-                <td width="10%" data-sort="{$datasort}">{$aFile.severity.value}</td>
-                <td width="10%">{$aFile.fo.value}</td>
-                <td width="10%">{$aFile.bo.value}</td>
-                <td width="10%">{$aFile.from.value}</td>
-                <td width="10%">{$aFile.to.value}</td>
-                <td width="15%">{$aFile.type.value}</td>
+                <td width="20%" class="cve"><strong>{if isset($aFile.cve) && isset($aFile.cve.value)}{$aFile.cve.value}{/if}</strong></td>
+                <td width="10%" data-sort="{$datasort}">{if isset($aFile.severity) && isset($aFile.severity.value)}{$aFile.severity.value}{/if}</td>
+                <td width="10%">{if isset($aFile.fo) && isset($aFile.fo.value)}{$aFile.fo.value}{/if}</td>
+                <td width="10%">{if isset($aFile.bo) && isset($aFile.bo.value)}{$aFile.bo.value}{/if}</td>
+                <td width="10%">{if isset($aFile.from) && isset($aFile.from.value)}{$aFile.from.value}{/if}</td>
+                <td width="10%">{if isset($aFile.to) && isset($aFile.to.value)}{$aFile.to.value}{/if}</td>
+                <td width="15%">{if isset($aFile.type) && isset($aFile.type.value)}{$aFile.type.value}{/if}</td>
                 <td width="10%"><a class="eoaction" href="{$aFile.link}" target="_blank">{l s='Link' mod='prestascansecurity'}</a></td>
             </tr>
         {/foreach}

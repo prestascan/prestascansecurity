@@ -89,6 +89,9 @@ class PrestascansecurityOauth2ModuleFrontController extends ModuleFrontControlle
             $accessToken = $OAuth->getNewAccessTokenFromAuthorizationCode($code);
             // We save this token
             $OAuth->saveTokens($accessToken);
+            // We request user data
+            $userData = \PrestaScan\Api\User::get();
+            Configuration::updateGlobalValue('PRESTASCAN_API_EMAIL', $userData['email']);
 
             Context::getContext()->cookie->__unset('psscan_oauth2state');
             Context::getContext()->cookie->__unset('psscan_tokenfc');

@@ -33,7 +33,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '1.1.2';
+        $this->version = '1.1.3';
         $this->author = 'PrestaScan';
         $this->need_instance = false;
         $this->bootstrap = true;
@@ -279,6 +279,7 @@ class Prestascansecurity extends Module
         $isLogged = $this->isUserLoggedIn();
 
         $this->context->smarty->assign('prestascansecurity_isLoggedIn', $isLogged);
+        $this->context->smarty->assign('email_user', Configuration::get('PRESTASCAN_API_EMAIL'));
 
         // check if module update is available
         if ($isLogged) {
@@ -413,9 +414,12 @@ class Prestascansecurity extends Module
 
     protected function assignSettingsPageUrl()
     {
-        $settings_page_url = 'https://security.prestascan.com/user/profile';
+        $settings_page_url = 'https://security.prestascan.com/login';
         if (\Configuration::get('PRESTASCAN_TEST_MODE_OAUTH')) {
-            $settings_page_url = 'http://127.0.0.1/user/profile';
+            $settings_page_url = 'http://127.0.0.1/login';
+        }
+        if(!empty(Configuration::get('PRESTASCAN_API_EMAIL'))) {
+            $settings_page_url .= '?email=' . Configuration::get('PRESTASCAN_API_EMAIL');
         }
         $this->context->smarty->assign('settings_page_url', $settings_page_url);
     }

@@ -44,6 +44,11 @@
             <div class="dropdown">
               <a href="javascript:void(0);" id="login-oauth2" class='dropbtn'><i class="icon-user"></i> <span>{l s='Logged in' mod='prestascansecurity'}</span></a>
               <div class="dropdown-content">
+                {if isset($email_user) && $email_user != ''}
+                    <div>
+                        <a href='javascript:void(0);' title='{$email_user|escape:"html":'UTF-8'}' class='profile_email_user'>{$email_user|escape:"html":'UTF-8'}</a>
+                    </div>
+                {/if}
                 <div>
                     <a href="{$settings_page_url|escape:"html":'UTF-8'}" target="_blank">{l s='Settings' mod='prestascansecurity'}</a>
                 </div>

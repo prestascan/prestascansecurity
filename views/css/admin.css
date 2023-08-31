@@ -1299,3 +1299,11 @@ table#coreVulnerabilities.dataTable .cve {
 #prestascansecurity_main_container .vulnerability-status-failed a.btn-green-white {
     margin-bottom: 5px;
 }
+#connexion a.profile_email_user {
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0 auto;
+    text-decoration: unset;
+    cursor: default;
+}
