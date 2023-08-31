@@ -83,7 +83,7 @@
             <div class="btntooltip">?<span class="tooltiptext">{$tooltiptext2}</span></div>
             {if $module_result2_count != 0}
                 <div class="btntooltip eoaction export-scan-results" data-type="modules_unused" data-subtype="not_installed" data-action="exportScanResults">
-                    <img src="/modules/prestascansecurity/views/img/"/><span class="tooltiptext">{$tooltipReport}</span>
+                    <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
                 </div>
             {/if}
             {if $module_result2_count != 0} 
