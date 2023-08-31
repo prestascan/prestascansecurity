@@ -561,6 +561,10 @@ class Prestascansecurity extends Module
         $report = [];
         if (is_file($reportCacheFile)) {
             $report = unserialize(file_get_contents($reportCacheFile));
+            // Override the results for the directory scan
+            if (stripos($reportCacheFile, 'directories_listing_') !== false) {
+                $report = \PrestaScan\Reports\DirectoriesProtectionReport::matchStatusText($this, $report);
+            }
             if (isset($report['error']) && $report['error'] !== false) {
                 $this->context->smarty->assign($prefix . '_error', $report['error']);
             } else {

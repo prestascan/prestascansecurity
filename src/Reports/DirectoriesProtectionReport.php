@@ -34,7 +34,7 @@ class DirectoriesProtectionReport extends Report
         if (!is_dir(_PS_ROOT_DIR_ . '/prestascan_test')) {
             mkdir(_PS_ROOT_DIR_ . '/prestascan_test');
         }
-        $dirs = array_filter(glob(_PS_ROOT_DIR_ . '/*'), 'is_dir');
+        $dirs = array_filter(glob(_PS_ROOT_DIR_ . '/{,.}[!.,!..]*', GLOB_BRACE), 'is_dir');
         foreach ($dirs as $k => $dir) {
             $directories[] = str_replace(_PS_ROOT_DIR_ . '/', '', $dir);
         }
@@ -55,9 +55,17 @@ class DirectoriesProtectionReport extends Report
     {
         $passCount = 0;
         $failCount = 0;
-        foreach ($payload['result'] as $result) {
+        foreach ($payload['result'] as $key => $result) {
             if ($result[0]['status'] == 'pass') {
-                $passCount++;
+                if (isset($result[0]['status_details']) 
+                    && $result[0]['status_details'] !== false
+                    && $result[0]['status_details'] != 'git_check'
+                ) {
+                    $payload['result'][$key][0]['status'] = 'fail';
+                    ++$failCount;
+                } else {
+                    ++$passCount;
+                }
             } else {
                 $failCount++;
             }
@@ -76,5 +84,30 @@ class DirectoriesProtectionReport extends Report
         }
 
         return parent::saveReport($payload['completion_date'], $reportSummary, $payload);
+    }
+
+    public static function matchStatusText($module, $report)
+    {
+        foreach ($report['report']['results']['result'] as $key => $directory) {
+            if (!isset($directory[0]['status_details']) || $directory[0]['status_details'] === false) {
+                continue;
+            }
+            switch ($directory[0]['status_details']) {
+                case 'install_remove' : 
+                    $directory[0]['status_details'] = $module->l('Installation directory detected');
+                    break;
+                case 'git_check' :
+                    $directory[0]['status_details'] = $module->l('Git directory detected');
+                    break;
+                case 'sqlmanager_check' :
+                    $directory[0]['status_details'] = $module->l('SQL manager detected');
+                    break;
+                default:
+                    break;
+            }
+            $report['report']['results']['result'][$key] = $directory;
+        }
+        
+        return $report;
     }
 }

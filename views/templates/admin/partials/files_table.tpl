@@ -50,7 +50,8 @@
         {foreach name=aFiles from=$aFiles item=aFile}
             <tr>
                 <td width="60%"><a href="{$aFile[0].directory}" target="_blank">{$aFile[0].directory}</a></td>
-                <td width="20%" style="color:{if $aFile[0].status == 'fail' || $aFile[0].status == 'fail_curl'}#F45454{else}#3AD29F{/if}"><b>{if $aFile[0].status == 'fail'}{l s='Fail' mod='prestascansecurity'}{elseif $aFile[0].status == 'fail_curl'}{l s='Error' mod='prestascansecurity'}{else}{l s='Pass' mod='prestascansecurity'}{/if}</b></td>
+                <td width="20%">
+                <span style="color:{if $aFile[0].status == 'fail' || $aFile[0].status == 'fail_curl'}#F45454{else}#3AD29F{/if}"><b>{if $aFile[0].status == 'fail'}{l s='Fail' mod='prestascansecurity'}{elseif $aFile[0].status == 'fail_curl'}{l s='Error' mod='prestascansecurity'}{else}{l s='Pass' mod='prestascansecurity'}{/if}</b></span><span>{if isset($aFile[0].status_details) && $aFile[0].status_details != ''}{$aFile[0].status_details}{/if}</span></td>
                 <td width="20%">
                     {if $aFile[0].status == 'fail'}
                         <a href="{$urlContact}" target="_blank" class="eoaction btntooltip">{l s='Solve' mod='prestascansecurity'}<span class="tooltiptext">{$file_action}</span></a>

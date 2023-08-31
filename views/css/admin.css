@@ -1299,6 +1299,9 @@ table#coreVulnerabilities.dataTable .cve {
 #prestascansecurity_main_container .vulnerability-status-failed a.btn-green-white {
     margin-bottom: 5px;
 }
+#prestascansecurity_main_container table#protectionFiles tbody tr td span{
+    display: block;
+}
 #connexion a.profile_email_user {
     max-width: 90%;
     overflow: hidden;
