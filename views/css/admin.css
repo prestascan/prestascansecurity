@@ -1296,3 +1296,6 @@ table#coreVulnerabilities.dataTable .cve {
         font-size: 24px;
     }
 }
+#prestascansecurity_main_container .vulnerability-status-failed a.btn-green-white {
+    margin-bottom: 5px;
+}

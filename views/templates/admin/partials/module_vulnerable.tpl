@@ -79,7 +79,7 @@
                 <ul id="modules" class="list-unstyled">
                     {if $modules_vulnerabilities_results.module_to_update}
                         {foreach name=modules from=$modules_vulnerabilities_results.module_to_update item=aModule}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule class="eosec_modules_maj_results" alert_description=$module_update_disclaimer}
+                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule aType="moduleVulnerableToUpdate" class="eosec_modules_maj_results" alert_description=$module_update_disclaimer}
                         {/foreach}
                     {/if}
                 </ul>

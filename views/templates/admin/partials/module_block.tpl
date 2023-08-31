@@ -74,6 +74,12 @@
         {else}
             <p class="module_description">{l s='Module description' mod='prestascansecurity'} : {$aModule.description}</p>
         {/if}
+        {if isset($aType) && $aType == 'moduleVulnerableToUpdate' && isset($aModule.module_link) && !empty
+        ($aModule.module_link)}
+            <p>
+            <a href="{$aModule.module_link}" class="btn-green-white" target="_blank">{l s='Link of the module on addons' mod='prestascansecurity'}</a>
+            </p>
+        {/if}
         {if isset($aType) && $aType == 'moduleVulnerable'}
             {if isset($aModule.vulnerabilities)}
                 <ul class="list-vulnerabilities-modules no-liste-style">
@@ -95,9 +101,9 @@
                             </p>
                             <p><span class="vulnerability-description">{l s='Description: ' mod='prestascansecurity'}</span>
                                 {if (isset($aVulnerability.description[Context::getContext()->language->iso_code]))}
-                                    {$aVulnerability.description[Context::getContext()->language->iso_code]}<
+                                    {$aVulnerability.description[Context::getContext()->language->iso_code]}
                                 {elseif $aVulnerability.description !== null}
-                                    {if isset($aVulnerability.description["en"])}{$aVulnerability.description["en"]}{else}{$aVulnerability.description}{/if}<
+                                    {if isset($aVulnerability.description["en"])}{$aVulnerability.description["en"]}{else}{$aVulnerability.description}{/if}
                                 {else}
                                     <p>{l s='No detail concerning this vulnerability' mod='prestascansecurity'}
                                 {/if}
@@ -109,7 +115,22 @@
                             </p>
                             <p>
                                 {if isset($aVulnerability.cve) && $aVulnerability.cve}<a href="{$aVulnerability.cve}" target="_blank" class="btn-green-white">{l s='Link to CVE' mod='prestascansecurity'}</a>{/if}
-                                {if $aVulnerability.public_link}<a href="{$aVulnerability.public_link}" target="_blank" class="btn-green-white">{l s='More details' mod='prestascansecurity'}</a>{/if}
+                                
+                                {if !empty($aVulnerability.public_link)}
+                                    {assign var="public_link_arr" value=[$aVulnerability.public_link]}
+                                    {if strpos($aVulnerability.public_link, ',') !== false}
+                                        {$public_link_arr = explode(',', $aVulnerability.public_link)}
+                                    {/if}
+                                    {foreach $public_link_arr as $key=>$public_link}
+                                        <a href="{$public_link}" target="_blank" class="btn-green-white">
+                                            {if $key == 0}
+                                                {l s='More detail' mod='prestascansecurity'}
+                                            {else}
+                                                {l s='Additional detail' mod='prestascansecurity'}
+                                            {/if}
+                                        </a>
+                                    {/foreach}
+                                {/if}
                             </p>
                         </li>
                     {/foreach}
