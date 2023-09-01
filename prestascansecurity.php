@@ -33,7 +33,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '1.1.3';
+        $this->version = '1.1.4';
         $this->author = 'PrestaScan';
         $this->need_instance = false;
         $this->bootstrap = true;
@@ -236,7 +236,7 @@ class Prestascansecurity extends Module
         $this->context->smarty->assign('module_link', $link);
         $this->context->smarty->assign('alert_modules_vulnerability', $alerts);
 
-        $this->context->controller->addCSS($this->_path . 'views/css/dashboard.css');
+        $this->context->controller->addCSS($this->_path . 'views/css/dashboard.1.1.4.css');
         return $this->display(__FILE__, 'dashboard_zone_two.tpl');
     }
 
@@ -561,7 +561,7 @@ class Prestascansecurity extends Module
             'views/css/jquery-ui.min.css',
             'views/css/jquery-ui.structure.min.css',
             'views/css/jquery-ui.theme.min.css',
-            'views/css/modal.css',
+            'views/css/modal.1.1.4.css',
         ];
 
         foreach ($jsFiles as $jsFile) {
@@ -572,10 +572,10 @@ class Prestascansecurity extends Module
             $this->context->controller->addCSS($this->_path . $cssFile);
         }
 
-        $this->context->controller->addCSS($this->_path . 'views/css/admin.css');
+        $this->context->controller->addCSS($this->_path . 'views/css/admin.1.1.4.css');
         if (version_compare(_PS_VERSION_, '1.6', '<')) {
             // Add custom CSS for PS 1.5
-            $this->context->controller->addCSS($this->_path . 'views/css/admin_1.5.css');
+            $this->context->controller->addCSS($this->_path . 'views/css/admin.1.1.4_1.5.css');
         }
     }
 
