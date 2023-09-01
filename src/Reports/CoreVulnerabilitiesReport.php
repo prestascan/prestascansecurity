@@ -71,12 +71,12 @@ class CoreVulnerabilitiesReport extends Report
                     case 'low':
                         $countVulnerabilitiesLow++;
                         break;
-                    default :
+                    default:
                         break;
                 }
             }
         }
-        $reportSummary = array();
+        $reportSummary = [];
 
         $reportSummary['prestashop_version'] = \PrestaScan\Tools::getPrestashopVersion();
         $reportSummary['scan_result_total'] = count($payload['result']);

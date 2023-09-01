@@ -50,7 +50,7 @@ class UnusedModulesReport extends Report
     {
         $jobData = json_decode($jobData, true);
 
-        $reportSummary = array();
+        $reportSummary = [];
         $reportSummary['scan_result_ttotal'] = count($payload['result']['disabled']) + count($payload['result']['not_installed']);
         $reportSummary['scan_result_total'] = $jobData['count_modulesOnDisk'];
         $reportSummary['total_disabled_modules'] = count($payload['result']['disabled']);
@@ -69,8 +69,8 @@ class UnusedModulesReport extends Report
 
     private function getModulesByStatus()
     {
-        $modulesDisabled = array(); // A list of modules disabled (@todo : Multishop ?)
-        $modulesNotInstalled = array(); // A list of modules not installed but on disk (in /modules)
+        $modulesDisabled = []; // A list of modules disabled (@todo : Multishop ?)
+        $modulesNotInstalled = []; // A list of modules not installed but on disk (in /modules)
 
         $allModulesOnDisk = \PrestaScan\Tools::getFormattedModuleOnDiskList();
         foreach ($allModulesOnDisk as $key => $aModuleOnDisk) {

@@ -197,7 +197,8 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
         return false;
     }
 
-    private function getallheadersFallback() {
+    private function getallheadersFallback()
+    {
         $headers = [];
         foreach ($_SERVER as $name => $value) {
             if (substr($name, 0, 5) == 'HTTP_') {

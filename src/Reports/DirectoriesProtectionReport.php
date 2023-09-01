@@ -57,7 +57,7 @@ class DirectoriesProtectionReport extends Report
         $failCount = 0;
         foreach ($payload['result'] as $key => $result) {
             if ($result[0]['status'] == 'pass') {
-                if (isset($result[0]['status_details']) 
+                if (isset($result[0]['status_details'])
                     && $result[0]['status_details'] !== false
                     && $result[0]['status_details'] != 'git_check'
                 ) {
@@ -70,7 +70,7 @@ class DirectoriesProtectionReport extends Report
                 $failCount++;
             }
         }
-        $reportSummary = array();
+        $reportSummary = [];
 
         $reportSummary['scan_result_total'] = count($payload['result']);
         $reportSummary['scan_result_ttotal'] = $failCount;
@@ -93,7 +93,7 @@ class DirectoriesProtectionReport extends Report
                 continue;
             }
             switch ($directory[0]['status_details']) {
-                case 'install_remove' : 
+                case 'install_remove' :
                     $directory[0]['status_details'] = $module->l('Installation directory detected');
                     break;
                 case 'git_check' :
@@ -107,7 +107,7 @@ class DirectoriesProtectionReport extends Report
             }
             $report['report']['results']['result'][$key] = $directory;
         }
-        
+
         return $report;
     }
 }

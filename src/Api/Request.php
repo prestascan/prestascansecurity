@@ -27,7 +27,7 @@ use PrestaScan\OAuth2\Oauth;
 
 class Request
 {
-    private $options = array();
+    private $options = [];
 
     private $OAuth;
 
@@ -49,7 +49,7 @@ class Request
 
     protected function getOptions($postBody)
     {
-        $options['headers'] = array();
+        $options['headers'] = [];
         $options['headers']['Content-Type'] = 'application/json;charset=UTF-8';
         $options['headers']['Accept'] = 'application/json';
 

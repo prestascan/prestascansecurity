@@ -46,7 +46,7 @@ class PrestaScanQueue extends ObjectModel
 
     /** @var datetime date_upd */
     public $date_upd;
-    
+
     /**
      * @see ObjectModel::$definition
      */
@@ -79,7 +79,7 @@ class PrestaScanQueue extends ObjectModel
         $jobId = Db::getInstance()->getValue('
                 SELECT `jobid`
                 FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
-                WHERE `action_name` = "'.pSQL($actionName).'" AND (
+                WHERE `action_name` = "' . pSQL($actionName) . '" AND (
                     `state` = "' . pSQL(self::$actionname['PROGRESS']) . '" OR
                     `state` = "' . pSQL(self::$actionname['TORETRIEVE']) . '" OR
                     `state` = "' . pSQL(self::$actionname['SUGGEST_CANCEL']) . '")');
@@ -100,7 +100,7 @@ class PrestaScanQueue extends ObjectModel
     {
         $jobAddedSql = 'INSERT INTO `' . _DB_PREFIX_ . self::$definition['table'] . '`
             (`jobid`, `action_name`, `job_data`, `state`, `date_add`)
-            VALUES ("'.pSQL($jobId).'", "'.pSQL($actionName).'", "'.pSQL($jobData).'", "' . pSQL(self::$actionname['PROGRESS']) . '" , NOW())';
+            VALUES ("' . pSQL($jobId) . '", "' . pSQL($actionName) . '", "' . pSQL($jobData) . '", "' . pSQL(self::$actionname['PROGRESS']) . '" , NOW())';
         return Db::getInstance()->execute($jobAddedSql);
     }
 
@@ -148,7 +148,7 @@ class PrestaScanQueue extends ObjectModel
     {
         $sql = 'SELECT date_upd
                 FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
-                WHERE `action_name` = "' . pSQL($action_name) . '"'; 
+                WHERE `action_name` = "' . pSQL($action_name) . '"';
         return Db::getInstance()->getValue($sql);
     }
 
@@ -163,9 +163,9 @@ class PrestaScanQueue extends ObjectModel
         $jobId = Db::getInstance()->executeS('
             SELECT `jobid`, `action_name`
             FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
-            WHERE (`state` = "' . pSQL(self::$actionname['PROGRESS']) .'" OR 
-                `state` = "' . pSQL(self::$actionname['TORETRIEVE']) . '") 
-                AND date_add < DATE_SUB(now(), INTERVAL ' . (int)$time. ' MINUTE)');
+            WHERE (`state` = "' . pSQL(self::$actionname['PROGRESS']) . '" OR
+                `state` = "' . pSQL(self::$actionname['TORETRIEVE']) . '")
+                AND date_add < DATE_SUB(now(), INTERVAL ' . (int) $time . ' MINUTE)');
 
         return empty($jobId) ? false : $jobId;
     }
@@ -174,7 +174,7 @@ class PrestaScanQueue extends ObjectModel
     {
         $sql = 'SELECT *
                 FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
-                WHERE `action_name` = "' . pSQL($actionName) . '" AND 
+                WHERE `action_name` = "' . pSQL($actionName) . '" AND
                 `state` = "' .pSQL($state). '" ';
         return Db::getInstance()->getRow($sql);
     }

@@ -88,7 +88,7 @@ class Update extends Module
                 $this->module->installed = 1;
                 $this->module->database_version = $this->module->version;
                 $this->module->version = $newVersion;
-                $initUpgrade = Module::initUpgradeModule($this->module);
+                Module::initUpgradeModule($this->module);
                 if (empty($newVersion)) {
                     $error = $this->module->l('Error trying to install the new module. Please try updating the module from your module list.');
                     throw new UpdateException($error);

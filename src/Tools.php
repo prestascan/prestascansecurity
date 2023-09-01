@@ -30,7 +30,7 @@ class Tools
     {
         $report['date_report'] = time();
         $report['error'] = $error;
-        $report['report'] = array();
+        $report['report'] = [];
         $report['report']['filters'] = empty($filters) ? null : $filters;
         $report['report']['results'] = empty($results) ? null : $results;
         file_put_contents($reportFile, serialize($report));
@@ -160,7 +160,7 @@ class Tools
             \Configuration::deleteByName('PRESTASCAN_WEBCRON_TOKEN');
             \Configuration::deleteByName('PRESTASCAN_FIX_1_0_4');
         }
-        
+
         self::deleteCacheFiles();
     }
 
@@ -180,7 +180,7 @@ class Tools
     public static function deleteCacheFiles()
     {
         $fullPath = self::getCachePath();
-        array_map('unlink', glob( "$fullPath*.cache"));
+        array_map('unlink', glob("$fullPath*.cache"));
         return true;
     }
 
@@ -205,7 +205,7 @@ class Tools
         // Only modules on list, but with missing data
         $modulesOnDisk = $listOfModules['modulesOnDisk'];
 
-        $formattedList = array();
+        $formattedList = [];
         foreach ($listOfallModules as $aModule) {
             foreach ($modulesOnDisk as $key => $aModuleOnDisk) {
                 if ($aModule->name !== $aModuleOnDisk['name']) {
@@ -353,7 +353,7 @@ class Tools
         }
 
         // Add "suggest_cancel" in the enum
-        $query = 'ALTER TABLE `'._DB_PREFIX_.'prestascan_queue`
+        $query = 'ALTER TABLE `' . _DB_PREFIX_ . 'prestascan_queue`
             CHANGE `state` `state` ENUM(\'progress\',\'cancel\',\'completed\',\'error\',\'toretrieve\',\'suggest_cancel\')
             CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL';
 
@@ -474,7 +474,7 @@ class Tools
                 }
             }
         }
-        
+
         file_put_contents($reportFile, serialize($data));
         return true;
     }

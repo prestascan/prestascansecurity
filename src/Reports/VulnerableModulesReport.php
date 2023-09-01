@@ -30,7 +30,7 @@ class VulnerableModulesReport extends Report
 
     public function generate()
     {
-        $sanatizedList = array();
+        $sanatizedList = [];
 
         // Retrieve the list of all modules on list
         $allModulesOnDisk = \PrestaScan\Tools::getFormattedModuleOnDiskList();
@@ -68,9 +68,9 @@ class VulnerableModulesReport extends Report
 
     public function save($payload, $jobData)
     {
-        $data = array();
-        $data['vulnerable'] = array();
-        $data['module_to_update'] = array();
+        $data = [];
+        $data['vulnerable'] = [];
+        $data['module_to_update'] = [];
         // Retrieve additionnal job data
         $jobData = json_decode($jobData, true);
 
@@ -145,7 +145,7 @@ class VulnerableModulesReport extends Report
         // We sort the module to update to display first modules that are not updated on addons since few years
         $this->array_sort_by_column($data['module_to_update'], 'last_update_expire', SORT_DESC);
 
-        $reportSummary = array();
+        $reportSummary = [];
         $reportSummary['scan_result_total'] = (int) $jobData['count_modules_scanned'];
         $reportSummary['scan_result_criticity'] = $this->calculateModuleSeverity($data);
         $reportSummary['scan_result_ttotal'] = count($data['vulnerable']) + count($data['module_to_update']);
@@ -190,7 +190,7 @@ class VulnerableModulesReport extends Report
 
     private function array_sort_by_column(&$arr, $col, $dir = SORT_ASC)
     {
-        $sort_col = array();
+        $sort_col = [];
         foreach ($arr as $key => $row) {
             $sort_col[$key] = $row[$col];
         }

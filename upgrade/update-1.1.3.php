@@ -37,7 +37,7 @@ function upgrade_module_1_1_3($module)
     try {
         if (!empty(\Configuration::get('PRESTASCAN_API_EMAIL'))) {
             return true;
-        }        
+        }
         $OAuth = new \PrestaScan\OAuth2\Oauth();
         if ($OAuth->getAccessTokenObj()) {
             $userData = \PrestaScan\Api\User::get();

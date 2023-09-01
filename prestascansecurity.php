@@ -76,7 +76,7 @@ class Prestascansecurity extends Module
      */
     public function installDb()
     {
-        $sql = array();
+        $sql = [];
         $return = true;
         include \PrestaScan\Tools::getModulePath() . 'install/sql_install.php';
         if (empty($sql)) {
@@ -142,7 +142,7 @@ class Prestascansecurity extends Module
      */
     protected function getPositionsDashboardZoneOne($idHook)
     {
-        $positions = array();
+        $positions = [];
 
         $result = Db::getInstance()->executeS('
             SELECT `hm`.`id_module`, `hm`.`position`
@@ -185,7 +185,7 @@ class Prestascansecurity extends Module
         $tab = new Tab();
         $tab->active = 1;
         $tab->class_name = 'AdminPrestascanSecurityReports';
-        $tab->name = array();
+        $tab->name = [];
         foreach (Language::getLanguages(true) as $lang) {
             $tab->name[$lang['id_lang']] = $this->l('Ajax PrestaScan Security');
         }
@@ -222,7 +222,7 @@ class Prestascansecurity extends Module
             $updateObj->checkForModuleUpdate();
             $updateAvailable = Configuration::get('PRESTASCAN_UPDATE_VERSION_AVAILABLE') ? true : false;
         }
-        
+
         if (!$updateAvailable && !$alerts) {
             return;
         }

@@ -29,14 +29,14 @@ if (!defined('_PS_VERSION_')) {
 // You may add new tables to install, but you should also use upgrade scripts to install the new table
 // during module upgrade.
 
-$sql = array();
+$sql = [];
 
 // Profileo Notice : We would prefer using MySQL UUID solution for the primary key with a BINARY storage
 // (with then BIN_TO_UUID / UUID_TO_BIN functions for the requests.
 // However, this is only available in MySql 8.0 or later. So we prefer to use a char(36) to store
 // our UUID. The volume of data stored will be reduced on client side, so this will not create
 // performance bottleneck
-$sql[_DB_PREFIX_.'prestascan_queue'] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prestascan_queue` (
+$sql[_DB_PREFIX_ . 'prestascan_queue'] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prestascan_queue` (
               `id` int(11) NOT NULL AUTO_INCREMENT,
               `jobid` char(36) NOT NULL,
               `action_name` varchar(255) NOT NULL,
@@ -49,7 +49,7 @@ $sql[_DB_PREFIX_.'prestascan_queue'] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREF
               UNIQUE KEY `unique_jobid` (`jobid`)
             ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
-$sql[_DB_PREFIX_.'vulnerability_alerts'] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prestascan_vuln_alerts` (
+$sql[_DB_PREFIX_ . 'vulnerability_alerts'] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prestascan_vuln_alerts` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
             `module_name` varchar(255) NOT NULL,
             `vulnerability_type` varchar(255) NOT NULL,

@@ -144,7 +144,7 @@
                 {assign var='aFileDescription' value=$aFile.description.{$defaultLanguage}.value}
             {/if}
             <tr class="{if isset($aFile.is_dismissed) && $aFile.is_dismissed}dismissed{/if}">
-                <input type="hidden" class="description" name="description" value="{$aFileDescription|escape:'html'}"/>
+                <input type="hidden" class="description" name="description" value="{$aFileDescription|escape:'html':'UTF-8'}"/>
                 <td width="5%" class="dt-control"></td> 
                 <td width="20%" class="cve"><strong>{if isset($aFile.cve) && isset($aFile.cve.value)}{$aFile.cve.value}{/if}</strong></td>
                 <td width="10%" data-sort="{$datasort}">{if isset($aFile.severity) && isset($aFile.severity.value)}{$aFile.severity.value}{/if}</td>

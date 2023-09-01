@@ -30,7 +30,7 @@ class Report
 {
     public $reportName;
 
-    private $cacheReports = array();
+    private $cacheReports = [];
 
     private static $reportList = array(
         'non_standards_files',
@@ -42,7 +42,7 @@ class Report
         'modules_unused',
     );
 
-    private $cacheListDismiss = array();
+    private $cacheListDismiss = [];
     private static $listDismiss = array(
         'non_standards_files_dismiss',
         'added_or_modified_core_files_dismiss',
@@ -81,10 +81,9 @@ class Report
     {
         if (!isset($response['job_id'])) {
             // Error
-            throw new \Exception(
-                'The API was not able to handle the request with the following error : Missing job_id.
-                Please try again or contact support for assistance.'
-            );
+            $errorMsg = 'The API was not able to handle the request with the following error : Missing job_id. '
+                        .'Please try again or contact support for assistance.';
+            throw new \Exception($errorMsg);
         }
     }
 
@@ -176,6 +175,7 @@ class Report
                         } else {
                             $results['summary']['total_low'] -= 1;
                         }
+
                         continue;
                     }
                     $results['result'][$k]['is_dismissed'] = 0;
@@ -183,6 +183,7 @@ class Report
                 if ($countdismiss == count($results['result'])) {
                     $results['summary']['scan_result_criticity'] = '';
                 }
+
                 break;
             case 'modules_vulnerabilities':
                 $key = 'name';
@@ -199,12 +200,14 @@ class Report
                                 $results['summary']['scan_result_ttotal'] -= 1;
                                 $results['summary']['total_vulnerable'] -= 1;
                                 $count_dismiss_vulnerable++;
+
                                 break;
                             } elseif ($ds['value'] == $result[$key]
                             && $ds['count'] < count($result['vulnerabilities'])
                             ) {
                                 $results['vulnerable'][$k]['is_dismissed'] = 0;
                                 $results['vulnerable'][$k]['count_vulerability'] = $ds['count'];
+
                                 break;
                             }
                         };
@@ -219,6 +222,7 @@ class Report
                                 $results['summary']['scan_result_ttotal'] -= 1;
                                 $results['summary']['total_module_to_update'] -= 1;
                                 $count_dismiss_update++;
+
                                 break;
                             }
                         };
@@ -228,6 +232,7 @@ class Report
                     && count($results['module_to_update']) == $count_dismiss_update) {
                     $results['summary']['scan_result_criticity'] = '';
                 }
+
                 break;
             case 'modules_unused':
                 $key = 'name';
@@ -238,6 +243,7 @@ class Report
                         $results['summary']['scan_result_ttotal'] -= 1;
                         $results['summary']['total_uninstalled_modules'] -= 1;
                         $count_dismiss++;
+
                         continue;
                     }
                     $results['result']['not_installed'][$k]['is_dismissed'] = 0;
@@ -248,6 +254,7 @@ class Report
                         $results['summary']['scan_result_ttotal'] -= 1;
                         $results['summary']['total_disabled_modules'] -= 1;
                         $count_dismiss++;
+
                         continue;
                     }
                     $results['result']['disabled'][$k]['is_dismissed'] = 0;
@@ -255,6 +262,7 @@ class Report
                 if($count_dismiss == (count($results['result']['disabled']) + count($results['result']['not_installed']))) {
                     $results['summary']['scan_result_criticity'] = '';
                 }
+
                 break;
             case 'directories_listing':
                 $key = 'directory';
@@ -279,8 +287,10 @@ class Report
                 }
                 $results['summary']['count_failed'] = $count_failed;
                 $results['summary']['count_dismissed'] = $count_dismiss;
+
                 break;
             default:
+
                 break;
         }
         return $results;

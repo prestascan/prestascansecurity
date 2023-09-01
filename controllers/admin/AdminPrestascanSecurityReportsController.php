@@ -76,7 +76,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
 
         if (empty($progressScans)) {
             // Config not existing, we set the default value for each report
-            $progressScans = array();
+            $progressScans = [];
             foreach (\PrestaScan\Reports\Report::getReportsListName() as $aReportName) {
                 $progressScans[$aReportName] = false;
             }
@@ -178,7 +178,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
             } catch (\PrestaScan\Exception\TooManyAttempsException $exp) {
                 // Rate limit
                 self::dieWithError($this->module->l('You have reached the limit of number of attemps allowed for this scan today. Please try again in 24 hours.', 'AdminPrestascanSecurityReportsController'));
-            } catch (\Exception $e) {                
+            } catch (\Exception $e) {
                 // @todo : $e->getCode() is the HTTP response code? That seem odd.
                 // Code to review
 
@@ -194,7 +194,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
                 }
             }
         }
-        
+
         if ($scanCompleted) {
             \PrestaScan\Tools::printAjaxResponse(true, false, $this->module->l('A scan just completed ! Please reload this page to view the report.', 'AdminPrestascanSecurityReportsController'));
         }
@@ -447,7 +447,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         }
 
         if (!$bath) {
-            $forceActiveTab = array();
+            $forceActiveTab = [];
             switch ($classReport) {
                 case \PrestaScan\Reports\VulnerableModulesReport::class:
                     $forceActiveTab['forceactivetab'] = 'modules_vulnerabilities';
@@ -487,7 +487,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
     }
 
     public function ajaxProcessCancelJobTooLong()
-    {        
+    {
         try {
             $job = \PrestaScanQueue::getJobByActionNameAndState(Tools::getValue('type'), \PrestaScanQueue::$actionname['SUGGEST_CANCEL']);
             if (!isset($job['jobid'])) {
@@ -597,7 +597,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         $reports = new \PrestaScan\Reports\Report();
 
         switch ($type) {
-            case 'modules_vulnerabilities':                
+            case 'modules_vulnerabilities':
                 foreach ($reports->getReports() as $reportName => $reportCacheFile) {
                     if ($reportName == $type && is_file($reportCacheFile)) {
                         $report = unserialize(file_get_contents($reportCacheFile));
@@ -640,13 +640,13 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
             case 'modules_unused':
                 foreach ($reports->getReports() as $reportName => $reportCacheFile) {
                     if ($reportName == $type && is_file($reportCacheFile)) {
-                        $report = unserialize(file_get_contents($reportCacheFile));                        
-                        $date = date('Y-m-d-H-m-s', $report['date_report']); 
+                        $report = unserialize(file_get_contents($reportCacheFile));
+                        $date = date('Y-m-d-H-m-s', $report['date_report']);
                         $results = $report['report']['results']['result'][$subtype];
                         foreach ($results as $result) {
                             $content .= $result['displayName'] . ' (' . $result['name'] . ') - ' . $result['version'] . ' - ' . $result['author'];
                             $content .= "\n";
-                        }                 
+                        }
                     }
                 }
                 break;
@@ -659,7 +659,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
             $subtype = 'uninstalled';
         }
 
-        $filename = 'module_'.$subtype.'_'.$date.'.txt';
+        $filename = 'module_' . $subtype . '_' . $date . '.txt';
         header('Content-type: application/txt');
         header('Content-Disposition: attachment; filename=' . basename($filename));
         header('Content-Length: ' . strlen($content));

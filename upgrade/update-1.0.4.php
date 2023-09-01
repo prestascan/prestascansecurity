@@ -35,7 +35,7 @@ if (!defined('_PS_VERSION_')) {
 function upgrade_module_1_0_4($module)
 {
     // Add "suggest_cancel" in the enum
-    $query = 'ALTER TABLE `'._DB_PREFIX_.'prestascan_queue`
+    $query = 'ALTER TABLE `' . _DB_PREFIX_ . 'prestascan_queue`
         CHANGE `state` `state` ENUM(\'progress\',\'cancel\',\'completed\',\'error\',\'toretrieve\',\'suggest_cancel\')
         CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL';
 

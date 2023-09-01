@@ -181,7 +181,7 @@ class PrestascansecurityOauth2ModuleFrontController extends ModuleFrontControlle
         try {
             // Try to get an access token using the client credentials grant.
             $state = $provider->getState();
-            $options = array();
+            $options = [];
             $options['state'] = $state;
             $authorizationUrl = $provider->getAuthorizationUrl($options);
 
