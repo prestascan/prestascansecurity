@@ -542,6 +542,47 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         \PrestaScan\Tools::printAjaxResponse(true, false);
     }
 
+    public function ajaxProcessUpdateDismissedEntitiesList()
+    {
+        $value = Tools::getValue('value');
+        $type = Tools::getValue('type');
+        $subtype = Tools::getValue('subtype');
+        $actionReport = Tools::getValue('action_report');
+        $vulnerabilitiesCount = Tools::getValue('vulnerabilitiesCount');
+
+        if (empty($value) || empty($type) || empty($actionReport) || !in_array($actionReport, array('dismissed', 'reopen'))) {
+            self::dieWithError($this->module->l('Missing parameter. Please try again.', 'AdminPrestascanSecurityReportsController'));
+        }
+
+        switch ($type) {
+            case 'core-vulnerabilities':
+                $report = new \PrestaScan\Reports\CoreVulnerabilitiesDismiss();
+                $report->updateDismissedEntitiesList($actionReport, $value);
+                break;
+            case 'modules_vulnerabilities':
+                if (empty($subtype) || !in_array($subtype, array('modules_vulnerables', 'modules_to_update'))) {
+                    self::dieWithError($this->module->l('Missing parameter. Please try again.', 'AdminPrestascanSecurityReportsController'));
+                }
+                $report = new \PrestaScan\Reports\ModulesVulnerabilitiesDismiss();
+                $report->updateDismissedEntitiesList($actionReport, $value, $subtype, $vulnerabilitiesCount);
+                break;
+            case 'modules_unused':
+                if(empty($subtype) || !in_array($subtype, array('modules_disabled', 'modules_uninstalled'))) {
+                    self::dieWithError($this->module->l('Missing parameter. Please try again.', 'AdminPrestascanSecurityReportsController'));
+                }
+                $report = new \PrestaScan\Reports\ModulesUnusedDismiss();
+                $report->updateDismissedEntitiesList($actionReport, $value, $subtype);
+                break;
+            case 'directories_listing':
+                $report = new \PrestaScan\Reports\DirectoriesProtectionDismiss();
+                $report->updateDismissedEntitiesList($actionReport, $value);
+                break;
+            default:
+                break;
+        }
+        \PrestaScan\Tools::printAjaxResponse(true, false);
+    }
+
     public function ajaxProcessExportScanResults()
     {
         $type = Tools::getValue('type');
@@ -612,7 +653,6 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
             default:
                 break;
         }
-
         if ($subtype == 'module_to_update') {
             $subtype = 'update';
         } elseif ($subtype == 'not_installed') {

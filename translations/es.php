@@ -136,6 +136,8 @@ $_MODULE['<{prestascansecurity}prestashop>files_table_902b0d55fddef6f8d651fe1035
 $_MODULE['<{prestascansecurity}prestashop>files_table_b9b57aae83585e17ede4570dcede353c'] = 'Aprobado';
 $_MODULE['<{prestascansecurity}prestashop>files_table_97817e0979af8f0291365165b76a45b5'] = 'Solución';
 $_MODULE['<{prestascansecurity}prestashop>files_table_84d7a469d3777c322c310d06035cd954'] = 'Error: El directorio no pudo ser escaneado';
+$_MODULE['<{prestascansecurity}prestashop>files_table_b8244c09455b8e9195db04bf35f58ca0'] = 'Reabrir';
+$_MODULE['<{prestascansecurity}prestashop>files_table_c8a59e7135a20b362f9c768b09454fdb'] = 'Ocultar';
 $_MODULE['<{prestascansecurity}prestashop>files_table_ac70412e939d72a9234cdebb1af5867b'] = 'Ruta';
 $_MODULE['<{prestascansecurity}prestashop>files_table_a4b7f1864cfdb47cd05b54eb10337506'] = 'Fecha modificado';
 $_MODULE['<{prestascansecurity}prestashop>files_table_ec53a8c4f07baed5d8825072c89799be'] = 'Estado';
@@ -151,6 +153,7 @@ $_MODULE['<{prestascansecurity}prestashop>files_table_a1fa27779242b4902f7ae3bdd5
 $_MODULE['<{prestascansecurity}prestashop>files_table_97e7c9a7d06eac006a28bf05467fcc8b'] = 'Enlace';
 $_MODULE['<{prestascansecurity}prestashop>module_block_746e35400efaae9342541f62d3777272'] = 'vulnerabilidad(es) detectada(s) para estos módulos';
 $_MODULE['<{prestascansecurity}prestashop>module_block_1af8ef7be9916c7eb21808f105966836'] = 'El desarrollador del módulo no ha publicado una actualización desde hace varios años. Esto puede representar un riesgo de seguridad si el desarrollo ya no está activo.';
+$_MODULE['<{prestascansecurity}prestashop>module_block_db03cad79d881a55584ef6fab717653d'] = 'Página del módulo: ';
 $_MODULE['<{prestascansecurity}prestashop>module_block_bbe087624c6245a8182c9b5841c4b89d'] = 'Estado del módulo:';
 $_MODULE['<{prestascansecurity}prestashop>module_block_98dd43dfae05b11befe1f140e0ec787a'] = 'Instalado';
 $_MODULE['<{prestascansecurity}prestashop>module_block_d12fb360f73c34226d1e50228875d8cf'] = 'No instalado';
@@ -173,6 +176,8 @@ $_MODULE['<{prestascansecurity}prestashop>module_block_434b3b9134ed394632d1fc8ab
 $_MODULE['<{prestascansecurity}prestashop>module_block_8d4ba4e55488346ac11a45f7b4c823f8'] = 'Enlace a VEC';
 $_MODULE['<{prestascansecurity}prestashop>module_block_63ab4932d99c86ff10443b5e97fa7c23'] = 'Más detalle';
 $_MODULE['<{prestascansecurity}prestashop>module_block_56c47ec8a297288f7935e5563f6be5aa'] = 'Enlace adicional';
+$_MODULE['<{prestascansecurity}prestashop>module_block_b8244c09455b8e9195db04bf35f58ca0'] = 'Reabrir';
+$_MODULE['<{prestascansecurity}prestashop>module_block_c8a59e7135a20b362f9c768b09454fdb'] = 'Ocultar';
 $_MODULE['<{prestascansecurity}prestashop>directories_listing_28fcb6adfa1887a568e1e146fa8e7748'] = 'Inicie el Escaneo para comprobar el estado de sus directorios';
 $_MODULE['<{prestascansecurity}prestashop>directories_listing_f19d858042076fbd713fd397ae234dec'] = 'Debido a configuraciones incorrectas o malware, sus directorios pueden volverse accesibles públicamente, lo que permite a los atacantes ver, descargar y potencialmente explotar datos confidenciales, comprometer su sistema o realizar acciones maliciosas adicionales, lo que pone en peligro su privacidad, seguridad y bienestar digital general.';
 $_MODULE['<{prestascansecurity}prestashop>directories_listing_64b5787134bc70a6cfd4555d1a7e837d'] = 'Directorio(s) en riesgo';

@@ -21,7 +21,7 @@
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  *}
 
-<li id="module-{$aModule.name}" class="module_block item well {$class}">
+<li id="module-{$aModule.name}" class="module_block item well {$class} {if isset($aModule.is_dismissed) && $aModule.is_dismissed}dismissed{/if}">
     <div class="module_name">
         <div class="module-logo-thumb-list">
           <img src="/modules/{$aModule.name}/logo.png" alt="{$aModule.displayName}" width="45">
@@ -44,6 +44,9 @@
         {if $class && ($class == 'eosec_modules_maj_results') && isset($aModule.last_update_expire) && $aModule.last_update_expire}
             <p class="msg-alert">{l s='The module\'s developer has not published an update for several years. This may pose a security risk if development is no longer active.' mod='prestascansecurity'}</p>
         {/if}
+        {if isset($aType) && $aType == 'moduleVulnerable' && isset($aModule.module_link) && !empty($aModule.module_link[0])}
+            <p class="module_link">{l s='Module page : ' mod='prestascansecurity'}<a href="{$aModule.module_link[0]}" target="_blank"><b>{$aModule.module_link[0]}</b></a></p>
+        {/if}
         <p>
             {l s='Module status : ' mod='prestascansecurity'}
             <span class="title-module-details">
@@ -59,7 +62,7 @@
                 {/if}
             </span>
         </p>
-        {if $class && ($class == "modules_disabled_results" || $class == "modules_unistalled_results")}
+        {if $class && ($class == "modules_disabled_results" || $class == "modules_uninstalled_results")}
             <div class="container_module_details_descr">
                 <div class="module_detail_descr">
                     <p class="module_description">{if isset($aType) && $aType == 'moduleVulnerable'}{l s='Module description' mod='prestascansecurity'} : {/if}{$aModule.description}</p>
@@ -83,7 +86,9 @@
         {if isset($aType) && $aType == 'moduleVulnerable'}
             {if isset($aModule.vulnerabilities)}
                 <ul class="list-vulnerabilities-modules no-liste-style">
+                {assign var="countVulnerable" value=0}
                     {foreach name=vulnerabilities from=$aModule.vulnerabilities item=aVulnerability}
+                        {assign var="countVulnerable" value=$aModule.vulnerabilities|count}
                         <li class="vulnerability-status-{$aVulnerability.status}">
                             <p class="vulnerability-title"><span class="vulnerabilities_count level_{$aVulnerability.criticity} vulnerability_module" title="{if $aVulnerability.criticity == "high" || $aVulnerability.criticity == "critical"}{l s='High' mod='prestascansecurity'}{elseif $aVulnerability.criticity == "medium"}{l s='Medium' mod='prestascansecurity'}{else}{l s='Low' mod='prestascansecurity'}{/if}"></span><span>{$aVulnerability.type}</span></p>
                             <p><span class="vulnerability-version">{l s='From version: ' mod='prestascansecurity'}</span>
@@ -139,6 +144,11 @@
         {/if}
         {if isset($alert_description)}
             <p class='msg-alert'>{$alert_description|escape:'htmlall':'UTF-8'}</p>
+        {/if}
+        {if (isset($aType) && $aType == 'moduleVulnerable') || (isset($class) && $class == 'modules_to_update')}
+            <a href="javascript:void(0);" class="btn-green-white eoaction dismiss-vulnerability" data-subtype="{$class|replace:'_results':''}" data-type="modules_vulnerabilities" data-value="{$aModule.name}" data-action="{if isset($aModule.is_dismissed) && $aModule.is_dismissed}reopen{else}dismissed{/if}" data-vulnerabilitiesCount="{if isset($countVulnerable)}{$countVulnerable}{/if}"{if isset($aModule.count_vulerability)}data-countVulnerabilities="{$aModule.count_vulerability}"{/if}>{if isset($aModule.is_dismissed) && $aModule.is_dismissed}{l s='Reopen' mod='prestascansecurity'}{else}<span>X&nbsp;</span>{l s='Dismiss' mod='prestascansecurity'}{/if}</a>
+        {else}
+            <a href="javascript:void(0);" class="btn-green-white eoaction dismiss-vulnerability" data-subtype="{$class|replace:'_results':''}" data-type="modules_unused" data-value="{$aModule.name}" data-action="{if isset($aModule.is_dismissed) && $aModule.is_dismissed}reopen{else}dismissed{/if}">{if isset($aModule.is_dismissed) && $aModule.is_dismissed}{l s='Reopen' mod='prestascansecurity'}{else}<span>X&nbsp;</span>{l s='Dismiss' mod='prestascansecurity'}{/if}</a>
         {/if}
     </div>
 </li>

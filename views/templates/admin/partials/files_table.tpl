@@ -47,10 +47,22 @@
                 <th width="20%">{l s='Action' mod='prestascansecurity'}</th>
             </tr>
         </thead>
-        {foreach name=aFiles from=$aFiles item=aFile}
-            <tr>
+        <tbody>
+            {foreach name=aFiles from=$aFiles item=aFile}
+            {if isset($aFile[0].is_dismissed) && $aFile[0].is_dismissed}
+                {assign var='datasort' value=4}
+            {elseif $aFile[0].status == 'fail'}
+                {assign var='datasort' value=1}
+            {elseif $aFile[0].status == 'fail_curl'}
+                {assign var='datasort' value=2}
+            {elseif $aFile[0].status == 'pass'}
+                {assign var='datasort' value=3}
+            {else}
+                {assign var='datasort' value=5}
+            {/if}    
+            <tr class="{if isset($aFile[0].is_dismissed) && $aFile[0].is_dismissed}dismissed{/if}">
                 <td width="60%"><a href="{$aFile[0].directory}" target="_blank">{$aFile[0].directory}</a></td>
-                <td width="20%">
+                <td width="20%" data-sort="{$datasort}">
                 <span style="color:{if $aFile[0].status == 'fail' || $aFile[0].status == 'fail_curl'}#F45454{else}#3AD29F{/if}"><b>{if $aFile[0].status == 'fail'}{l s='Fail' mod='prestascansecurity'}{elseif $aFile[0].status == 'fail_curl'}{l s='Error' mod='prestascansecurity'}{else}{l s='Pass' mod='prestascansecurity'}{/if}</b></span><span>{if isset($aFile[0].status_details) && $aFile[0].status_details != ''}{$aFile[0].status_details}{/if}</span></td>
                 <td width="20%">
                     {if $aFile[0].status == 'fail'}
@@ -59,9 +71,13 @@
                     {if $aFile[0].status == 'fail_curl'}
                         <div class="eoaction text-center">{l s='Error : Directory couldn\'t be scanned' mod='prestascansecurity'}</div>
                     {/if}
+                    {if $aFile[0].status == 'fail' || $aFile[0].status == 'fail_curl'}
+                        <a class="eoaction btntooltip dismiss-vulnerability" href="javascript:void(0)" data-type="directories_listing" data-value="{$aFile[0].directory}" data-action="{if isset($aFile[0].is_dismissed) && $aFile[0].is_dismissed}reopen{else}dismissed{/if}">{if isset($aFile[0].is_dismissed) && $aFile[0].is_dismissed}{l s='Reopen' mod='prestascansecurity'}{else}<span>X&nbsp;</span>{l s='Dismiss' mod='prestascansecurity'}{/if}</a>
+                    {/if}
                 </td>
             </tr>
         {/foreach}
+        </tbody>        
     </table>
 {elseif $aFileType == 'infectedFiles'}
     <table id="{$id}" class="prestascansecurity_datatable no-sort-by-file-size" data-copy-title="" data-copy-messagetop="">
@@ -96,18 +112,30 @@
                 <th width="10%">{l s='From' mod='prestascansecurity'}</th>
                 <th width="10%">{l s='To' mod='prestascansecurity'}</th>
                 <th width="15%">{l s='Type' mod='prestascansecurity'}</th>
-                <th width="10%"></th>
+                <th width="10%">{l s='Action' mod='prestascansecurity'}</th>
             </tr>
         </thead>
         {foreach name=aFiles from=$aFiles item=aFile}
-            {if isset($aFile.severity.value) && ($aFile.severity.value === 'Critical' || $aFile.severity.value === 'critical')}
-                {assign var='datasort' value=1}
-            {elseif isset($aFile.severity.value) && ($aFile.severity.value === 'High' || $aFile.severity.value === 'high')}
-                {assign var='datasort' value=2}
-            {elseif isset($aFile.severity.value) && ($aFile.severity.value === 'Medium' || $aFile.severity.value === 'medium')}
-                {assign var='datasort' value=3}
+            {if !isset($aFile.is_dismissed) || !$aFile.is_dismissed}
+                {if isset($aFile.severity.value) && ($aFile.severity.value === 'Critical' || $aFile.severity.value === 'critical')}
+                    {assign var='datasort' value=1}
+                {elseif isset($aFile.severity.value) && ($aFile.severity.value === 'High' || $aFile.severity.value === 'high')}
+                    {assign var='datasort' value=2}
+                {elseif isset($aFile.severity.value) && ($aFile.severity.value === 'Medium' || $aFile.severity.value === 'medium')}
+                    {assign var='datasort' value=3}
+                {else}
+                    {assign var='datasort' value=4}
+                {/if}
             {else}
-                {assign var='datasort' value=4}
+                {if isset($aFile.severity.value) && ($aFile.severity.value === 'Critical' || $aFile.severity.value === 'critical')}
+                    {assign var='datasort' value=5}
+                {elseif isset($aFile.severity.value) && ($aFile.severity.value === 'High' || $aFile.severity.value === 'high')}
+                    {assign var='datasort' value=6}
+                {elseif isset($aFile.severity.value) && ($aFile.severity.value === 'Medium' || $aFile.severity.value === 'medium')}
+                    {assign var='datasort' value=7}
+                {else}
+                    {assign var='datasort' value=8}
+                {/if}
             {/if}
 
             {assign var='defaultLanguage' value=Context::getContext()->language->iso_code}
@@ -115,9 +143,9 @@
             {if $defaultLanguage != 'en' && isset($aFile.description.{$defaultLanguage}.value) && !empty($aFile.description.{$defaultLanguage}.value)}
                 {assign var='aFileDescription' value=$aFile.description.{$defaultLanguage}.value}
             {/if}
-            <tr>
+            <tr class="{if isset($aFile.is_dismissed) && $aFile.is_dismissed}dismissed{/if}">
                 <input type="hidden" class="description" name="description" value="{$aFileDescription|escape:'html'}"/>
-                <td width="5%" class="dt-control"></td>  
+                <td width="5%" class="dt-control"></td> 
                 <td width="20%" class="cve"><strong>{if isset($aFile.cve) && isset($aFile.cve.value)}{$aFile.cve.value}{/if}</strong></td>
                 <td width="10%" data-sort="{$datasort}">{if isset($aFile.severity) && isset($aFile.severity.value)}{$aFile.severity.value}{/if}</td>
                 <td width="10%">{if isset($aFile.fo) && isset($aFile.fo.value)}{$aFile.fo.value}{/if}</td>
@@ -125,7 +153,10 @@
                 <td width="10%">{if isset($aFile.from) && isset($aFile.from.value)}{$aFile.from.value}{/if}</td>
                 <td width="10%">{if isset($aFile.to) && isset($aFile.to.value)}{$aFile.to.value}{/if}</td>
                 <td width="15%">{if isset($aFile.type) && isset($aFile.type.value)}{$aFile.type.value}{/if}</td>
-                <td width="10%"><a class="eoaction" href="{$aFile.link}" target="_blank">{l s='Link' mod='prestascansecurity'}</a></td>
+                    <td width="10%">
+                    <a class="eoaction" href="{$aFile.link}" target="_blank">{l s='Link' mod='prestascansecurity'}</a>
+                    <a class="eoaction dismiss-vulnerability" href="javascript:void(0)" data-type="core-vulnerabilities" data-value="{$aFile.link}" data-action="{if isset($aFile.is_dismissed) && $aFile.is_dismissed}reopen{else}dismissed{/if}">{if isset($aFile.is_dismissed) && $aFile.is_dismissed}{l s='Reopen' mod='prestascansecurity'}{else}<span>X&nbsp;</span>{l s='Dismiss' mod='prestascansecurity'}{/if}</a>
+                </td>
             </tr>
         {/foreach}
     </table>

@@ -396,8 +396,33 @@ class Prestascansecurity extends Module
     {
         // Load the reports
         $reports = new \PrestaScan\Reports\Report();
+        $dismissedCacheFile = $reports->getDismissedCacheFiles();
         foreach ($reports->getReports() as $reportName => $cacheFile) {
-            $this->smartyAssignReportVariables($cacheFile, $reportName);
+            $data = [];
+            $reportNameDismissed = $reportName . '_dismiss';
+            if (is_file($cacheFile)) {
+                $report = unserialize(file_get_contents($cacheFile));
+                // Override the results for the directory scan
+                if (stripos($cacheFile, 'directories_listing_') !== false) {
+                    $report = \PrestaScan\Reports\DirectoriesProtectionReport::matchStatusText($this, $report);
+                }
+                if (isset($report['error']) && $report['error'] !== false) {
+                    $data['error'] = $report['error'];
+                } else {
+                    $results = $report['report']['results'];
+                    // Check if there are dismissed results to update
+                    if (isset($dismissedCacheFile[$reportNameDismissed])
+                        && is_file($dismissedCacheFile[$reportNameDismissed])
+                    ) {
+                        $resultsDismissed = unserialize(file_get_contents($dismissedCacheFile[$reportNameDismissed]));
+                        $results = $reports->updateDismissedEntitiesStatus($results, $resultsDismissed, $reportName);
+                    }
+                    $data = $results;
+                }
+            } else {
+                $data = false;
+            }
+            $this->smartyAssignReportVariables($data, $reportName);
         }
     }
 
@@ -554,25 +579,15 @@ class Prestascansecurity extends Module
         }
     }
 
-    protected function smartyAssignReportVariables($reportCacheFile, $reportName)
+    protected function smartyAssignReportVariables($data, $reportName)
     {
-        // We create a hash for the cache files (to avoid direct access by guessing the name of the file)
-        $prefix = $reportName;
-        $report = [];
-        if (is_file($reportCacheFile)) {
-            $report = unserialize(file_get_contents($reportCacheFile));
-            // Override the results for the directory scan
-            if (stripos($reportCacheFile, 'directories_listing_') !== false) {
-                $report = \PrestaScan\Reports\DirectoriesProtectionReport::matchStatusText($this, $report);
-            }
-            if (isset($report['error']) && $report['error'] !== false) {
-                $this->context->smarty->assign($prefix . '_error', $report['error']);
-            } else {
-                $this->context->smarty->assign($prefix . '_results', $report['report']['results']);
-            }
-            $this->context->smarty->assign($prefix . '_date_report', date('F d, Y \a\t H:i', $report['date_report']));
+        if (isset($data['error']) && $data['error']) {
+            $this->context->smarty->assign($reportName . '_error', $data['error']);
         } else {
-            $this->context->smarty->assign($prefix . '_results', false);
+            $this->context->smarty->assign($reportName . '_results', $data);
+            if (is_array($data) && isset($data['date_report'])) {
+                $this->context->smarty->assign($reportName . '_date_report', date('F d, Y \a\t H:i', $data['date_report']));
+            }
         }
     }
 

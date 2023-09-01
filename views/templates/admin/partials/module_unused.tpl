@@ -59,17 +59,24 @@
         <div class="module_results eoresults col-md-6">         
             <h2>{$module_result1_count} {$module_result1_title}</h2>
             <div class="btntooltip">?<span class="tooltiptext">{$tooltiptext1}</span></div>
-            {if $module_result1_count != 0}
-                <div class="btntooltip eoaction export-scan-results" data-type="modules_unused" data-subtype="disabled" data-action="exportScanResults">
-                    <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
-                </div>
-            {/if}
-            {if $module_result1_count != 0}
+            {if $modules_unused_results.result.disabled|count != 0}
+                {if $module_result1_count != 0}
+                    <div class="btntooltip eoaction export-scan-results" data-type="modules_unused" data-subtype="disabled" data-action="exportScanResults">
+                        <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
+                    </div>
+                {/if}
                 <div class="scroll-overlay"></div>
                 <ul id="modules" class="list-unstyled">
                     {if $modules_unused_results.result.disabled}
                         {foreach name=modules from=$modules_unused_results.result.disabled item=aModule}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule aType="moduleUnused" class="modules_disabled_results"}
+                            {if !isset($aModule.is_dismissed) || $aModule.is_dismissed == 0}
+                                {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule aType="moduleUnused" class="modules_disabled_results"}
+                            {/if}
+                        {/foreach}
+                        {foreach name=modules from=$modules_unused_results.result.disabled item=aModule}
+                            {if isset($aModule.is_dismissed) && $aModule.is_dismissed}
+                                {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule aType="moduleUnused" class="modules_disabled_results"}
+                            {/if}
                         {/foreach}
                     {/if}
                 </ul>
@@ -81,17 +88,24 @@
         <div class="module_results eoresults col-md-6">
             <h2>{$module_result2_count} {$module_result2_title}</h2>
             <div class="btntooltip">?<span class="tooltiptext">{$tooltiptext2}</span></div>
+            {if $modules_unused_results.result.not_installed|count != 0} 
             {if $module_result2_count != 0}
                 <div class="btntooltip eoaction export-scan-results" data-type="modules_unused" data-subtype="not_installed" data-action="exportScanResults">
                     <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
                 </div>
             {/if}
-            {if $module_result2_count != 0} 
                 <div class="scroll-overlay"></div>
                 <ul id="modules" class="list-unstyled">
                     {if $modules_unused_results.result.not_installed}
                         {foreach name=modules from=$modules_unused_results.result.not_installed item=aModule}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule class="modules_unistalled_results"}
+                            {if !isset($aModule.is_dismissed) || $aModule.is_dismissed == 0}
+                                {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule class="modules_uninstalled_results"}
+                            {/if}
+                        {/foreach}
+                        {foreach name=modules from=$modules_unused_results.result.not_installed item=aModule}
+                            {if isset($aModule.is_dismissed) && $aModule.is_dismissed}
+                                {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule class="modules_uninstalled_results"}
+                            {/if}
                         {/foreach}
                     {/if}
                 </ul>

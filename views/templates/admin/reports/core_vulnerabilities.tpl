@@ -54,15 +54,13 @@
         }
     </div>
     <div class="files_results eoresults col-md-8">
-        {if $scan_result_total != 0} 
-            {if $core_vulnerabilities_results.result|count > 0}
-                {include
-                    file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/files_table.tpl"
-                    aFiles=$core_vulnerabilities_results.result
-                    aFileType=corevulnerabilities id="coreVulnerabilities"
-                    class="files_results"
-                }
-            {/if}
+        {if $core_vulnerabilities_results.result|count > 0}
+            {include
+                file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/files_table.tpl"
+                aFiles=$core_vulnerabilities_results.result
+                aFileType=corevulnerabilities id="coreVulnerabilities"
+                class="files_results"
+            }
         {else}
             {assign var='no_result_text' value={l s='The scanner did not detect any vulnerabilities in your PrestaShop version based on the latest scan. Be sure to perform regular scans to ensure that no new vulnerabilities are detected.' mod='prestascansecurity'}}
             {include

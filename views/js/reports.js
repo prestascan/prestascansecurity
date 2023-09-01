@@ -52,6 +52,7 @@ $(function () {
         btnSubMenuElement : ".menu-sous-element a",
         btnLogOut : ".logout a",
         arrowModuleExpand : ".module-details i.arrow-icons",
+        dismissVulnerability : "a.eoaction.dismiss-vulnerability",
         exportScanResults : ".eoaction.export-scan-results"
       },
       dataTables : {
@@ -87,6 +88,7 @@ $(function () {
       this.bindClick($sel.cancelJobAction, null, this.processCancelJobAction);  // click cancel job
       this.bindClick($sel.connexionCfgBtn, $css.btnLogOut, this.handleLogOut); // Click on the menu item
       this.bindClick($sel.container, $css.arrowModuleExpand, this.handleCollapsableModuleDetails); // Handle expand and collapsable list
+      this.bindClick($sel.container, $css.dismissVulnerability, this.handleActionDismissVulnerability); // click dismiss vulnerability button
       this.bindClick($sel.container, $css.exportScanResults, this.handleActionExportScanResults); // Click on export scan Results
     },
     bindClick : function (el, sel, handler) {
@@ -370,7 +372,7 @@ $(function () {
       if ($('.prestascansecurity_datatable.no-sort-by-file-size').length) {
         $('.prestascansecurity_datatable.no-sort-by-file-size').each(function () {
           if ($(this).attr("id") == "protectionFiles") {
-            dtParams.order = [[2, 'desc']];
+            dtParams.order = [[1, 'asc']];
           }
           $(this).dataTable(dtParams);
         });
@@ -664,6 +666,40 @@ $(function () {
           clearInterval(window.prestascanSecurity.config.checkScanJobsProgresion);
         },
         complete: function () {
+          return true;
+        }
+      });
+    },
+    handleActionDismissVulnerability : function() {
+      if (!prestascansecurity_isLoggedIn) {
+        var buttons = [{
+              text : text_login_btn,
+              click: function() {
+                $('.ui-dialog-titlebar-close').trigger( "click" );
+                openOauthPsScan();
+              }
+          }];
+        window.prestascanSecurity_Tools.createPopupDialog(text_error_not_logged_in, buttons);
+        return;
+      }
+      $.ajax({
+        type: 'POST',
+        cache: 'false',
+        url: window.prestascanSecurity.config.jQuerySelectors.container.data('urlreports'),
+        data: {action: 'updateDismissedEntitiesList', ajax: true, type: $(this).data("type"), value: $(this).data("value"), subtype: $(this).data("subtype"), action_report: $(this).data("action"), vulnerabilitiesCount: $(this).data("vulnerabilitiescount")},
+        dataType: 'json',
+        success: function (response) {
+          if(response.error && typeof response.statusText != 'undefined' && response.statusText != '' ) {
+            window.prestascanSecurity_Tools.createPopupDialog(response.statusText, []);
+          }
+          if(response.success) {
+            window.location.reload();
+            return true;
+          }
+        },
+        error: function (response) {
+          window.prestascanSecurity_Tools.closeExistingPopup();
+          alert(response.responseJSON.statusText);
           return true;
         }
       });

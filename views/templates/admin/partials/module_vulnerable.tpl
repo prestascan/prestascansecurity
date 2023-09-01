@@ -29,9 +29,9 @@
 
 {if !empty($modules_vulnerabilities_results)}
     {assign var='module_result1_title' value={l s='vulnerable module(s)' mod='prestascansecurity'}}
-    {assign var='module_result1_count' value={$modules_vulnerabilities_results.vulnerable|count}}
+    {assign var='module_result1_count' value={$modules_vulnerabilities_results.summary.total_vulnerable}}
     {assign var='module_result2_title' value={l s='module(s) to update' mod='prestascansecurity'}}
-    {assign var='module_result2_count' value={$modules_vulnerabilities_results.module_to_update|count}}
+    {assign var='module_result2_count' value={$modules_vulnerabilities_results.summary.total_module_to_update}}
     {assign var='scan_result_item_type' value={l s='Module(s)' mod='prestascansecurity'}}
     {assign var='scan_result_total' value=$modules_vulnerabilities_results.summary.scan_result_total}
     {assign var='scan_result_text' value={l s='on %d may be at risk on your PrestaShop' sprintf=[$scan_result_total|escape:'html':'UTF-8'] mod='prestascansecurity'}}
@@ -59,17 +59,24 @@
         <div class="module_results eoresults col-md-6">
             <h2>{$module_result1_count} {$module_result1_title}</h2>
             <div class="btntooltip">?<span class="tooltiptext">{$tooltiptext1}</span></div>
-            {if $module_result1_count != 0}
-                <div class="btntooltip eoaction export-scan-results" data-type="modules_vulnerabilities" data-subtype="vulnerable" data-action="exportScanResults">
-                    <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
-                </div>
-            {/if}
-            {if $module_result1_count != 0}
+            {if isset($modules_vulnerabilities_results.vulnerable) && $modules_vulnerabilities_results.vulnerable|is_array && $modules_vulnerabilities_results.vulnerable|count != 0}
+                {if $module_result1_count != 0}
+                    <div class="btntooltip eoaction export-scan-results" data-type="modules_vulnerabilities" data-subtype="vulnerable" data-action="exportScanResults">
+                        <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
+                    </div>
+                {/if}
                 <div class="scroll-overlay"></div>
                 <ul id="modules" class="list-unstyled">
                     {if $modules_vulnerabilities_results.vulnerable}
                         {foreach name=modules from=$modules_vulnerabilities_results.vulnerable item=aModule}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule aType="moduleVulnerable" class="modules_vulnerabilities_results" alert_description=$module_update_disclaimer}
+                            {if !isset($aModule.is_dismissed) || $aModule.is_dismissed == 0}
+                                {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule aType="moduleVulnerable" class="modules_vulnerables" alert_description=$module_update_disclaimer}
+                            {/if}
+                        {/foreach}
+                        {foreach name=modules from=$modules_vulnerabilities_results.vulnerable item=aModule}
+                            {if isset($aModule.is_dismissed) && $aModule.is_dismissed}
+                                {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule aType="moduleVulnerable" class="modules_vulnerables" alert_description=$module_update_disclaimer}
+                            {/if}
                         {/foreach}
                     {/if}
                 </ul>
@@ -81,17 +88,25 @@
         <div class="module_results eoresults col-md-6">
             <h2>{$module_result2_count} {$module_result2_title}</h2>
             <div class="btntooltip">?<span class="tooltiptext">{$tooltiptext2}</span></div>
-            {if $module_result2_count != 0}
-                <div class="btntooltip eoaction export-scan-results" data-type="modules_vulnerabilities" data-subtype="module_to_update" data-action="exportScanResults">
-                    <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
-                </div>
-            {/if}
-            {if $module_result2_count != 0}
+            {if isset($modules_vulnerabilities_results.module_to_update) &&
+            $modules_vulnerabilities_results.module_to_update|is_array && $modules_vulnerabilities_results.module_to_update|count > 0}
+                {if $module_result2_count != 0}
+                    <div class="btntooltip eoaction export-scan-results" data-type="modules_vulnerabilities" data-subtype="module_to_update" data-action="exportScanResults">
+                        <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
+                    </div>
+                {/if}
                 <div class="scroll-overlay"></div>
                 <ul id="modules" class="list-unstyled">
                     {if $modules_vulnerabilities_results.module_to_update}
                         {foreach name=modules from=$modules_vulnerabilities_results.module_to_update item=aModule}
-                            {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule aType="moduleVulnerableToUpdate" class="eosec_modules_maj_results" alert_description=$module_update_disclaimer}
+                            {if !isset($aModule.is_dismissed) || $aModule.is_dismissed == 0}
+                                {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule aType="moduleVulnerableToUpdate" class="modules_to_update" alert_description=$module_update_disclaimer}
+                            {/if}
+                        {/foreach}
+                        {foreach name=modules from=$modules_vulnerabilities_results.module_to_update item=aModule}
+                            {if isset($aModule.is_dismissed) && $aModule.is_dismissed}
+                                {include file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}partials/module_block.tpl" aModule=$aModule aType="moduleVulnerableToUpdate" class="modules_to_update" alert_description=$module_update_disclaimer}
+                            {/if}
                         {/foreach}
                     {/if}
                 </ul>

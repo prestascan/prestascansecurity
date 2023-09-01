@@ -430,4 +430,52 @@ class Tools
 
         return false;
     }
+
+    public static function updateDismissedEntitiesList($reportFile, $actionReport, $value, $type = '', $vulnerabilitiesCount = '')
+    {
+        if (!file_exists($reportFile)) {
+            file_put_contents($reportFile, serialize([]));
+        }
+        $data = unserialize(file_get_contents($reportFile));
+        if (!is_array($data)) {
+            $data = [];
+        }
+        if (strpos($reportFile, 'modules_vulnerabilities_dismiss') !== false) {
+            if ($actionReport == 'dismissed') {
+                if (!empty($data[$type])) {
+                    foreach ($data[$type] as $k => $dismiss) {
+                        if ($dismiss['value'] == $value) {
+                            unset($data[$type][$k]);
+                        }
+                    }
+                }
+                $data[$type][] = ['value' => $value, 'count' => $vulnerabilitiesCount];
+            } elseif ($actionReport == 'reopen' && !empty($data[$type])) {
+                if (!empty($data[$type])) {
+                    foreach ($data[$type] as $k => $a) {
+                        if ($a['value'] == $value) {
+                            unset($data[$type][$k]);
+                        }
+                    }
+                }
+            }
+        } else {
+            if ($actionReport == 'dismissed') {
+                if (!empty($type)) {
+                    $data[$type][] = $value;
+                } else {
+                    $data[] = $value;
+                }
+            } elseif ($actionReport == 'reopen') {
+                if (!empty($type)) {
+                    $data[$type] = array_diff($data[$type], [$value]);
+                } else {
+                    $data = array_diff($data, [$value]);
+                }
+            }
+        }
+        
+        file_put_contents($reportFile, serialize($data));
+        return true;
+    }
 }

@@ -1291,15 +1291,55 @@ table#coreVulnerabilities.dataTable .cve {
 #prestascansecurity_main_container .scan_in_progress.suggest_cancel .scan_too_long_cancel{
     display: block;
 }
+#prestascansecurity_main_container .module_results li.module_block .module_details p.module_link{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 @media (max-width : 1700px) {
     #prestascansecurity_main_container #tab-report-home h2.scan_title {
         font-size: 24px;
     }
 }
+#prestascansecurity_main_container a.eoaction.dismiss-vulnerability{
+    background-color: transparent !important;
+    color: #353a40;
+}
+#prestascansecurity_main_container a.eoaction.dismiss-vulnerability,
+#prestascansecurity_main_container table#protectionFiles a.eoaction.dismiss-vulnerability,
+#prestascansecurity_main_container table#coreVulnerabilities a.eoaction.dismiss-vulnerability{
+    background-color: transparent !important;
+    color: #353a40;
+}
+#prestascansecurity_main_container table#protectionFiles a.eoaction.dismiss-vulnerability span,
+#prestascansecurity_main_container table#coreVulnerabilities a.eoaction.dismiss-vulnerability span,
+#prestascansecurity_main_container #modules a.eoaction.dismiss-vulnerability{
+    font-weight: bold;
+}
+#prestascansecurity_main_container li.dismissed,
+#prestascansecurity_main_container tr.dismissed{
+    opacity: 0.3;
+    filter: grayscale(100%);
+}
+#prestascansecurity_main_container table#coreVulnerabilities thead tr th:last-child,
+#prestascansecurity_main_container table#protectionFiles thead tr th:last-child{
+    text-align: center;
+}
+#prestascansecurity_main_container table#protectionFiles tbody tr td:last-child,
+#prestascansecurity_main_container table#coreVulnerabilities tbody tr td:last-child{
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+#prestascansecurity_main_container table#protectionFiles tbody tr td:last-child a,
+#prestascansecurity_main_container table#coreVulnerabilities tbody tr td:last-child a{
+    display: table-cell;
+    min-width: 100px;
+}
+
 #prestascansecurity_main_container .vulnerability-status-failed a.btn-green-white {
     margin-bottom: 5px;
 }
-#prestascansecurity_main_container table#protectionFiles tbody tr td span{
+#prestascansecurity_main_container table#protectionFiles tbody tr td:nth-child(2) span{
     display: block;
 }
 #connexion a.profile_email_user {
