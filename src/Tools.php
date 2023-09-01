@@ -154,6 +154,7 @@ class Tools
         \Configuration::deleteByName('PRESTASCAN_SCAN_MAX_RUN_TIME');
         \Configuration::deleteByName('PRESTASCAN_BANNER_RESPONSE');
         \Configuration::deleteByName('PRESTASCAN_BANNER_LAST_CHECK');
+        \Configuration::deleteByName('PRESTASCAN_API_EMAIL');
 
         if ($uninstall) {
             \Configuration::deleteByName('PRESTASCAN_SEC_HASH');

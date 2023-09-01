@@ -30,7 +30,7 @@ class User
     {
         // Check job status
         $request = new \PrestaScan\Api\Request(
-            'prestascan-api/v1/user/'
+            'prestascan-api/v1/user'
         );
 
         $response = $request->getResponse();
