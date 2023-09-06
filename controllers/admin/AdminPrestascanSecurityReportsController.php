@@ -660,12 +660,6 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         }
 
         $filename = 'module_' . $subtype . '_' . $date . '.txt';
-        header('Content-type: application/txt');
-        header('Content-Disposition: attachment; filename=' . basename($filename));
-        header('Content-Length: ' . strlen($content));
-        header('Pragma: no-cache');
-        header('Expires: 0');
-
         $data = [];
         $data['content'] = $content;
         $data['name'] = $filename;
