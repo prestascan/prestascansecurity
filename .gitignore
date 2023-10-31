@@ -7,3 +7,4 @@ md5_*.xml
 *.sublime-*
 src/Api/TestGenericProvider.php
 *.lock
+/.idea/

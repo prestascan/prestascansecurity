@@ -30,6 +30,14 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
     public $display_header = false;
     public $display_footer = false;
 
+    /**
+     * @var string[] Actions which do not require user login to execute.
+     */
+    private static $anonymousActions = [
+        'logout',
+        'dismmissedAlert',
+    ];
+
     public function init()
     {
         $OAuth = new \PrestaScan\OAuth2\Oauth();
@@ -40,10 +48,12 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
             }
         } catch (\Exception $exp) {
             // An exception may occure when token values are invalid. This may happen with localoauth
-            if (\Tools::getValue('action') === 'logout') {
-                $this->ajaxProcessLogout();
-            }
             $error = true;
+        }
+
+        // In case of an anonymous action, login failure is not a problem
+        if ($error && in_array(\Tools::getValue('action'), self::$anonymousActions, true)) {
+            $error = false;
         }
 
         if ($error) {

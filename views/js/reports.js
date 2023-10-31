@@ -458,9 +458,6 @@ $(function () {
       });
     },
     handleActionDismissAlert : function (alertId) {
-      if (!prestascansecurity_isLoggedIn) {
-        return false;
-      }
       $.ajax({
         type: 'POST',
         cache: 'false',
