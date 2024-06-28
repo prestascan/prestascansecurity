@@ -30,7 +30,7 @@
 
 <div class="scan_in_progress {$mustcancel}">
     <div class="scanview">{l s='Scan in progress' mod='prestascansecurity'}</div>
-    <span class="logo_security"><img src="{$urlmodule}/views/img/logo.png"/></span>
+    <span class="logo_security"><img src="{$urlmodule}/views/img/logo.svg" width="350"/></span>
     <span class="scanmodules"><img src="{$urlmodule}views/img/scan-module.gif"/ width="225"></span>
     <p class="scan_title">{l s='Scan in progress' mod='prestascansecurity'}</p>
     <div class='scan_in_run'>

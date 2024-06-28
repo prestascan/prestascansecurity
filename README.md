@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="./github_images/logo.png">
+    <img src="./github_images/logo.svg" width="350">
 </p>
 
 :gb: **PrestaScan Security** is a PrestaShop module allowing you to scan your PrestaShop website to identify malware and known vulnerabilities in PrestaShop core and modules.  
