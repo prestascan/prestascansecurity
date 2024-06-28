@@ -26,7 +26,7 @@
     {assign var="scan_btn_text" value=$aTextBtn}
 {/if}
 <div id="scan_overlay" class="no_scan_yet">
-    <span class="logo_security"><img src="{$urlmodule}views/img/logo.png"/></span>
+    <span class="logo_security"><img src="{$urlmodule}views/img/Logo.svg" width="350"/></span>
     <br/>
     <h2 class='scan_text {if isset($aTextNormal)}normal{/if}'>{$aText}</h2>
     <br/><br/>
