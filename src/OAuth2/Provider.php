@@ -24,6 +24,10 @@
 
 namespace PrestaScan\OAuth2;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class Provider
 {
     protected $clientId;
@@ -176,8 +180,8 @@ class Provider
             $response = $this->parseResponse($response);
             if (isset($response['error'])
                 && isset($response['error']['message'])
-                && $response['error']['message'] === 'Too Many Attempts.') {
-                throw new \PrestaScan\Exception\TooManyAttempsException('Request limit reached.');
+            ) {
+                throw new \PrestaScan\Exception\TooManyAttempsException($response['error']['message']);
             }
         } elseif ($httpCode >= 400) {
             throw new \Exception('HTTP error: ' . $httpCode . ' - ' . $response);

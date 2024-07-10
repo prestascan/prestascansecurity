@@ -24,6 +24,10 @@
 
 namespace PrestaScan;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class Tools
 {
     public static function saveReport($reportFile, $results = null, $filters = null, $error = false)
@@ -146,7 +150,8 @@ class Tools
         \Configuration::deleteByName('PRESTASCAN_ACCESS_TOKEN');
         \Configuration::deleteByName('PRESTASCAN_ACCESS_CLIENT_ID');
         \Configuration::deleteByName('PRESTASCAN_ACCESS_CLIENT_SECRET');
-        \Configuration::deleteByName('PRESTASCAN_TEST_MODE_OAUTH');
+        \Configuration::deleteByName('PRESTASCAN_DEV_OAUTH_DOMAIN_URL');
+        \Configuration::deleteByName('PRESTASCAN_DEV_OAUTH_REDIRECT_URL');
         \Configuration::deleteByName('PRESTASCAN_SCAN_PROGRESS');
         \Configuration::deleteByName('PRESTASCAN_UPDATE_VERSION_AVAILABLE');
         \Configuration::deleteByName('PRESTASCAN_HAS_UPDATE_VERSION');
@@ -155,6 +160,8 @@ class Tools
         \Configuration::deleteByName('PRESTASCAN_BANNER_RESPONSE');
         \Configuration::deleteByName('PRESTASCAN_BANNER_LAST_CHECK');
         \Configuration::deleteByName('PRESTASCAN_API_EMAIL');
+        \Configuration::deleteByName('PRESTASCAN_SUBS_STATE');
+        \Configuration::deleteByName('PRESTASCAN_SUBS_LAST_CHECK');
 
         if ($uninstall) {
             \Configuration::deleteByName('PRESTASCAN_SEC_HASH');
@@ -434,44 +441,45 @@ class Tools
 
     public static function updateDismissedEntitiesList($reportFile, $actionReport, $value, $type = '', $vulnerabilitiesCount = '')
     {
-        if (!file_exists($reportFile)) {
-            file_put_contents($reportFile, serialize([]));
-        }
         $data = unserialize(file_get_contents($reportFile));
-        if (!is_array($data)) {
-            $data = [];
-        }
-        if (strpos($reportFile, 'modules_vulnerabilities_dismiss') !== false) {
-            if ($actionReport == 'dismissed') {
-                if (!empty($data[$type])) {
-                    foreach ($data[$type] as $k => $dismiss) {
-                        if ($dismiss['value'] == $value) {
-                            unset($data[$type][$k]);
-                        }
-                    }
-                }
-                $data[$type][] = ['value' => $value, 'count' => $vulnerabilitiesCount];
-            } elseif ($actionReport == 'reopen' && !empty($data[$type])) {
-                if (!empty($data[$type])) {
-                    foreach ($data[$type] as $k => $a) {
-                        if ($a['value'] == $value) {
-                            unset($data[$type][$k]);
-                        }
+        if (strpos($reportFile, 'modules_vulnerabilities') !== false) {
+            $matchingTypeReport = ['modules_vulnerables' => 'vulnerable', 'modules_to_update' => 'module_to_update'];
+            $type = $matchingTypeReport[$type];
+            foreach ($data['report']['results'][$type] as $k => $dismiss) {
+                if ($dismiss['name'] == $value) {
+                    $data['report']['results'][$type][$k]['is_dismissed'] = 0;
+                    if ($actionReport == 'dismissed') {
+                        $data['report']['results'][$type][$k]['is_dismissed'] = 1;
                     }
                 }
             }
-        } else {
-            if ($actionReport == 'dismissed') {
-                if (!empty($type)) {
-                    $data[$type][] = $value;
-                } else {
-                    $data[] = $value;
+        } elseif(strpos($reportFile, 'modules_unused') !== false) {
+            $matchingTypeReport = [ 'modules_uninstalled' => 'not_installed', 'modules_disabled' => 'disabled'];
+            $type = $matchingTypeReport[$type];
+            foreach($data['report']['results']['result'][$type] as $k => $module) {
+                if($module["name"] == $value) {
+                    $data['report']['results']['result'][$type][$k]['is_dismissed'] = 0;
+                    if ($actionReport == 'dismissed') {
+                        $data['report']['results']['result'][$type][$k]['is_dismissed'] = 1;
+                    }
                 }
-            } elseif ($actionReport == 'reopen') {
-                if (!empty($type)) {
-                    $data[$type] = array_diff($data[$type], [$value]);
-                } else {
-                    $data = array_diff($data, [$value]);
+            }
+        } elseif(strpos($reportFile, 'core_vulnerabilities') !== false) {
+            foreach($data['report']['results']['result'] as $k => $vulnerable) {
+                if($vulnerable["cve"]["value"] == substr($value, strrpos($value, '/CVE-') + 5 )) {
+                    $data['report']['results']['result'][$k]['is_dismissed'] = 0;
+                    if ($actionReport == 'dismissed') {
+                        $data['report']['results']['result'][$k]['is_dismissed'] = 1;
+                    }
+                }
+            }
+        } elseif (strpos($reportFile, 'directories_listing') !== false) {
+            foreach($data['report']['results']['result'] as $k => $vulnerable) {
+                if($vulnerable[0]["directory"] == $value) {
+                    $data['report']['results']['result'][$k][0]['is_dismissed'] = 0;
+                    if ($actionReport == 'dismissed') {
+                        $data['report']['results']['result'][$k][0]['is_dismissed'] = 1;
+                    }
                 }
             }
         }

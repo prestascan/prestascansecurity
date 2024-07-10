@@ -45,13 +45,14 @@ $sql[_DB_PREFIX_ . 'prestascan_queue'] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PR
               `error_message` VARCHAR(255) NULL,
               `date_add` datetime NOT NULL,
               `date_upd` datetime NULL,
+              `last_date_retrieve` datetime NULL,
               PRIMARY KEY (`id`),
               UNIQUE KEY `unique_jobid` (`jobid`)
             ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
-$sql[_DB_PREFIX_ . 'vulnerability_alerts'] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prestascan_vuln_alerts` (
+$sql[_DB_PREFIX_ . 'prestascan_vuln_alerts'] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prestascan_vuln_alerts` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
-            `module_name` varchar(255) NOT NULL,
+            `module_name` varchar(255) NULL,
             `vulnerability_type` varchar(255) NOT NULL,
             `vulnerability_data` TEXT NULL,
             `public_link` TEXT NULL,
@@ -59,6 +60,7 @@ $sql[_DB_PREFIX_ . 'vulnerability_alerts'] = 'CREATE TABLE IF NOT EXISTS `' . _D
             `criticity` varchar(20) NULL,
             `dismissed` BOOLEAN NOT NULL DEFAULT 0,
             `employee_id_dismissed` INT(11) NULL,
+            `is_core` BOOLEAN NOT NULL DEFAULT FALSE,
             `date_add` datetime NOT NULL,
             `date_upd` datetime NULL,
             PRIMARY KEY (`id`)

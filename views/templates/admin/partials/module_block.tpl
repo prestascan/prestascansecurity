@@ -79,8 +79,14 @@
         {/if}
         {if isset($aType) && $aType == 'moduleVulnerableToUpdate' && isset($aModule.module_link) && !empty
         ($aModule.module_link)}
+            {if isset($aModule.module_link[0])}
+                {* In some instance, the API return an array *}
+                {assign var="module_link" value="{$aModule.module_link[0]}"}
+            {else}
+                {assign var="module_link" value="{$aModule.module_link}"}
+            {/if}
             <p>
-            <a href="{$aModule.module_link}" class="btn-green-white" target="_blank">{l s='Link of the module on addons' mod='prestascansecurity'}</a>
+            <a href="{$module_link}" class="btn-green-white" target="_blank">{l s='Link of the module on addons' mod='prestascansecurity'}</a>
             </p>
         {/if}
         {if isset($aType) && $aType == 'moduleVulnerable'}

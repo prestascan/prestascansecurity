@@ -24,6 +24,10 @@
 
 namespace PrestaScan\Reports;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use PrestaScan\Exception\JobAlreadyInProgressException;
 
 class Report
@@ -69,8 +73,16 @@ class Report
         }
     }
 
-    private function checkIfAlreadyInProgress()
+    private function checkIfAlreadyInProgress($automatic = false)
     {
+        // If it's an automatic scan :
+        // We force all "PROGRESS", "TORETRIEVE" and "SUGGEST_CANCEL" scans that are running for more than 10 minutes to "CANCEL"
+        if ($automatic) {
+            $jobId = \PrestaScanQueue::getJobAlreadyInProgress($this->reportName, 10);
+            if ($jobId) {
+                \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['CANCEL']);
+            }
+        }
         // Check if job already in progress
         if (\PrestaScanQueue::isJobAlreadyInProgress($this->reportName)) {
             throw new JobAlreadyInProgressException('Job already in progress');
@@ -98,9 +110,9 @@ class Report
         }
     }
 
-    protected function generateReport($request, $payload)
+    protected function generateReport($request, $payload, $automatic = false)
     {
-        $this->checkIfAlreadyInProgress();
+        $this->checkIfAlreadyInProgress($automatic);
 
         $response = $request->getResponse();
 
@@ -146,7 +158,7 @@ class Report
     public function updateDismissedEntitiesList($actionReport, $value, $type = '', $vulnerabilitiesCount = '')
     {
         return \Prestascan\Tools::updateDismissedEntitiesList(
-            $this->cacheListDismiss[$this->reportName],
+            $this->cacheReports[$this->reportName],
             $actionReport,
             $value,
             $type,
@@ -154,31 +166,26 @@ class Report
         );
     }
 
-    public function updateDismissedEntitiesStatus($results, $dismiss, $reportName)
+    public function updateDismissedEntitiesStatus($results, $reportName)
     {
         switch ($reportName) {
             case 'core_vulnerabilities':
-                $key = 'link';
                 $countdismiss = 0;
                 foreach ($results['result'] as $k => $result) {
-                    if (is_array($dismiss) && in_array($result[$key], $dismiss)) {
+                    if (isset($results['result'][$k]['is_dismissed']) && $results['result'][$k]['is_dismissed']) {
                         $countdismiss++;
-                        $results['result'][$k]['is_dismissed'] = 1;
                         $results['summary']['scan_result_total'] -= 1;
                         $results['summary']['scan_result_ttotal'] -= 1;
                         if ($result['severity']['value'] == 'Critical') {
                             $results['summary']['total_critical'] -= 1;
-                        } elseif($result['severity']['value'] == 'High') {
+                        } elseif ($result['severity']['value'] == 'High') {
                             $results['summary']['total_high'] -= 1;
-                        } elseif($result['severity']['value'] == 'Medium') {
+                        } elseif ($result['severity']['value'] == 'Medium') {
                             $results['summary']['total_medium'] -= 1;
                         } else {
                             $results['summary']['total_low'] -= 1;
                         }
-
-                        continue;
                     }
-                    $results['result'][$k]['is_dismissed'] = 0;
                 }
                 if ($countdismiss == count($results['result'])) {
                     $results['summary']['scan_result_criticity'] = '';
@@ -186,46 +193,21 @@ class Report
 
                 break;
             case 'modules_vulnerabilities':
-                $key = 'name';
                 $count_dismiss_vulnerable = 0;
                 $count_dismiss_update = 0;
                 foreach ($results['vulnerable'] as $k => $result) {
-                    $results['vulnerable'][$k]['is_dismissed'] = 0;
-                    if (isset($dismiss['modules_vulnerables'])) {
-                        foreach ($dismiss['modules_vulnerables'] as $ds) {
-                            if ($ds['value'] == $result[$key]
-                            && $ds['count'] == count($result['vulnerabilities'])
-                            ) {
-                                $results['vulnerable'][$k]['is_dismissed'] = 1;
-                                $results['summary']['scan_result_ttotal'] -= 1;
-                                $results['summary']['total_vulnerable'] -= 1;
-                                $count_dismiss_vulnerable++;
-
-                                break;
-                            } elseif ($ds['value'] == $result[$key]
-                            && $ds['count'] < count($result['vulnerabilities'])
-                            ) {
-                                $results['vulnerable'][$k]['is_dismissed'] = 0;
-                                $results['vulnerable'][$k]['count_vulerability'] = $ds['count'];
-
-                                break;
-                            }
-                        };
+                    if (isset($result["is_dismissed"]) && $result["is_dismissed"]) {
+                        $count_dismiss_vulnerable++;
+                        $results['summary']['scan_result_ttotal'] -= 1;
+                        $results['summary']['total_vulnerable'] -= 1;
+                        $results['vulnerable'][$k]['count_vulerability'] = $count_dismiss_vulnerable;
                     }
                 }
                 foreach ($results['module_to_update'] as $k => $result) {
-                    $results['module_to_update'][$k]['is_dismissed'] = 0;
-                    if (isset($dismiss['modules_to_update'])) {
-                        foreach ($dismiss['modules_to_update'] as $ds) {
-                            if ($ds['value'] == $result[$key]) {
-                                $results['module_to_update'][$k]['is_dismissed'] = 1;
-                                $results['summary']['scan_result_ttotal'] -= 1;
-                                $results['summary']['total_module_to_update'] -= 1;
-                                $count_dismiss_update++;
-
-                                break;
-                            }
-                        };
+                    if (isset($result['is_dismissed']) && $result['is_dismissed']) {
+                        $results['summary']['scan_result_ttotal'] -= 1;
+                        $results['summary']['total_module_to_update'] -= 1;
+                        $count_dismiss_update++;
                     }
                 }
                 if (count($results['vulnerable']) == $count_dismiss_vulnerable
@@ -235,52 +217,39 @@ class Report
 
                 break;
             case 'modules_unused':
-                $key = 'name';
                 $count_dismiss = 0;
                 foreach ($results['result']['not_installed'] as $k => $result) {
-                    if (isset($dismiss['modules_uninstalled']) && in_array($result[$key], $dismiss['modules_uninstalled'])) {
-                        $results['result']['not_installed'][$k]['is_dismissed'] = 1;
+                    if (isset($results['result']['not_installed'][$k]['is_dismissed']) && $results['result']['not_installed'][$k]['is_dismissed']) {
                         $results['summary']['scan_result_ttotal'] -= 1;
                         $results['summary']['total_uninstalled_modules'] -= 1;
                         $count_dismiss++;
-
-                        continue;
                     }
-                    $results['result']['not_installed'][$k]['is_dismissed'] = 0;
                 }
                 foreach ($results['result']['disabled'] as $k => $result) {
-                    if (isset($dismiss['modules_disabled']) && in_array($result[$key], $dismiss['modules_disabled'])) {
-                        $results['result']['disabled'][$k]['is_dismissed'] = 1;
+                    if (isset($results['result']['disabled'][$k]['is_dismissed']) && $results['result']['disabled'][$k]['is_dismissed']) {
                         $results['summary']['scan_result_ttotal'] -= 1;
                         $results['summary']['total_disabled_modules'] -= 1;
                         $count_dismiss++;
-
-                        continue;
                     }
-                    $results['result']['disabled'][$k]['is_dismissed'] = 0;
                 }
-                if($count_dismiss == (count($results['result']['disabled']) + count($results['result']['not_installed']))) {
+                if ($count_dismiss == (count($results['result']['disabled']) + count($results['result']['not_installed']))) {
                     $results['summary']['scan_result_criticity'] = '';
                 }
 
                 break;
             case 'directories_listing':
-                $key = 'directory';
                 $count_dismiss = 0;
                 $count_failed = 0;
                 foreach ($results['result'] as $k => $result) {
-                    if($result[0]['status'] != 'pass') {
+                    if ($result[0]['status'] != 'pass') {
                         $count_failed++;
                     }
-                    if (is_array($dismiss) && in_array($result[0][$key], $dismiss)) {
+                    if (isset($results['result'][$k][0]['is_dismissed']) && $results['result'][$k][0]['is_dismissed']) {
                         $count_dismiss++;
-                        $results['result'][$k][0]['is_dismissed'] = 1;
                         $results['summary']['scan_result_ttotal'] -= 1;
                         $results['summary']['scan_result_fail_total'] -= 1;
                         $results['summary']['scan_result_pass_total'] += 1;
-                        continue;
                     }
-                    $results['result'][$k][0]['is_dismissed'] = 0;
                 }
                 if ($count_dismiss == $count_failed) {
                     $results['summary']['scan_result_criticity'] = '';
@@ -294,5 +263,25 @@ class Report
                 break;
         }
         return $results;
+    }
+
+    public function setScanStatus($type, $inProgress)
+    {
+        $progressScans = \Configuration::get('PRESTASCAN_SCAN_PROGRESS');
+
+        if (empty($progressScans)) {
+            // Config not existing, we set the default value for each report
+            $progressScans = [];
+            foreach (self::getReportsListName() as $aReportName) {
+                $progressScans[$aReportName] = false;
+            }
+        } else {
+            $progressScans = json_decode($progressScans, true);
+        }
+
+        // We set the current scan status
+        $progressScans[$type] = $inProgress;
+
+        \Configuration::updateGlobalValue('PRESTASCAN_SCAN_PROGRESS', json_encode($progressScans));
     }
 }

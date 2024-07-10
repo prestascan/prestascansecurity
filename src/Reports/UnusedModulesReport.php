@@ -24,16 +24,22 @@
 
 namespace PrestaScan\Reports;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class UnusedModulesReport extends Report
 {
     public $reportName = 'modules_unused';
 
-    public function generate()
+    public function generate($automatic = false, $automaticScanId = '')
     {
         $moduleStatusReport = $this->getModulesByStatus();
         $postBody = array(
             'not_installed' => $moduleStatusReport['not_installed'],
-            'disabled' => $moduleStatusReport['disabled']
+            'disabled' => $moduleStatusReport['disabled'],
+            'automatic' => $automatic,
+            'automatic_scan_id' => $automaticScanId,
         );
 
         $request = new \PrestaScan\Api\Request(
@@ -42,8 +48,8 @@ class UnusedModulesReport extends Report
             $postBody
         );
 
-        $jobData = array('count_modulesOnDisk' => $moduleStatusReport['count_modulesOnDisk']);
-        return parent::generateReport($request, $jobData);
+        $jobData = array('count_modulesOnDisk' => $moduleStatusReport['count_modulesOnDisk'], 'automatic' => $automatic);
+        return parent::generateReport($request, $jobData, $automatic);
     }
 
     public function save($payload, $jobData)

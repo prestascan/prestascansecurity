@@ -24,6 +24,10 @@
 
 namespace PrestaScan\OAuth2;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class AccessToken
 {
     private $accessToken;

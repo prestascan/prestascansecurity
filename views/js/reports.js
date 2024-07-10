@@ -42,7 +42,9 @@ $(function () {
         // Home container
         homeContainer : $('#tab-report-home'),
         // Connexion and config buttons
-        connexionCfgBtn : $('#connexion')
+        connexionCfgBtn : $('#connexion'),
+        // Refresh subscription button
+        refreshSubscription : $('#refresh_subscription'),
       },
       cssSelector : {
         buttonReportGenerate : ".btn-generate-report",
@@ -53,7 +55,8 @@ $(function () {
         btnLogOut : ".logout a",
         arrowModuleExpand : ".module-details i.arrow-icons",
         dismissVulnerability : "a.eoaction.dismiss-vulnerability",
-        exportScanResults : ".eoaction.export-scan-results"
+        exportScanResults : ".eoaction.export-scan-results",
+        btnRefreshSubscription : ".refresh-subscription a",
       },
       dataTables : {
         coreVulnerabilitiesDT : false
@@ -90,6 +93,7 @@ $(function () {
       this.bindClick($sel.container, $css.arrowModuleExpand, this.handleCollapsableModuleDetails); // Handle expand and collapsable list
       this.bindClick($sel.container, $css.dismissVulnerability, this.handleActionDismissVulnerability); // click dismiss vulnerability button
       this.bindClick($sel.container, $css.exportScanResults, this.handleActionExportScanResults); // Click on export scan Results
+      this.bindClick($sel.refreshSubscription, $css.btnRefreshSubscription, this.handleRefreshSubscription); // Click on the menu item
     },
     bindClick : function (el, sel, handler) {
       el.on('click', sel, handler);
@@ -487,7 +491,12 @@ $(function () {
     {
       var pscan = window.prestascanSecurity;
       var description = $(pscan.config.cssSelector.alertModuleVulnerabilitiesBanner).data('description');
-      description = "<strong>"+banner_vulnerability_more_action+"</strong></br></br>"+banner_vulnerability_more_details+"</br>"+description;
+      var iscore = $(pscan.config.cssSelector.alertModuleVulnerabilitiesBanner).data('iscore');
+      var more_detail = banner_vulnerability_more_action;
+      if (iscore) {
+        var more_detail = banner_vulnerability_core_more_action;
+      }
+      description = "<strong>"+more_detail+"</strong></br></br>"+banner_vulnerability_more_details+"</br>"+description;
       window.prestascanSecurity_Modal.createDialog(description, []);
     },
     handleDashboardLinkDetail : function(e) {
@@ -498,7 +507,7 @@ $(function () {
       return false;
     },
     handleMenuClick : function(e) {
-      if ($(this).attr('id') != 'connexion' && $(this).attr('id') != 'contact') {
+      if ($(this).attr('id') != 'connexion' && $(this).attr('id') != 'contact' && $(this).attr('id') != 'subscription' && $(this).attr('id') != 'refresh_subscription') {
         var activetab = $(this).children("a").first().attr('href');
         $('.menu_element').removeClass('active');
         $('.tab-pane').removeClass('active');
@@ -700,7 +709,33 @@ $(function () {
           return true;
         }
       });
-    }
+    },
+    handleRefreshSubscription : function() {
+      window.prestascanSecurity.refreshSubscription();
+    },
+    refreshSubscription : function() {
+      $.ajax({
+        type: 'POST',
+        cache: 'false',
+        url: this.config.jQuerySelectors.container.data('urlreports'),
+        data: {action: 'refreshSubscription', ajax: true},
+        dataType: 'json',
+        success: function (response) {
+          if(response.error && typeof response.statusText != 'undefined' && response.statusText != '' ) {
+            window.prestascanSecurity_Modal.createDialog(response.statusText, []);
+          }
+          if(response.success) {
+            window.location.reload();
+            return true;
+          }
+        },
+        error: function (response) {
+          window.prestascanSecurity_Modal.closeDialog();
+          alert(response.responseJSON.statusText);
+          return true;
+        }
+      });
+    },
   } // window.prestascanSecurity
   
   var prestascanSecurity_Tools = window.prestascanSecurity_Tools = {

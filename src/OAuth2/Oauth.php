@@ -24,6 +24,10 @@
 
 namespace PrestaScan\OAuth2;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class Oauth
 {
     protected $oAuthEndpointDomain = 'https://security.prestascan.com/';
@@ -36,19 +40,20 @@ class Oauth
     private $accessTokenObj;
     private $providerOauth;
     private $providerCurl;
-    private $testMode;
 
     public function __construct()
     {
         $this->accessToken = \Configuration::get('PRESTASCAN_ACCESS_TOKEN');
         $this->refreshToken = \Configuration::get('PRESTASCAN_REFRESH_TOKEN');
         $this->expires = (int) \Configuration::get('PRESTASCAN_ACCESS_TOKEN_EXPIRE');
-        $this->testMode = (bool) \Configuration::get('PRESTASCAN_TEST_MODE_OAUTH');
 
-        if ($this->testMode && !$this->isPublicIp()) {
-            // When we are in local, we can use local domain to setup the oauth2
-            $this->oAuthEndpointDomain = 'http://127.0.0.1/';
-            $this->apiEndpointDomain = 'http://prestascansecurity_server-laravel.test-1/';
+        $devDomainUrl = \Configuration::get('PRESTASCAN_DEV_OAUTH_DOMAIN_URL');
+        $devRedirectUrl = \Configuration::get('PRESTASCAN_DEV_OAUTH_REDIRECT_URL');
+        if ($devDomainUrl && $devRedirectUrl) {
+            // Curstom envrionment for developers
+            $this->oAuthEndpointDomain = $devDomainUrl;
+            // Such as: http://prestascansecurity_server-laravel.test-1/
+            $this->apiEndpointDomain = $devRedirectUrl;
         }
 
         if (!empty($this->accessToken)) {
@@ -181,16 +186,6 @@ class Oauth
     public function getRegistragionUrl()
     {
         return $this->oAuthEndpointDomain . 'generate-user-oauth';
-    }
-
-    private function isPublicIp()
-    {
-        $isPublicIp = filter_var(
-            $_SERVER['REMOTE_ADDR'],
-            FILTER_VALIDATE_IP,
-            FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
-        );
-        return $isPublicIp !== false ? true : false;
     }
 
     private function refreshToken()

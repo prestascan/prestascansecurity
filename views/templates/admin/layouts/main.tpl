@@ -30,15 +30,19 @@
 {assign var="tabreportfiles" value=array("report-files","report-files-1","report-files-2","report-files-3","report-files-4")}
 {assign var="tabreportmodules" value=array('report-modules','modules_vulnerabilities','modules_unused')}
 <div id="prestascansecurity_main_container" data-urlreports="{$prestascansecurity_reports_ajax}">
-
+	
 	<div id="flash-message"></div>
 
 	{if isset($alert_new_modules_vulnerability) && !empty($alert_new_modules_vulnerability)}
 
-		<div id="alert_vulnerabilities_banner" style="display: none;" data-description="{$alert_new_modules_vulnerability[0].description|escape:'htmlall':'UTF-8'}">
+		<div id="alert_vulnerabilities_banner" style="display: none;" data-description="{$alert_new_modules_vulnerability[0].description|escape:'htmlall':'UTF-8'}" data-iscore="{$alert_new_modules_vulnerability[0].is_core}">
 			<p>
 				<span class="alert-title">
-					{l s='MODULE VULNERABILITY ALERT' mod='prestascansecurity'}
+					{if $alert_new_modules_vulnerability[0].is_core}
+						{l s='CORE VULNERABILITY ALERT' mod='prestascansecurity'}
+					{else}
+						{l s='MODULE VULNERABILITY ALERT' mod='prestascansecurity'}
+					{/if}
 					{if count($alert_new_modules_vulnerability) > 1}
 						<span class="alert-number">
 							(<strong>{$alert_new_modules_vulnerability|count}</strong> {l s='other alerts pending' mod='prestascansecurity'})
@@ -48,8 +52,12 @@
 
 				<span class="alert-main">
 					<span class="alert-main-title">
-						{l s='Potential vulnerability detected in module ' mod='prestascansecurity'}
-						<strong>{$alert_new_modules_vulnerability[0].name}.</strong>
+						{if $alert_new_modules_vulnerability[0].is_core}
+							{l s='Potential core vulnerability detected' mod='prestascansecurity'}
+						{else}
+							{l s='Potential vulnerability detected in module ' mod='prestascansecurity'}
+							<strong>{$alert_new_modules_vulnerability[0].name}.</strong>
+						{/if}
 					</span>
 					&nbsp;<a href="javascript:void(0);" data-alertId="{$alert_new_modules_vulnerability[0].id}" class="dismiss-action">{l s='(Dismiss)' mod='prestascansecurity'}</a>
 				</span>

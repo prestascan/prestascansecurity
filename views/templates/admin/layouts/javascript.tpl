@@ -38,7 +38,17 @@
         var prestascansecurity_e_email = "{$prestascansecurity_e_email|escape:"html":'UTF-8'}";
         var webcron_token = "{$webcron_token|escape:"html":'UTF-8'}";
         var ps_shop_urls = "{$ps_shop_urls|escape:"html":'UTF-8'}";
-        var prestascansecurity_localoauth = "{$prestascansecurity_localoauth|escape:"html":'UTF-8'}";
+        var prestascansecurity_devdomainurl = "{$prestascansecurity_devdomainurl|escape:"html":'UTF-8'}";
+        var prestascansecurity_devredirecturl = "{$prestascansecurity_devredirecturl|escape:"html":'UTF-8'}";
         var psscan_urlconfigbo = "{$psscan_urlconfigbo|escape:"html":'UTF-8'}";
     {/if}
+    $(document).ready(function(){
+        var fullHeightLi = document.querySelector('.full-height');
+        fullHeightLi.addEventListener('mouseenter', function() {
+            this.style.borderRadius  = '10px';
+        });
+        fullHeightLi.addEventListener('mouseleave', function() {
+            this.style.borderRadius  = '20px';
+        });
+    });    
 </script>

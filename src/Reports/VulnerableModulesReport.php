@@ -24,11 +24,15 @@
 
 namespace PrestaScan\Reports;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class VulnerableModulesReport extends Report
 {
     public $reportName = 'modules_vulnerabilities';
 
-    public function generate()
+    public function generate($automatic = false, $automaticScanId = '')
     {
         $sanatizedList = [];
 
@@ -54,7 +58,9 @@ class VulnerableModulesReport extends Report
         // API call to send the list of modules to analyse
         $postBody = array(
             'ps_version' => \PrestaScan\Tools::getPrestashopVersion(),
-            'modules' => $sanatizedList
+            'modules' => $sanatizedList,
+            'automatic' => $automatic,
+            'automatic_scan_id' => $automaticScanId,
         );
         $request = new \PrestaScan\Api\Request(
             'prestascan-api/v1/scan/modules/vulnerabilities',
@@ -62,8 +68,8 @@ class VulnerableModulesReport extends Report
             $postBody
         );
 
-        $jobData = array('count_modules_scanned' => count($sanatizedList));
-        return parent::generateReport($request, $jobData);
+        $jobData = array('count_modules_scanned' => count($sanatizedList), 'automatic' => $automatic);
+        return parent::generateReport($request, $jobData, $automatic);
     }
 
     public function save($payload, $jobData)

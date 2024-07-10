@@ -48,7 +48,8 @@ function openOauthPsScan() {
         +'&email='+prestascansecurity_e_email
         +'&webcrontoken='+webcron_token
         +'&ps_shop_urls='+ps_shop_urls
-        +'&localoauth='+prestascansecurity_localoauth
+        +'&devdomainurl='+prestascansecurity_devdomainurl
+        +'&devredirecturl='+prestascansecurity_devredirecturl
         +'&psscan_urlconfigbo='+psscan_urlconfigbo,
         winName, params);
     var timer = setInterval(function() { 

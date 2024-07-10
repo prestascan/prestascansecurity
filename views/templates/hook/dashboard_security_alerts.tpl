@@ -24,10 +24,18 @@
 <p class="title-alert">
     <strong>{l s='SECURITY ALERT - IMMEDIATE DANGER' mod='prestascansecurity'}</strong>
 </p>
-<p>{l s='New vulnerability detected in the module' mod='prestascansecurity'} <strong>{$alert_modules_vulnerability[0].name}</strong></p>
+{if $alert_modules_vulnerability[0].is_core}
+    <p>{l s='New core vulnerability detected' mod='prestascansecurity'} <strong></strong></p>
+{else}
+    <p>{l s='New vulnerability detected in the module' mod='prestascansecurity'} <strong>{$alert_modules_vulnerability[0].name}</strong></p>
+{/if}
+{if (!$alert_modules_vulnerability[0].is_core && $alert_modules_vulnerability[0].module_name != 'alert_module_no_detail')
+    || ($alert_modules_vulnerability[0].is_core && $alert_modules_vulnerability[0].module_name != 'alert_core_no_detail')
+}
 <ul>
     <li>{l s='Criticity' mod='prestascansecurity'} : {$criticity|ucfirst}</li>
     <li>{l s='Type' mod='prestascansecurity'} : {$alert_modules_vulnerability[0].vulnerability_type}</li>
     <li>{l s='Description' mod='prestascansecurity'} : {$alert_modules_vulnerability[0].description}</li>
 </ul>
+{/if}
 <p class='button-center'><a class="btn-generate-report btn btn-default btn-action-module-dash" data-action="generateModulesReport" href="{$module_link}"><span>{l s='Resolve this' mod='prestascansecurity'}</span></a></p>

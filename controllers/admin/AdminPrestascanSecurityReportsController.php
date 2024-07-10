@@ -21,6 +21,11 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
+
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class AdminPrestascanSecurityReportsController extends ModuleAdminController
 {
     /**
@@ -47,7 +52,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
                 $error = true;
             }
         } catch (\Exception $exp) {
-            // An exception may occure when token values are invalid. This may happen with localoauth
+            // An exception may occure when token values are invalid. This may happen with custom environments (devdomainurl)
             $error = true;
         }
 
@@ -161,13 +166,14 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         }
 
         $this->checkJobTooLongProgress();
-
+        
         $jobs = \PrestaScanQueue::getJobsByState(\PrestaScanQueue::$actionname['TORETRIEVE']);
         $resultProgress = [];
         $scanCompleted = false;
         foreach ($jobs as $job) {
             $jobId = $job['jobid'];
             try {
+                \PrestaScanQueue::updateLastDateRetrieve($jobId);
                 $payload = \PrestaScan\Api\Queue::check($jobId);
                 if (isset($payload['error'])
                     && isset($payload['error']['code'])
@@ -256,7 +262,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
                     }
                     break;
                 case 'uninstallmodule' :
-                    if ($retour = $module->uninstall() ) {
+                    if ($retour = $module->uninstall()) {
                         // update report file to change status
                         $this->updateUnusedModuleReportCache($module, 'uninstallmodule');
 
@@ -447,7 +453,17 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
             self::dieWithError($this->module->l('A scan is already in progress. You will be notified once completed.', 'AdminPrestascanSecurityReportsController'));
         } catch (\PrestaScan\Exception\TooManyAttempsException $exp) {
             // Rate limit
-            self::dieWithError($this->module->l('You have reached the limit of number of attemps allowed for this scan today. Please try again in 24 hours.', 'AdminPrestascanSecurityReportsController'));
+            $errorMessage = $exp->getMessage();
+            if ($errorMessage == 'Too Many Attempts.') {
+                $errorMessage = $this->module->l('You have exceeded the limit of allowed scans for this week. To enjoy unlimited automatic or manual scans, please upgrade to the premium version. This will support our developments and allow us to continue improving our services.','AdminPrestascanSecurityReportsController');
+            } elseif ($errorMessage == 'Too Many Attempts for subscribed user.') {
+                $errorMessage = $this->module->l('You have reached the maximum number of scan attempts allowed this week. Please try again in 24 hours.','AdminPrestascanSecurityReportsController');
+            } elseif($errorMessage == 'Too Many Attempts - API safeguard.') {
+                $errorMessage = $this->module->l('A scan was performed less than 10 minutes ago. Please try again in a few minutes.','AdminPrestascanSecurityReportsController');
+            } elseif ($errorMessage == 'Account deleted') {
+                $errorMessage = $this->module->l('Your account has been deleted. Please reactivate your account to perform a scan','AdminPrestascanSecurityReportsController');
+            }
+            self::dieWithError($errorMessage);
         } catch (\Exception $exeption) {
             self::dieWithError($this->module->l('Error while generating this report. Please try again.', 'AdminPrestascanSecurityReportsController'));
         }
@@ -566,30 +582,31 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
 
         switch ($type) {
             case 'core-vulnerabilities':
-                $report = new \PrestaScan\Reports\CoreVulnerabilitiesDismiss();
+                $report = new \PrestaScan\Reports\CoreVulnerabilitiesReport();
                 $report->updateDismissedEntitiesList($actionReport, $value);
                 break;
             case 'modules_vulnerabilities':
                 if (empty($subtype) || !in_array($subtype, array('modules_vulnerables', 'modules_to_update'))) {
                     self::dieWithError($this->module->l('Missing parameter. Please try again.', 'AdminPrestascanSecurityReportsController'));
                 }
-                $report = new \PrestaScan\Reports\ModulesVulnerabilitiesDismiss();
+                $report = new \PrestaScan\Reports\VulnerableModulesReport();
                 $report->updateDismissedEntitiesList($actionReport, $value, $subtype, $vulnerabilitiesCount);
                 break;
             case 'modules_unused':
-                if(empty($subtype) || !in_array($subtype, array('modules_disabled', 'modules_uninstalled'))) {
+                if (empty($subtype) || !in_array($subtype, array('modules_disabled', 'modules_uninstalled'))) {
                     self::dieWithError($this->module->l('Missing parameter. Please try again.', 'AdminPrestascanSecurityReportsController'));
                 }
-                $report = new \PrestaScan\Reports\ModulesUnusedDismiss();
+                $report = new \PrestaScan\Reports\UnusedModulesReport();
                 $report->updateDismissedEntitiesList($actionReport, $value, $subtype);
                 break;
             case 'directories_listing':
-                $report = new \PrestaScan\Reports\DirectoriesProtectionDismiss();
+                $report = new \PrestaScan\Reports\DirectoriesProtectionReport();
                 $report->updateDismissedEntitiesList($actionReport, $value);
                 break;
             default:
                 break;
         }
+        $this->updateServerDismissed($actionReport, $value, $type, $subtype, $vulnerabilitiesCount);
         \PrestaScan\Tools::printAjaxResponse(true, false);
     }
 
@@ -675,5 +692,24 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         $data['name'] = $filename;
 
         \PrestaScan\Tools::printAjaxResponse(true, false, '', $data);
+    }
+
+    public function ajaxProcessRefreshSubscription()
+    {
+        try {
+            $subscription = \PrestaScan\Subscription::getSubscription(true);
+            \PrestaScan\Tools::printAjaxResponse(true, false);
+        } catch (\Exception $e) {
+            self::dieWithError($this->module->l('Error while refreshing subscription. Please try again.', 'AdminPrestascanSecurityReportsController'));
+        }
+    }
+
+    private function updateServerDismissed($actionReport, $value, $type, $subtype = '', $vulnerabilitiesCount = null)
+    {
+        try {
+            $serv = \PrestaScan\EntityDismissed::updateDismissed($actionReport, $value, $type, $subtype, $vulnerabilitiesCount);
+        } catch (\Exception $e) {
+            self::dieWithError($this->module->l('Error updating the state of this element. Please reload the page and try again.', 'AdminPrestascanSecurityReportsController'));
+        }
     }
 }

@@ -23,6 +23,10 @@
  */
 namespace PrestaScan\Api;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use PrestaScan\OAuth2\Oauth;
 
 class Request

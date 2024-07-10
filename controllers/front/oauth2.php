@@ -21,6 +21,11 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
+
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PrestascansecurityOauth2ModuleFrontController extends ModuleFrontController
 {
     // Compatibility for PS 1.6
@@ -111,7 +116,7 @@ class PrestascansecurityOauth2ModuleFrontController extends ModuleFrontControlle
             Context::getContext()->cookie->__unset('psscan_urlconfigbo');
 
             // @todo : Manage this error
-            die('Exception retriving access token');
+            die('Exception retriving access token: ' . $exp->getMessage());
         }
     }
 
@@ -132,8 +137,12 @@ class PrestascansecurityOauth2ModuleFrontController extends ModuleFrontControlle
         Context::getContext()->cookie->write();
 
         // Force Test Mode
-        $localOauth = \Tools::getValue('localoauth') ? true : false;
-        Configuration::updateGlobalValue('PRESTASCAN_TEST_MODE_OAUTH', $localOauth);
+        $devDomainUrl = \Tools::getValue('devdomainurl') ?
+            urldecode(\Tools::getValue('devdomainurl')) : false;
+        $devRedirectUrl = \Tools::getValue('devredirecturl') ?
+            urldecode(\Tools::getValue('devredirecturl')) : false;
+        Configuration::updateGlobalValue('PRESTASCAN_DEV_OAUTH_DOMAIN_URL', $devDomainUrl);
+        Configuration::updateGlobalValue('PRESTASCAN_DEV_OAUTH_REDIRECT_URL', $devRedirectUrl);
 
         $OAuth = new \PrestaScan\OAuth2\Oauth();
         $redirectUrl = \PrestaScan\OAuth2\Oauth::getOauth2RedirectUrl();

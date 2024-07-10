@@ -21,6 +21,11 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
+
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PrestaScanQueue extends ObjectModel
 {
     /** @var int ID */
@@ -47,6 +52,9 @@ class PrestaScanQueue extends ObjectModel
     /** @var datetime date_upd */
     public $date_upd;
 
+    /** @var datetime last_date_retrieve */
+    public $last_date_retrieve;
+
     /**
      * @see ObjectModel::$definition
      */
@@ -61,6 +69,7 @@ class PrestaScanQueue extends ObjectModel
             'error_message' => ['type' => self::TYPE_STRING, 'validate' => 'isUnsignedId', 'required' => false],
             'date_add' => ['type' => self::TYPE_DATE, 'required' => true],
             'date_upd' => ['type' => self::TYPE_DATE, 'required' => false],
+            'last_date_retrieve' => ['type' => self::TYPE_DATE, 'required' => false],
         ],
     ];
 
@@ -165,9 +174,16 @@ class PrestaScanQueue extends ObjectModel
             FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
             WHERE (`state` = "' . pSQL(self::$actionname['PROGRESS']) . '" OR
                 `state` = "' . pSQL(self::$actionname['TORETRIEVE']) . '")
-                AND date_add < DATE_SUB(now(), INTERVAL ' . (int) $time . ' MINUTE)');
-
-        return empty($jobId) ? false : $jobId;
+                AND (last_date_retrieve IS NOT NULL AND TIMESTAMPDIFF(MINUTE, date_add, last_date_retrieve) > ' . (int) $time . ')');
+        if (!empty($jobId)) {
+            return $jobId;
+        }
+        $jobId = Db::getInstance()->executeS('
+            SELECT `jobid`, `action_name`
+            FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
+            WHERE (`state` = "' . pSQL(self::$actionname['PROGRESS']) . '")
+                AND (date_add < DATE_SUB(now(), INTERVAL ' . 2 * (int)  $time . ' MINUTE))');
+        return (empty($jobId)) ? false : $jobId;
     }
 
     public static function getJobByActionNameAndState($actionName, $state)
@@ -175,7 +191,28 @@ class PrestaScanQueue extends ObjectModel
         $sql = 'SELECT *
                 FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
                 WHERE `action_name` = "' . pSQL($actionName) . '" AND
-                `state` = "' .pSQL($state). '" ';
+                `state` = "' .pSQL($state). '"';
         return Db::getInstance()->getRow($sql);
+    }
+
+    public static function updateLastDateRetrieve($jobId)
+    {
+        $sql = 'UPDATE `' . _DB_PREFIX_ . self::$definition['table'] . '`
+            SET `last_date_retrieve` = NOW() WHERE `jobid` = \'' . pSQL($jobId) . '\'';
+
+        return Db::getInstance()->execute($sql);
+    }
+
+    public static function getJobAlreadyInProgress($actionName, $time = 10)
+    {
+        $jobId = Db::getInstance()->getValue('
+                SELECT `jobid`
+                FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
+                WHERE `action_name` = "' . pSQL($actionName) . '" AND (
+                    `state` = "' . pSQL(self::$actionname['PROGRESS']) . '" OR
+                    `state` = "' . pSQL(self::$actionname['TORETRIEVE']) . '" OR
+                    `state` = "' . pSQL(self::$actionname['SUGGEST_CANCEL']) . '")
+                    AND TIMESTAMPDIFF(MINUTE, date_add, now()) > ' . $time);
+        return empty($jobId) ? false : $jobId;
     }
 }
