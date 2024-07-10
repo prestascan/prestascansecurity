@@ -75,7 +75,7 @@ As the security targets all kinds of merchants, using sometimes outdated version
 
 | PrestaShop version tested | Status | Comments |
 | -------- | ------ | ------ |
-| **8.X** (8.0.2) | :heavy_check_mark: | Stable
+| **8.X** (8.1.5) | :heavy_check_mark: | Stable
 | **1.7.X** (1.7.8.8) | :heavy_check_mark: | Stable
 | **1.6.1.X** (1.6.1.24) | :heavy_check_mark: | Stable
 | **1.6.0.X** (1.6.0.9) | :heavy_check_mark: | Stable
