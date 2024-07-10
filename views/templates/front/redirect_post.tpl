@@ -21,7 +21,7 @@
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  *}
 Redirecting...
-<form id="register_form" action="{$registration_url}" method="post" style="display:none;">
+<form id="register_form" action="{$registration_url}" method="get" style="display:none;">
     <input type="text" id="createclient" name="createclient" value="{$createclient}">
     <input type="text" id="firstname" name="firstname" value="{$firstname}">
     <input type="text" id="lastname" name="lastname" value="{$lastname}">

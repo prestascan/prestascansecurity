@@ -24,6 +24,10 @@
 
 namespace PrestaScan\Reports;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class DirectoriesProtectionDismiss extends Report
 {
     public $reportName = 'directories_listing_dismiss';

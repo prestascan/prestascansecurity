@@ -1350,3 +1350,49 @@ table#coreVulnerabilities.dataTable .cve {
     text-decoration: unset;
     cursor: default;
 }
+#prestascansecurity_main_container i.color-gold:before,
+#prestascansecurity_main_container .color-gold{
+    color: gold;
+}
+#prestascansecurity_main_container span.icon-star-span{
+    padding: 2px 8px !important;
+    font-weight: bold;
+    font-size: 13px;
+    color: #363a40;
+    font-family: helvetica,arial,sans-serif;
+}
+#prestascansecurity_main_container img.img-icone{
+    margin-right: 5px;
+    padding: 2px;
+    width: 26px;
+    height: 26px;
+}
+#prestascansecurity_main_container #subscription{
+    border: 1px solid #ede5e5 !important;
+    border-radius: 20px;
+}
+#prestascansecurity_main_container #subscription:hover .dropdown-content{
+    display:block;
+    padding:5px;
+}
+#prestascansecurity_main_container #subscription,
+#prestascansecurity_main_container #subscription .dropbtn,
+#prestascansecurity_main_container #subscription .avantage.dropdown,
+#prestascansecurity_main_container #connexion,
+#prestascansecurity_main_container #connexion .dropbtn {
+    cursor: default;
+}
+#prestascansecurity_main_container span.icon-star-span{
+    display: flex !important;
+    align-items: center !important;
+}
+#prestascansecurity_main_container #btn-action-avantage .show-advantage {
+    margin-bottom: 5px;
+}
+#prestascansecurity_main_container #btn-action-avantage .show-advantage a {
+    text-decoration: underline;
+}
+#prestascansecurity_main_container #subscription-status i{
+    border: none !important;
+    padding-right: 0 !important;
+}

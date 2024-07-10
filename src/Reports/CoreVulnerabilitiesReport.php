@@ -24,14 +24,20 @@
 
 namespace PrestaScan\Reports;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class CoreVulnerabilitiesReport extends Report
 {
     public $reportName = 'core_vulnerabilities';
 
-    public function generate()
+    public function generate($automatic = false, $automaticScanId = '')
     {
         $postBody = array(
             'ps_version' => \PrestaScan\Tools::getPrestashopVersion(),
+            'automatic' => $automatic,
+            'automatic_scan_id' => $automaticScanId,
         );
         $request = new \PrestaScan\Api\Request(
             'prestascan-api/v1/scan/core-vulnerabilities',
@@ -40,7 +46,7 @@ class CoreVulnerabilitiesReport extends Report
         );
 
         $jobData = $postBody;
-        return parent::generateReport($request, $postBody);
+        return parent::generateReport($request, $postBody, $automatic);
     }
 
     public function save($payload)
@@ -50,11 +56,35 @@ class CoreVulnerabilitiesReport extends Report
         $countVulnerabilitiesMedium = 0;
         $countVulnerabilitiesLow = 0;
         $criticity = 'low';
-        foreach ($payload['result'] as $k => $vulnerabilitie) {
-            $payload['result'][$k]['cve']['value'] = substr($vulnerabilitie['cve']['value'], strrpos($vulnerabilitie['cve']['value'], '/CVE-') + 5 );
-            $payload['result'][$k]['link'] = $vulnerabilitie['cve']['value'];
-            if (isset($vulnerabilitie['severity']['value'])) {
-                $severity = $vulnerabilitie['severity']['value'];
+        $instance = \Module::getInstanceByName('prestascansecurity');
+        foreach ($payload['result'] as $k => $vulnerability) {
+            $payload['result'][$k]['cve']['value'] = substr(
+                $vulnerability['cve']['value'],
+                strrpos($vulnerability['cve']['value'], '/CVE-') + 5
+            );
+
+            $payload['result'][$k]['link'] = $vulnerability['cve']['value'];
+
+            $payload['result'][$k]['fo']['value'] = isset($payload['result'][$k]['fo']['value']) && (int) $payload['result'][$k]['fo']['value'] === 1
+                ? 'Yes'
+                : ((isset($payload['result'][$k]['fo']['value']) && (int) $payload['result'][$k]['fo']['value']) === 0
+                    ? 'No'
+                    : ''
+                );
+
+            $payload['result'][$k]['bo']['value'] = isset($payload['result'][$k]['bo']['value']) && (int) $payload['result'][$k]['bo']['value'] === 1
+                ? 'Yes'
+                : ((isset($payload['result'][$k]['bo']['value']) && (int) $payload['result'][$k]['bo']['value']) === 0
+                    ? 'No'
+                    : ''
+                );
+
+            $payload['result'][$k]['type']['value'] = isset($payload['result'][$k]['type']) && isset($payload['result'][$k]['type']['value'])
+                ? $instance->getVulnerabilityExtendedNameTranslated($payload['result'][$k]['type']['value'])
+                : '';
+
+            if (isset($vulnerability['severity']['value'])) {
+                $severity = $vulnerability['severity']['value'];
                 switch (strtolower($severity)) {
                     case 'critical':
                         $countVulnerabilitiesCritical++;

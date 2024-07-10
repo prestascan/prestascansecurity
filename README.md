@@ -141,7 +141,16 @@ For this reason, we either had to include `vendor-static` and rename Guzzle clas
 
 ### Developing locally
 
-You may use `localoauth=1` GET argument to force OAuth2 and scans to run in your local environment.
+If you intend to run the module locally, you won't be able to communicate with Profileo's servers to conduct the scan. This is because scans operate asynchronously, and results are sent via webhooks that can't target a local domain. Therefore, you'll need to use a mock server to simulate server responses and operate your own server. Additionally, specify your server's URLs using the following GET parameters, which will ensure OAuth2 authentication and scans function correctly in the designated environment.
+The following GET parameters are used before login with Oauth2 :
+```
+&devdomainurl={your_url}
+&devredirecturl={your_url}
+```
+In local environments using docker, you may for example have:
+```
+&devdomainurl=http://127.0.0.1/&devredirecturl=http://prestascansecurity_server-laravel.test-1/
+```
 
 ### Data processing and connections
 

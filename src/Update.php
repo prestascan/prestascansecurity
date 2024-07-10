@@ -24,6 +24,10 @@
 
 namespace PrestaScan;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Module;
 use PrestaScan\Exception\UpdateException;
 

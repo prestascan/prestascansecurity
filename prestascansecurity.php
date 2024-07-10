@@ -33,7 +33,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '1.1.5';
+        $this->version = '1.1.6';
         $this->author = 'PrestaScan';
         $this->need_instance = false;
         $this->bootstrap = true;
@@ -236,7 +236,7 @@ class Prestascansecurity extends Module
         $this->context->smarty->assign('module_link', $link);
         $this->context->smarty->assign('alert_modules_vulnerability', $alerts);
 
-        $this->context->controller->addCSS($this->_path . 'views/css/dashboard.1.1.4.css');
+        $this->context->controller->addCSS($this->_path . 'views/css/dashboard.1.1.6.css');
         return $this->display(__FILE__, 'dashboard_zone_two.tpl');
     }
 
@@ -269,7 +269,7 @@ class Prestascansecurity extends Module
         }
 
         $vulnAlertHandler = new \PrestaScan\VulnerabilityAlertHandler($this);
-        $moduleNewVulnerabilitiesAlert = $vulnAlertHandler->getNewVulnerabilityAlerts();
+        $moduleNewVulnerabilitiesAlert = $vulnAlertHandler->getNewVulnerabilityAlerts($this->context->language->iso_code);
 
         $this->includeAdminResources($moduleNewVulnerabilitiesAlert);
         $this->assignAdminVariables($moduleNewVulnerabilitiesAlert);
@@ -293,6 +293,8 @@ class Prestascansecurity extends Module
             if (!empty($bannerResponse)) {
                 $this->context->smarty->assign('banner', $bannerResponse);
             }
+            $subscription = \PrestaScan\Subscription::getSubscription();
+            $this->context->smarty->assign('subscription', $subscription);
         }
 
         return $this->display(__FILE__, 'views/templates/admin/layouts/main.tpl');
@@ -396,10 +398,8 @@ class Prestascansecurity extends Module
     {
         // Load the reports
         $reports = new \PrestaScan\Reports\Report();
-        $dismissedCacheFile = $reports->getDismissedCacheFiles();
         foreach ($reports->getReports() as $reportName => $cacheFile) {
             $data = [];
-            $reportNameDismissed = $reportName . '_dismiss';
             if (is_file($cacheFile)) {
                 $report = unserialize(file_get_contents($cacheFile));
                 // Override the results for the directory scan
@@ -411,12 +411,7 @@ class Prestascansecurity extends Module
                 } else {
                     $results = $report['report']['results'];
                     // Check if there are dismissed results to update
-                    if (isset($dismissedCacheFile[$reportNameDismissed])
-                        && is_file($dismissedCacheFile[$reportNameDismissed])
-                    ) {
-                        $resultsDismissed = unserialize(file_get_contents($dismissedCacheFile[$reportNameDismissed]));
-                        $results = $reports->updateDismissedEntitiesStatus($results, $resultsDismissed, $reportName);
-                    }
+                    $results = $reports->updateDismissedEntitiesStatus($results, $reportName);
                     $data = $results;
                 }
             } else {
@@ -440,10 +435,11 @@ class Prestascansecurity extends Module
     protected function assignSettingsPageUrl()
     {
         $settings_page_url = 'https://security.prestascan.com/login';
-        if (\Configuration::get('PRESTASCAN_TEST_MODE_OAUTH')) {
-            $settings_page_url = 'http://127.0.0.1/login';
+        if (\Configuration::get('PRESTASCAN_DEV_OAUTH_DOMAIN_URL')) {
+            // Custom URL for developers
+            $settings_page_url = \Configuration::get('PRESTASCAN_DEV_OAUTH_DOMAIN_URL') . 'login';
         }
-        if(!empty(Configuration::get('PRESTASCAN_API_EMAIL'))) {
+        if (!empty(Configuration::get('PRESTASCAN_API_EMAIL'))) {
             $settings_page_url .= '?email=' . Configuration::get('PRESTASCAN_API_EMAIL');
         }
         $this->context->smarty->assign('settings_page_url', $settings_page_url);
@@ -477,9 +473,11 @@ class Prestascansecurity extends Module
             'prestascansecurity_e_firstname' => Context::getContext()->employee->firstname,
             'prestascansecurity_e_lastname' => Context::getContext()->employee->lastname,
             'prestascansecurity_e_email' => $this->context->employee->email,
-            // For localhost development (see Oauth)
-            'prestascansecurity_localoauth' => Tools::getValue('localoauth') ? 1 : 0,
-            // For localhost development (see Oauth)
+            // For custom environments (dev)
+            'prestascansecurity_devdomainurl' => Tools::getValue('devdomainurl') ?
+                urlencode(Tools::getValue('devdomainurl')) : 0,
+            'prestascansecurity_devredirecturl' => Tools::getValue('devredirecturl') ?
+                urlencode(Tools::getValue('devredirecturl')) : 0,
             'webcron_token' => Configuration::get('PRESTASCAN_WEBCRON_TOKEN'),
             'ps_shop_urls' => implode(';', array_map('urlencode', $this->getShopUrls())),
             // We retrive the module configuration URL in order to redirect into it after email verification
@@ -527,6 +525,7 @@ class Prestascansecurity extends Module
             'text_refresh_module_status_required' => $this->l('It\'s requested to update the module in order to run a new scan.') . ' ' . $this->l('If you updated your module manually and still get this message, try refreshing the status of your module by clicking on the bouton "Refresh status" bellow.'),
             'text_error_not_logged_in' => $this->l('To launch a scan please log in or create an account. Having an account allows us to securely perform scans on your behalf and deliver accurate results.'),
             'text_login_btn' => $this->l('Log in or create an account'),
+            'banner_vulnerability_core_more_action' => $this->l('This alert is triggered because a new vulnerability has been discovered in the native codes of PrestaShop. Your store may be vulnerable if a patch is not yet in place. Please contact your agency or our expert team to resolve the issue. An update of PrestaShop is also recommended. Please perform a full PrestaShop vulnerability scan again to get more details.'),
         );
 
         // Check cookie if update module is running
@@ -561,7 +560,7 @@ class Prestascansecurity extends Module
             'views/css/jquery-ui.min.css',
             'views/css/jquery-ui.structure.min.css',
             'views/css/jquery-ui.theme.min.css',
-            'views/css/modal.1.1.4.css',
+            'views/css/modal.1.1.6.css',
         ];
 
         foreach ($jsFiles as $jsFile) {
@@ -572,10 +571,10 @@ class Prestascansecurity extends Module
             $this->context->controller->addCSS($this->_path . $cssFile);
         }
 
-        $this->context->controller->addCSS($this->_path . 'views/css/admin.1.1.4.css');
+        $this->context->controller->addCSS($this->_path . 'views/css/admin.1.1.6.css');
         if (version_compare(_PS_VERSION_, '1.6', '<')) {
             // Add custom CSS for PS 1.5
-            $this->context->controller->addCSS($this->_path . 'views/css/admin.1.1.4_1.5.css');
+            $this->context->controller->addCSS($this->_path . 'views/css/admin.1.1.6_1.5.css');
         }
     }
 
@@ -612,6 +611,8 @@ class Prestascansecurity extends Module
             'path_traversal' => $this->l('Path Traversal'),
             'token_bypass' => $this->l('Token Bypass'),
             'classification_missing' => $this->l('Classification Missing'),
+            'data_exposure' => $this->l('Data exposure'),
+            'xss_reflected' => $this->l('XSS reflected'),
             // Add more vulnerability types here if needed
         );
 

@@ -25,6 +25,7 @@ $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_270097ae78dcf555047
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_53598e5a1b2d3ef7a9efe774db87a22e'] = 'Il est nécessaire de mettre à jour le module afin d\'exécuter un nouveau scan.';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_3437d76a8fc9d682badac2a7b3924487'] = 'Si vous avez mis à jour votre module manuellement et que vous obtenez toujours ce message, essayez de rafraîchir le statut de votre module en cliquant sur le bouton \"Actualiser le statut\" ci-dessous.';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_01fa0a26c0c8cb2259b135f71f37a94b'] = 'Pour lancer un scan, veuillez vous connecter ou créer un compte. Avoir un compte nous permet d\'effectuer des scans en toute sécurité en votre nom et de fournir des résultats précis.';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_c197207fc261eac1360ad875c7af45d0'] = 'Cette alerte est déclenchée car une nouvelle vulnérabilité a été découverte dans les codes natifs de PrestaShop. Votre boutique peut être vulnérable si un correctif n\'est pas encore mis en place. Veuillez contacter votre agence ou notre équipe d\'experts pour résoudre le problème. Une mise à jour de PrestaShop est également recommandée. Veuillez effectuer un nouveau scan complet des vulnérabilités PrestaShop pour obtenir plus de détails.';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_da1027ae9457c3b62cb39aa833c3e232'] = 'Connectez-vous ou créez un compte';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_f50ced789144b216dcbd5452d37e7e03'] = 'Votre module a été mis à jour avec succès.';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_85af276f187188339e0dad777ef75670'] = 'Cross-Site Scripting (XSS)';
@@ -40,6 +41,8 @@ $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_8abf0cd5dfeb459fac9
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_945000efeea40094c9af5d0244f77b5c'] = 'Traversée de répertoires';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_2f45c959b1d439c52452574cb4b54c7b'] = 'Contournement de jeton de sécurité';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_a57575a1536b76999251278ce24f0407'] = 'Classification manquante';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_c3793715c5bea01d1d2f1ed98c2861dc'] = 'Exposition des données';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_bc4ac22ddef0a7ef0e58c19bb4c76c96'] = 'XSS reflété';
 $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_5d2da48003fa02947fcb20794e506bf6'] = 'Pour lancer un scan, veuillez vous connecter ou créer un compte. Avoir un compte nous permet d\'effectuer des scans en toute sécurité en votre nom et de fournir des résultats précis. Cliquez sur le bouton Connexion en haut à droite pour vous connecter ou créer un nouveau compte.';
 $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_87431858adc92c5432db750998b1e4d3'] = 'Une erreur est survenue lors du traitement de l\'un de vos scans. Détail : délai dépassé. Il y a peut-être trop de données à traiter pour votre scan. Veuillez réessayer.';
 $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_4d65336e311976d51fffe371c27335d6'] = 'Une erreur est survenue lors du traitement de l\'un de vos scans. Détail : Scan arrêté manuellement.';
@@ -77,6 +80,12 @@ $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroll
 $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_a3e3172c3b99a6cdcaf6c4926aabc90b'] = 'Installé - Actif';
 $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_859721119ca1f518a480032b2d6562e0'] = 'Non installé - Inactif';
 $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_89460812a5fa89923be6f69f93f36772'] = 'vulnérabilité(s)';
+$_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_203ccd1778b3a4fd648783b7207009a0'] = 'Vous avez dépassé la limite de scans autorisés pour cette semaine. Pour profiter d\'un nombre illimité de scans automatiques ou manuels, veuillez passer à la version premium. Cela soutiendra nos développements et nous permettra de continuer à améliorer nos services.';
+$_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_f49cd0f155770dfa7cc909a2ae084678'] = 'Vous avez atteint le nombre maximal de tentatives de scan autorisées cette semaine. Veuillez réessayer dans 24 heures.';
+$_MODULE['<{prestascansecurity}prestashop>menu_a662dd27654154f271d21673e7fbb74d'] = 'Gérer mon contact technique agence';
+$_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_cf1b79b75f5085ea6135479869e3cc80'] = 'Votre compte a été supprimé. Veuillez réactiver votre compte pour effectuer un scan.';
+$_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_c54a8244737bfc3e79e9e9bb38f2ab23'] = 'Un scan a été effectué il y a moins de 10 minutes. Veuillez réessayer dans quelques minutes.';
+$_MODULE['<{prestascansecurity}prestashop>menu_4bd7a971f2a09f814a3e5ba93cff5300'] = 'Cliquez ici pour mettre à jour l\'état de votre abonnement (après l\'achat).';
 $_MODULE['<{prestascansecurity}prestashop>dashboard_update_module_3cf9a92fd34aecb1af0c5e2c2ee1c04d'] = 'Mise à jour du module nécessaire';
 $_MODULE['<{prestascansecurity}prestashop>dashboard_update_module_8f8c0a7f666e2229f386b6af496e03bd'] = 'Mettez à jour votre module PrestaScan dès que possible pour être alerté des nouvelles menaces.';
 $_MODULE['<{prestascansecurity}prestashop>dashboard_update_module_9dbbb666fc626eb3ed5b6a364149ca12'] = 'Mettre à jour le module';
@@ -253,6 +262,11 @@ $_MODULE['<{prestascansecurity}prestashop>menu_8c5e39fcbdc7303f11a578a76e32f7f5'
 $_MODULE['<{prestascansecurity}prestashop>menu_f4f70727dc34561dfde1a3c529b6205c'] = 'Paramètres';
 $_MODULE['<{prestascansecurity}prestashop>menu_0323de4f66a1700e2173e9bcdce02715'] = 'Déconnexion';
 $_MODULE['<{prestascansecurity}prestashop>menu_99dea78007133396a7b8ed70578ac6ae'] = 'Connexion';
+$_MODULE['<{prestascansecurity}prestashop>menu_bc8bb69389049b4be1a0ff4909447ee4'] = 'Abonnement actif';
+$_MODULE['<{prestascansecurity}prestashop>menu_c0c262bae28823f1f7e1d5ec41e8e15e'] = 'Avantages premium';
+$_MODULE['<{prestascansecurity}prestashop>menu_ef61d67dde2756d96088e0998993cf33'] = 'Gestion et détail de l\'abonnement';
+$_MODULE['<{prestascansecurity}prestashop>menu_775f36edc7e1a8f3e51690036ffc79da'] = 'Voir les avantages';
+$_MODULE['<{prestascansecurity}prestashop>menu_7a764b2293f762c78a5a6b7e710c0696'] = 'Vérifier mon abonnement';
 $_MODULE['<{prestascansecurity}prestashop>update_a369d3b5ddd8717f7e188b4d2e3279b5'] = 'Votre module est déjà à jour. Veuillez recharger cette page.';
 $_MODULE['<{prestascansecurity}prestashop>update_03fa47a8ec13b30d709b3af5e5b9219d'] = 'Erreur lors de la récupération de la nouvelle version. Veuillez réessayer.';
 $_MODULE['<{prestascansecurity}prestashop>update_4e58bfef45055cdb9d68fc9f882dbb53'] = 'Erreur lors de la tentative d\'installation du nouveau module. Veuillez essayer de mettre à jour le module à partir de votre liste de modules.';

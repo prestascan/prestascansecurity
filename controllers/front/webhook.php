@@ -21,6 +21,11 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
+
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PrestascansecurityWebhookModuleFrontController extends ModuleFrontController
 {
     public function init()
@@ -37,7 +42,6 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
 
             $rawData = file_get_contents('php://input');
             $postedData = json_decode($rawData, true);
-
             if (json_last_error() !== JSON_ERROR_NONE) {
                 $this->returnServer(500, 'Invalid payload format');
             }
@@ -53,7 +57,15 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
                     $this->scanCompleted($postedData);
                     break;
                 case 'alert_module':
+                case 'alert_module_no_detail':
                     $this->alertModuleVulnerable($postedData);
+                    break;
+                case 'automatic_scan':
+                    $this->automationScan($postedData);
+                    break;
+                case 'alert_core':
+                case 'alert_core_no_detail':
+                    $this->alertCoreVulnerable($postedData);
                     break;
                 default:
                     $this->returnServer(400, 'Invalid Event');
@@ -88,7 +100,12 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
                 }
             }
         } catch (\Exception $e) {
-            $this->returnServer(500, 'Error processing webhook');
+            $return = [
+                'message_error' => 'Error processing webhook',
+                'exception_message' => $e->getMessage(),
+                'exception_trace' => $e->getTraceAsString(),
+            ];
+            $this->returnServer(500, json_encode($return));
         }
 
         $this->returnServer(501, 'Unknown');
@@ -101,35 +118,30 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
     }
 
     private function scanCompleted($postedData)
-    {
-        try {
-            if (isset($postedData['error']) && !empty($postedData['error'])) {
-                $payload = $postedData['payload'];
-                $jobId = $payload['jobId'];
-
-                $this->checkJobStateBeforeProcess($jobId);
-                // We inidicate that we now need to retrieve the data from the API
-                \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['TORETRIEVE'], $postedData['error']);
-
-                // And then return success for the webhook
-                $this->returnServer(200, 'OK');
-            }
-
-            if (!isset($postedData['payload'])
-                || !isset($postedData['payload']['jobId'])) {
-                $this->returnServer(500, 'Invalid webhook parameters');
-            }
-
+    {        
+        if (isset($postedData['error']) && !empty($postedData['error'])) {
             $payload = $postedData['payload'];
             $jobId = $payload['jobId'];
 
-            // We inidicate that we now need to retrieve the data from the API
             $this->checkJobStateBeforeProcess($jobId);
-            \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['TORETRIEVE']);
-        } catch (\Exception $e) {
-            $this->returnServer(500, 'Error processing webhook');
+            // We inidicate that we now need to retrieve the data from the API
+            \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['TORETRIEVE'], $postedData['error']);
+
+            // And then return success for the webhook
+            $this->returnServer(200, 'OK');
         }
 
+        if (!isset($postedData['payload'])
+            || !isset($postedData['payload']['jobId'])) {
+            $this->returnServer(500, 'Invalid webhook parameters');
+        }
+
+        $payload = $postedData['payload'];
+        $jobId = $payload['jobId'];
+
+        // We inidicate that we now need to retrieve the data from the API
+        $this->checkJobStateBeforeProcess($jobId);
+        \PrestaScanQueue::updateJob($jobId, \PrestaScanQueue::$actionname['TORETRIEVE']);
         $this->returnServer(200, 'OK');
     }
 
@@ -155,10 +167,47 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
         $this->returnServer(200, json_encode($vulnerabilityHandler->handle($postedData['message'])));
     }
 
+    private function automationScan($postedData)
+    {
+        $AutomationScanHandler = new \PrestaScan\AutomationScanHandler($this->module);
+        $return = $AutomationScanHandler->handle($postedData);
+        $this->returnServer(200, 'OK');
+    }
+
+    private function alertCoreVulnerable($postedData)
+    {
+        $coreVulnerabilityHandler = new \PrestaScan\CoreVulnerabilityAlertHandler($this->module);
+        $this->returnServer(200, json_encode($coreVulnerabilityHandler->handle($postedData['message'])));
+    }
+
     protected function returnServer($httpCode, $message)
     {
+        $body = [
+                    'success' => false,
+                    'error' => [
+                        'code' => $httpCode,
+                        'message' => $message,
+                    ],
+                    'payload' => [
+                        'code' => $httpCode,
+                        'message' => $message,
+                    ]
+                ];
+        if ($this->isJson($message)) {
+            $data = json_decode($message, true);
+            $body['payload']['message'] = '';
+            $body['payload'] += $data;
+            $body['error']['message'] = '';
+            $body['error'] += $data;
+        }
+        if ($httpCode == 200) {
+            $body['success'] = true;
+            unset($body['error']);
+        } else {
+            unset($body['payload']);
+        }
         http_response_code($httpCode);
-        print $message;
+        print json_encode($body);
         exit();
     }
 
@@ -206,5 +255,23 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
             }
         }
         return $headers;
+    }
+
+    private function isJson($value)
+    {
+        if (!is_string($value)) {
+            return false;
+        }
+
+        try {
+            $data = json_decode($value, true);
+            if (is_null($data)) {
+                return false;
+            }
+        } catch (Exception $ex) {
+            return false;
+        }
+
+        return true;
     }
 }

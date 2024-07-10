@@ -24,11 +24,15 @@
 
 namespace PrestaScan\Reports;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class DirectoriesProtectionReport extends Report
 {
     public $reportName = 'directories_listing';
 
-    public function generate()
+    public function generate($automatic = false, $automaticScanId = '')
     {
         // Create a test directory (to check if a directory without protection is by default blocked during the scan)
         if (!is_dir(_PS_ROOT_DIR_ . '/prestascan_test')) {
@@ -40,6 +44,8 @@ class DirectoriesProtectionReport extends Report
         }
         $postBody = array(
             'directories' => $directories,
+            'automatic' => $automatic,
+            'automatic_scan_id' => $automaticScanId,
         );
         $request = new \PrestaScan\Api\Request(
             'prestascan-api/v1/scan/scan-directories-protection',
@@ -47,8 +53,8 @@ class DirectoriesProtectionReport extends Report
             $postBody
         );
 
-        $jobData = array('count_directories_scanned' => count($dirs));
-        return parent::generateReport($request, $jobData);
+        $jobData = array('count_directories_scanned' => count($dirs), 'automatic' => $automatic);
+        return parent::generateReport($request, $jobData, $automatic);
     }
 
     public function save($payload)

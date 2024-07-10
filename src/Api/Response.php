@@ -23,6 +23,10 @@
  */
 namespace PrestaScan\Api;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class Response
 {
     public static function checkResponse($response)

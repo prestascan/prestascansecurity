@@ -24,6 +24,10 @@
 
 namespace PrestaScan\Api;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class User
 {
     public static function get()

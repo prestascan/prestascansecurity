@@ -21,6 +21,11 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
+
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class PrestaScanVulnAlerts extends ObjectModel
 {
     /** @var int ID */
@@ -50,6 +55,9 @@ class PrestaScanVulnAlerts extends ObjectModel
     /** @var int state */
     public $employee_id_dismissed;
 
+    /** @var bool */
+    public $is_core;
+
     /** @var datetime date_add */
     public $date_add;
 
@@ -63,7 +71,7 @@ class PrestaScanVulnAlerts extends ObjectModel
         'table' => 'prestascan_vuln_alerts',
         'primary' => 'id',
         'fields' => [
-            'module_name' => ['type' => self::TYPE_STRING, 'required' => true],
+            'module_name' => ['type' => self::TYPE_STRING, 'required' => false],
             'vulnerability_type' => ['type' => self::TYPE_STRING, 'required' => true],
             'vulnerability_data' => ['type' => self::TYPE_STRING, 'required' => true],
             'public_link' => ['type' => self::TYPE_STRING, 'required' => false],
@@ -71,6 +79,7 @@ class PrestaScanVulnAlerts extends ObjectModel
             'criticity' => ['type' => self::TYPE_STRING, 'required' => false],
             'dismissed' => ['type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => false],
             'employee_id_dismissed' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => false],
+            'is_core' => ['type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => false],
             'date_add' => ['type' => self::TYPE_DATE, 'required' => true],
             'date_upd' => ['type' => self::TYPE_DATE, 'required' => false],
         ],
@@ -95,6 +104,34 @@ class PrestaScanVulnAlerts extends ObjectModel
         $this->criticity = pSQL($vulnerability['criticity']);
         $this->date_add = date('Y-m-d H:i:s');
         $this->date_upd = null;
+
+        return $this->save();
+    }
+
+    public function saveAlertNoDetail()
+    {
+        $this->module_name = 'alert_module_no_detail';
+        $this->vulnerability_type = 'unknow';
+        $this->vulnerability_data = 'unknow';
+        $this->date_add = date('Y-m-d H:i:s');
+
+        return $this->save();
+    }
+
+    public function saveCoreVulnerabilityAlert($vulnerability, $no_detail = false)
+    {
+        if (!$no_detail) {
+            $this->vulnerability_type = pSQL($vulnerability['type']);
+            $this->vulnerability_data = json_encode($vulnerability['description']);
+            $this->cve = pSQL($vulnerability['cve']);
+            $this->criticity = pSQL($vulnerability['criticity']);
+        } else {
+            $this->module_name = 'alert_core_no_detail';
+            $this->vulnerability_type = 'other';
+            $this->vulnerability_data = $vulnerability['numberVulnerabilities'];
+        }
+        $this->is_core = true;
+        $this->date_add = date('Y-m-d H:i:s');
 
         return $this->save();
     }

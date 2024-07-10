@@ -61,4 +61,43 @@
             <a href="javascript:void(0);" id="login-oauth2"><i class="icon-user"></i> <span>{l s='Login' mod='prestascansecurity'}</span></a>
         {/if}
     </li>
+    <li id="refresh_subscription" class="menu_element floatright">
+        {if $prestascansecurity_isLoggedIn && isset($subscription) && !$subscription}
+            <div class="refresh-subscription">
+                <a href="javascript:void(0);" id="link_refresh_subscription" class='dropbtn' title="{l s='Click here to update your subscription status (after purchase).' mod='prestascansecurity'}">
+                    <i class="icon-refresh"></i>
+                </a>
+            </div>
+        {/if}
+    </li>
+    <li id="subscription" class="menu_element floatright full-height">
+    {if $prestascansecurity_isLoggedIn}
+        <div class="avantage dropdown">
+            <a href="javascript:void(0);" id="subscription-status" class='dropbtn'>
+                {if isset($subscription) && $subscription}
+                    <i class="icon-check"></i>
+                    <span>{l s='Active subscription' mod='prestascansecurity'}</span>
+                {else}
+                    <i class="icon-euro"></i>
+                    <span>{l s='Premium benefits' mod='prestascansecurity'}</span>
+                {/if}
+            </a>
+            <div id="btn-action-avantage" class="dropdown-content">
+                {if isset($subscription) && $subscription}
+                    <div class="show-advantage">
+                        <a href="https://www.profileo.com/index.php?module=eo_sub&fc=module&controller=list" target="_blank">{l s='Subscription management and details' mod='prestascansecurity'}</a>
+                    </div>
+                    <div class="show-advantage">
+                        <a href="{$settings_page_url|escape:"html":'UTF-8'}" target="_blank">{l s='Manage my technical agency contact' mod='prestascansecurity'}</a>
+                    </div>
+                {else}
+                    <div class="show-advantage">
+                        <a href="https://www.profileo.com/prestascan-security-buy" target="_blank">{l s='See the benefits' mod='prestascansecurity'}</a>
+                    </div>
+                {/if}
+            </div>
+            <div class="clearer"></div>
+        </div>
+    {/if}
+    </li>
 </ul>

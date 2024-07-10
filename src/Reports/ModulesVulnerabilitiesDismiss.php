@@ -24,6 +24,10 @@
 
 namespace PrestaScan\Reports;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class ModulesVulnerabilitiesDismiss extends Report
 {
     public $reportName = 'modules_vulnerabilities_dismiss';

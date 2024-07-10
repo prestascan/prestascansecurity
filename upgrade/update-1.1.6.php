@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
+ * Copyright 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/).
  *
  * For questions or comments about this software, contact Maxime Morel-Bailly <security@prestascan.com>
  * List of required attribution notices and acknowledgements for third-party software can be found in the NOTICE file.
@@ -21,54 +21,35 @@
  * @copyright Since 2023 Profileo Group <contact@profileo.com> (https://www.profileo.com/fr/)
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
-
-namespace PrestaScan\OAuth2;
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class AccessToken
+/**
+ * Update main function for module.
+ *
+ * @param Prestascansecurity $module
+ *
+ * @return bool
+ */
+function upgrade_module_1_1_6($module)
 {
-    private $accessToken;
-    private $expires;
-    private $refreshToken;
-    private $scope;
+    \Configuration::updateGlobalValue('PRESTASCAN_SUBS_STATE', 0);
+    \Configuration::updateGlobalValue('PRESTASCAN_SUBS_LAST_CHECK', null);
 
-    public function __construct(array $options)
-    {
-        $this->accessToken = $options['access_token'];
-        $this->expires = isset($options['expires']) ? $options['expires'] : null;
-        $this->refreshToken = isset($options['refresh_token']) ? $options['refresh_token'] : null;
-        $this->scope = isset($options['scope']) ? $options['scope'] : null;
+    $sql[] = "ALTER TABLE `" . _DB_PREFIX_ . "prestascan_vuln_alerts` CHANGE `module_name` `module_name` VARCHAR(255) NULL;";
+    $sql[] = "ALTER TABLE `" . _DB_PREFIX_ . "prestascan_vuln_alerts` ADD `is_core` BOOLEAN NOT NULL DEFAULT FALSE AFTER `employee_id_dismissed`; ";
+    $sql[] = "ALTER TABLE `" . _DB_PREFIX_ . "prestascan_queue` ADD `last_date_retrieve` datetime NULL;";
+
+    foreach ($sql as $query) {
+        Db::getInstance()->execute($query);
     }
 
-    public function getToken()
-    {
-        return $this->accessToken;
+    // Delete all dismiss cache file
+    $reports = new \PrestaScan\Reports\Report();
+    foreach($reports->getDismissedCacheFiles() as $files) {
+        \PrestaScan\Tools::deleteReport($files);
     }
 
-    public function getExpires()
-    {
-        return $this->expires;
-    }
-
-    public function getRefreshToken()
-    {
-        return $this->refreshToken;
-    }
-
-    public function getScope()
-    {
-        return $this->scope;
-    }
-
-    public function hasExpired()
-    {
-        $expires = $this->getExpires();
-        if (empty($expires)) {
-            throw new \Exception('"expires" is not set on the token');
-        }
-        return $expires < time();
-    }
+    return true;
 }

@@ -22,53 +22,47 @@
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */
 
-namespace PrestaScan\OAuth2;
+namespace PrestaScan;
 
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class AccessToken
+class AutomationScanHandler
 {
-    private $accessToken;
-    private $expires;
-    private $refreshToken;
-    private $scope;
+    private $module;
 
-    public function __construct(array $options)
+    public function __construct(\Module $module)
     {
-        $this->accessToken = $options['access_token'];
-        $this->expires = isset($options['expires']) ? $options['expires'] : null;
-        $this->refreshToken = isset($options['refresh_token']) ? $options['refresh_token'] : null;
-        $this->scope = isset($options['scope']) ? $options['scope'] : null;
+        $this->module = $module;
     }
 
-    public function getToken()
+    public function handle($data)
     {
-        return $this->accessToken;
-    }
-
-    public function getExpires()
-    {
-        return $this->expires;
-    }
-
-    public function getRefreshToken()
-    {
-        return $this->refreshToken;
-    }
-
-    public function getScope()
-    {
-        return $this->scope;
-    }
-
-    public function hasExpired()
-    {
-        $expires = $this->getExpires();
-        if (empty($expires)) {
-            throw new \Exception('"expires" is not set on the token');
+        $return = [];
+        $report = null;
+        switch ($data['scan_type']) {
+            case 'core_vulnerabilities':
+                $report = new \PrestaScan\Reports\CoreVulnerabilitiesReport();
+                break;
+            case 'directories_listing':
+                $report = new \PrestaScan\Reports\DirectoriesProtectionReport();
+                break;
+            case 'modules_unused':
+                $report = new \PrestaScan\Reports\UnusedModulesReport();
+                break;
+            case 'modules_vulnerabilities':
+                $report = new \PrestaScan\Reports\VulnerableModulesReport();
+                break;
+            default:
+                break;
         }
-        return $expires < time();
+        if (!is_null($report)) {
+            // Default parameter are false, ''. true, job_id to indicate this is an automatic scan
+            $result = $report->generate(true, $data['automatic_scan_result_id']);
+            $report->setScanStatus($data['scan_type'], true);
+        }
+
+        return $result;
     }
 }

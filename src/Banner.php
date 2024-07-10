@@ -24,6 +24,10 @@
 
 namespace PrestaScan;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class Banner
 {
     public static function getBanner()
@@ -36,7 +40,7 @@ class Banner
             if (empty($lastBannerCheck) || (strtotime(date('Y-m-d H:i:s')) - strtotime($lastBannerCheck)) > 86400) {
                 \Configuration::updateGlobalValue('PRESTASCAN_BANNER_LAST_CHECK', (new \DateTime())->format('Y-m-d H:i:s'));
                 $apiRequest = new \PrestaScan\Api\Request(
-                    'prestascan-api/v1/banner',
+                    'prestascan-api/v2/banner',
                     'GET'
                 );
                 $apiResponse = $apiRequest->getResponse();

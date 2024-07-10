@@ -24,6 +24,10 @@
 
 namespace PrestaScan\Reports;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class ModulesUnusedDismiss extends Report
 {
     public $reportName = 'modules_unused_dismiss';

@@ -24,6 +24,10 @@
 
 namespace PrestaScan\Exception;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 class UnauthenticatedException extends \Exception
 {
 }
