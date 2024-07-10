@@ -166,7 +166,7 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         }
 
         $this->checkJobTooLongProgress();
-        
+
         $jobs = \PrestaScanQueue::getJobsByState(\PrestaScanQueue::$actionname['TORETRIEVE']);
         $resultProgress = [];
         $scanCompleted = false;
