@@ -79,7 +79,7 @@
         {/if}
         {if isset($aType) && $aType == 'moduleVulnerableToUpdate' && isset($aModule.module_link) && !empty
         ($aModule.module_link)}
-            {if isset($aModule.module_link[0])}
+            {if is_array($aModule.module_link) && isset($aModule.module_link[0])}
                 {* In some instance, the API return an array *}
                 {assign var="module_link" value="{$aModule.module_link[0]}"}
             {else}
