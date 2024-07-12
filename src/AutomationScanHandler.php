@@ -58,6 +58,14 @@ class AutomationScanHandler
                 break;
         }
         if (!is_null($report)) {
+            if (in_array($data['scan_type'], array('modules_unused', 'modules_vulnerabilities'))) {
+                // We notice an issue with the module `gauthenticator` that `exit()` the script when retrieving the
+                // instance with `getInstanceByName(gauthenticator)`. This is due to a custom definition of the
+                // module with `PS_ADMIN_DIR`. Therefore we force the value here no to block the scan.
+                if (!defined('PS_ADMIN_DIR')) {
+                    define('PS_ADMIN_DIR', '_PS_ADMIN_DIR_');
+                }
+            }
             // Default parameter are false, ''. true, job_id to indicate this is an automatic scan
             $result = $report->generate(true, $data['automatic_scan_result_id']);
             $report->setScanStatus($data['scan_type'], true);
