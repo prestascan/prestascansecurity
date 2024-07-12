@@ -103,9 +103,8 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
             $return = [
                 'message_error' => 'Error processing webhook',
                 'exception_message' => $e->getMessage(),
-                'exception_trace' => $e->getTraceAsString(),
             ];
-            $this->returnServer(500, json_encode($return));
+            $this->returnServer(500, $return);
         }
 
         $this->returnServer(501, 'Unknown');
@@ -197,8 +196,6 @@ class PrestascansecurityWebhookModuleFrontController extends ModuleFrontControll
             $data = json_decode($message, true);
             $body['payload']['message'] = '';
             $body['payload'] += $data;
-            $body['error']['message'] = '';
-            $body['error'] += $data;
         }
         if ($httpCode == 200) {
             $body['success'] = true;
