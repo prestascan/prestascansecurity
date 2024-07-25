@@ -66,16 +66,16 @@ class CoreVulnerabilitiesReport extends Report
             $payload['result'][$k]['link'] = $vulnerability['cve']['value'];
 
             $payload['result'][$k]['fo']['value'] = isset($payload['result'][$k]['fo']['value']) && (int) $payload['result'][$k]['fo']['value'] === 1
-                ? 'Yes'
+                ? $instance->getWordTranslated('Yes')
                 : ((isset($payload['result'][$k]['fo']['value']) && (int) $payload['result'][$k]['fo']['value']) === 0
-                    ? 'No'
+                    ? $instance->getWordTranslated('No')
                     : ''
                 );
 
             $payload['result'][$k]['bo']['value'] = isset($payload['result'][$k]['bo']['value']) && (int) $payload['result'][$k]['bo']['value'] === 1
-                ? 'Yes'
+                ? $instance->getWordTranslated('Yes')
                 : ((isset($payload['result'][$k]['bo']['value']) && (int) $payload['result'][$k]['bo']['value']) === 0
-                    ? 'No'
+                    ? $instance->getWordTranslated('No')
                     : ''
                 );
 
@@ -85,6 +85,11 @@ class CoreVulnerabilitiesReport extends Report
 
             if (isset($vulnerability['severity']['value'])) {
                 $severity = $vulnerability['severity']['value'];
+                $payload['result'][$k]['severity']['value'] = $instance->getCriticityTranslated($severity);
+                $payload['result'][$k]['severity']['severity_value'] = $severity;
+                if (isset($vulnerability['is_dismissed']) && $vulnerability['is_dismissed']) {
+                    continue;
+                }
                 switch (strtolower($severity)) {
                     case 'critical':
                         $countVulnerabilitiesCritical++;

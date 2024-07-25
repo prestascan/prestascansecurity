@@ -21,15 +21,6 @@
  * @license   https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  *}
 
-<div class="partner_logo_container">
-    <div class="partner_logo">
-        <div class="partner_texte col-md-5">{l s='This module is powered by the collective energy of:' mod='prestascansecurity'}</div>
-        <div class="partner_logos col-md-7">
-            <a href="https://www.touchweb.fr/" target="_blank"><img class="partner1" alt="TouchWeb Infogérance E-commerce" src="{$urlmodule}views/img/partners/partner1.png"/></a>
-            <a href="https://www.202-ecommerce.com/" target="_blank"><img class="partner3" alt="202 Ecommerce" src="{$urlmodule}views/img/partners/partner3.png"/></a>
-            <a href="https://www.profileo.com/" target="_blank"><img class="partner2" alt="Profileo 100% E-commerce" src="{$urlmodule}views/img/partners/partner2.png"/></a>
-            <a href="https://www.772424.com/" target="_blank"><img class="partner4" alt="772424 E-commerce hosting" src="{$urlmodule}views/img/partners/partner4.png"/></a>
-            <a href="https://friends-of-presta.github.io/security-advisories/" target="_blank"><img class="partner5" alt="Friends Of Presta" src="{$urlmodule}views/img/partners/partner5.png"/></a>
-        </div>
-    </div>
+<div class="{$class} result_data_desc point_color_ col-lg-12 col-md-12">
+    <p>{l s='No scan has been performed to date' mod='prestascansecurity'}</p>
 </div>

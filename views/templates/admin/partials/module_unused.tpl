@@ -62,7 +62,7 @@
             {if $modules_unused_results.result.disabled|count != 0}
                 {if $module_result1_count != 0}
                     <div class="btntooltip eoaction export-scan-results" data-type="modules_unused" data-subtype="disabled" data-action="exportScanResults">
-                        <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
+                        <img src="views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
                     </div>
                 {/if}
                 <div class="scroll-overlay"></div>
@@ -91,7 +91,7 @@
             {if $modules_unused_results.result.not_installed|count != 0} 
             {if $module_result2_count != 0}
                 <div class="btntooltip eoaction export-scan-results" data-type="modules_unused" data-subtype="not_installed" data-action="exportScanResults">
-                    <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
+                    <img src="{$urlmodule}views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
                 </div>
             {/if}
                 <div class="scroll-overlay"></div>

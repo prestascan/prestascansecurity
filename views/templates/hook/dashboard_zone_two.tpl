@@ -23,7 +23,7 @@
 
 <section id="prestascansecurity_dashboard_hook" class="panel{if isset($alert_modules_vulnerability) && !empty($alert_modules_vulnerability)} prestascanalert{elseif isset($module_upgrade_available) && $module_upgrade_available} prestascanupdate{/if}">
     <div class="panel-heading mb-0">
-        <img src="/modules/prestascansecurity/views/img/icon_dashboard.png"/> {l s='PrestaScan Security' mod='prestascansecurity'}
+        <img src="{$urlmodule}views/img/icon_dashboard.png"/> {l s='PrestaScan Security' mod='prestascansecurity'}
     </div>
 
     {if isset($alert_modules_vulnerability) && !empty($alert_modules_vulnerability)}

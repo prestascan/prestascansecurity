@@ -75,25 +75,44 @@
             <div class="col-md-4">
                 <h2>{$aScanResult.total_critical}</h2>
                 <p>
-                    {l s='Vulnerabilities' mod='prestascansecurity'}
-                    <br/>
-                    <span style="color:#F45454">{l s='critical' mod='prestascansecurity'}</span>
+                    {if $aScanResult.total_critical < 2}
+                        {l s='vulnerability' mod='prestascansecurity'}
+                        <br/>
+                        <span style="color:#F45454">{l s='critical' mod='prestascansecurity'}</span>
+                    {else}
+                        {l s='Vulnerabilities' mod='prestascansecurity'}
+                        <br/>
+                        <span style="color:#F45454">{l s='criticals' mod='prestascansecurity'}</span>
+                    {/if}
                 </p>
             </div>
             <div class="col-md-4">
                 <h2>{$aScanResult.total_high}</h2>
                 <p>
-                    {l s='Vulnerabilities' mod='prestascansecurity'}
-                    <br/>
-                    <span style="color:#FFA801">{l s='high' mod='prestascansecurity'}</span>
+                    {if $aScanResult.total_high < 2}
+                        {l s='vulnerability' mod='prestascansecurity'}
+                        <br/>
+                        <span style="color:#FFA801">{l s='high' mod='prestascansecurity'}</span>
+                    {else}
+                        {l s='Vulnerabilities' mod='prestascansecurity'}
+                        <br/>
+                        <span style="color:#FFA801">{l s='highs' mod='prestascansecurity'}</span>
+                    {/if}
+                    
                 </p>
             </div>
             <div class="col-md-4">
                 <h2>{$aScanResult.total_medium + $aScanResult.total_low}</h2>
                 <p>
-                    {l s='Vulnerabilities' mod='prestascansecurity'}
-                    <br/>
-                    <span style="color:#3AD29F">{l s='medium and low' mod='prestascansecurity'}</span>
+                    {if ($aScanResult.total_medium + $aScanResult.total_low) < 2}
+                        {l s='vulnerability' mod='prestascansecurity'}
+                        <br/>
+                        <span style="color:#3AD29F">{l s='medium and low' mod='prestascansecurity'}</span>
+                    {else}
+                        {l s='Vulnerabilities' mod='prestascansecurity'}
+                        <br/>
+                        <span style="color:#3AD29F">{l s='mediums and lows' mod='prestascansecurity'}</span>
+                    {/if}                    
                 </p>
             </div>
         </div>

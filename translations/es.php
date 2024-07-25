@@ -23,7 +23,7 @@ $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_00ed7852d153c8887f8
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_d3d2e617335f08df83599665eef8a418'] = 'Cerrar';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_270097ae78dcf5550472a7b90d704aa7'] = 'Actualizar estado';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_53598e5a1b2d3ef7a9efe774db87a22e'] = 'Se solicita actualizar el módulo para ejecutar un nuevo escaneo.';
-$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_3437d76a8fc9d682badac2a7b3924487'] = 'Si actualizó su módulo manualmente y aún recibe este mensaje, intente actualizar el estado de su módulo haciendo clic en el botón \"Actualizar estado\" a continuación.';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_3437d76a8fc9d682badac2a7b3924487'] = 'Si actualizó su módulo manualmente y aún recibe este mensaje, intente actualizar el estado de su módulo haciendo clic en el botón "Actualizar estado" a continuación.';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_01fa0a26c0c8cb2259b135f71f37a94b'] = 'Para iniciar un escaneo, inicie sesión o cree una cuenta. Tener una cuenta nos permite realizar escaneos de forma segura en su nombre y brindar resultados precisos.';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_c197207fc261eac1360ad875c7af45d0'] = 'Esta alerta se activa porque se ha descubierto una nueva vulnerabilidad en los códigos nativos de PrestaShop. Su tienda puede ser vulnerable si aún no existe un parche. Comuníquese con su agencia o con nuestro equipo de expertos para resolver el problema. También se recomienda una actualización de PrestaShop. Realice nuevamente un análisis completo de vulnerabilidades de PrestaShop para obtener más detalles.';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_da1027ae9457c3b62cb39aa833c3e232'] = 'Inicia sesión o crea una cuenta';
@@ -43,6 +43,11 @@ $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_2f45c959b1d439c5245
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_a57575a1536b76999251278ce24f0407'] = 'Falta la clasificación';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_c3793715c5bea01d1d2f1ed98c2861dc'] = 'Exposición de datos';
 $_MODULE['<{prestascansecurity}prestashop>prestascansecurity_bc4ac22ddef0a7ef0e58c19bb4c76c96'] = 'XSS reflejado';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_655d20c1ca69519ca647684edbb2db35'] = 'Alta';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_278d01e5af56273bae1bb99a98b370cd'] = 'Crítica';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_87f8a6ab85c9ced3702b4ea641ad4bb5'] = 'Media';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_28d0edd045e05cf5af64e35ae0c4c6ef'] = 'Baja';
+$_MODULE['<{prestascansecurity}prestashop>prestascansecurity_bafd7322c6e97d25b6299b5d6fe8920b'] = 'No';
 $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_5d2da48003fa02947fcb20794e506bf6'] = 'Para iniciar un escaneo, inicie sesión o cree una cuenta. Tener una cuenta nos permite realizar escaneos de forma segura en su nombre y brindar resultados precisos. Haga clic en \'Iniciar sesión\' en la esquina superior derecha para iniciar sesión o crear una nueva cuenta.';
 $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_87431858adc92c5432db750998b1e4d3'] = 'Error al procesar uno de sus escaneos. Detalle: tiempo de espera agotado. Es posible que haya demasiados datos para procesar para su escaneo. Inténtalo de nuevo.';
 $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_4d65336e311976d51fffe371c27335d6'] = 'Error al procesar uno de sus escaneos. Detalle: escaneo detenido manualmente.';
@@ -85,12 +90,17 @@ $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroll
 $_MODULE['<{prestascansecurity}prestashop>menu_a662dd27654154f271d21673e7fbb74d'] = 'Gestionar mi contacto técnico de la agencia';
 $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_cf1b79b75f5085ea6135479869e3cc80'] = 'Tu cuenta ha sido eliminada. Por favor, reactiva tu cuenta para realizar un escaneo.';
 $_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_c54a8244737bfc3e79e9e9bb38f2ab23'] = 'Se realizó un escaneo hace menos de 10 minutos. Por favor, intente nuevamente en unos minutos.';
+$_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_7d0db380a5b95a8ba1da0bca241abda1'] = ' tiene ';
+$_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_6a9112b659ebd188dd949e58acbe9b19'] = 'Un próximo escaneo será posible en';
+$_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_3bd6678cfe8c70ca251cb411803b8c86'] = 'Ha alcanzado el número máximo de intentos de escaneo permitidos esta semana.';
+$_MODULE['<{prestascansecurity}prestashop>adminprestascansecurityreportscontroller_154fe498bdc2d40b9b1c32e7a2305598'] = 'Ha alcanzado el número máximo de intentos de escaneo permitidos esta semana. Un próximo escaneo será posible en';
 $_MODULE['<{prestascansecurity}prestashop>menu_4bd7a971f2a09f814a3e5ba93cff5300'] = 'Haga clic aquí para actualizar el estado de su suscripción (después de la compra).';
 $_MODULE['<{prestascansecurity}prestashop>dashboard_update_module_3cf9a92fd34aecb1af0c5e2c2ee1c04d'] = 'Se requiere la actualización del módulo';
 $_MODULE['<{prestascansecurity}prestashop>dashboard_update_module_8f8c0a7f666e2229f386b6af496e03bd'] = 'Actualice su módulo PrestaScan lo antes posible para recibir alertas sobre nuevas amenazas.';
 $_MODULE['<{prestascansecurity}prestashop>dashboard_update_module_9dbbb666fc626eb3ed5b6a364149ca12'] = 'Actualizar módulo';
 $_MODULE['<{prestascansecurity}prestashop>dashboard_security_alerts_f34719911b94445533d1e1714939d515'] = 'ALERTA DE SEGURIDAD - PELIGRO INMEDIATO';
 $_MODULE['<{prestascansecurity}prestashop>dashboard_security_alerts_1abf7d0698da0f883cab2c0d4d07742f'] = 'Nueva vulnerabilidad detectada en el módulo';
+$_MODULE['<{prestascansecurity}prestashop>dashboard_security_alerts_22e1b3b42496adcc6ee7dcdc8db5d3ab'] = 'Nueva vulnerabilidad detectada en el core';
 $_MODULE['<{prestascansecurity}prestashop>dashboard_security_alerts_414e37408502ee8176d750b944403deb'] = 'Criticidad';
 $_MODULE['<{prestascansecurity}prestashop>dashboard_security_alerts_a1fa27779242b4902f7ae3bdd5c6d508'] = 'Tipo';
 $_MODULE['<{prestascansecurity}prestashop>dashboard_security_alerts_b5a7adde1af5c87d7fd797b6245c2a39'] = 'Descripción';
@@ -219,10 +229,14 @@ $_MODULE['<{prestascansecurity}prestashop>scan_in_progress_eb83cb7c01a3449487ded
 $_MODULE['<{prestascansecurity}prestashop>scan_in_progress_ba387b98b9462fc96925aadf3f641e6c'] = 'Forzar recuperación o cancelar';
 $_MODULE['<{prestascansecurity}prestashop>scan_result_60a1994f5365c8a09a74ac6516b88629'] = 'Resultados del último escaneo';
 $_MODULE['<{prestascansecurity}prestashop>scan_result_f91fe4f33093ee783af6952f653577d4'] = 'Recientemente se descubrió una nueva vulnerabilidad, verifique su alerta arriba y vuelva a hacer un escaneo si es necesario para actualizar sus resultados';
+$_MODULE['<{prestascansecurity}prestashop>scan_result_48a098c06115a3db0efb6bcb5e31fd41'] = 'Vulnerabilidad';
 $_MODULE['<{prestascansecurity}prestashop>scan_result_535e2de9168013bbfc31965016086243'] = 'Vulnerabilidades';
 $_MODULE['<{prestascansecurity}prestashop>scan_result_7e85bcb66fb9a809d5ab4f62a8b8bea8'] = 'crítica';
 $_MODULE['<{prestascansecurity}prestashop>scan_result_8d966b2253a917086c8604959e152243'] = 'alto';
 $_MODULE['<{prestascansecurity}prestashop>scan_result_cc065adf45d03c438f65ed5b1fe926cd'] = 'medio y bajo';
+$_MODULE['<{prestascansecurity}prestashop>scan_result_b94f362177d9190a03796f946ed5eeed'] = 'críticas';
+$_MODULE['<{prestascansecurity}prestashop>scan_result_84e0af2988cb41241ecc07133f5bfd86'] = 'altos';
+$_MODULE['<{prestascansecurity}prestashop>scan_result_a8e55c347a9d2bc43f8fbf054b86d553'] = 'medios y bajos';
 $_MODULE['<{prestascansecurity}prestashop>scan_result_179c72a9fc7f7295961e70f11e2bf826'] = 'Iniciar escaneo';
 $_MODULE['<{prestascansecurity}prestashop>infected_files_bf947dfb902f992331ed224d64d7c904'] = 'Actualmente, nuestro equipo de expertos realiza manualmente el análisis de archivos infectados y vulnerables. Sin embargo, estamos trabajando activamente para integrar esta función en este módulo. Mientras tanto, puede comunicarse con su agencia para revisar y limpiar su sitio web o buscar ayuda de nuestro equipo de expertos.';
 $_MODULE['<{prestascansecurity}prestashop>infected_files_02d4482d332e1aef3437cd61c9bcc624'] = 'Contáctenos';
@@ -246,6 +260,8 @@ $_MODULE['<{prestascansecurity}prestashop>upgrade_module_banner_9dbbb666fc626eb3
 $_MODULE['<{prestascansecurity}prestashop>main_17fe2f1437d4bcbd68f3a37bc842300f'] = 'ALERTA DE VULNERABILIDAD DE MÓDULO';
 $_MODULE['<{prestascansecurity}prestashop>main_d281dbfdeb3ea7e260614a35274d53ce'] = 'otras alertas pendientes';
 $_MODULE['<{prestascansecurity}prestashop>main_8e8023d5cc2d4e654b3a60c3f230060d'] = 'Vulnerabilidad potencial detectada en módulo';
+$_MODULE['<{prestascansecurity}prestashop>main_fcf693c6dfaf0a05e12f5b8bf57ca599'] = 'ALERTA DE VULNERABILIDAD PRINCIPAL';
+$_MODULE['<{prestascansecurity}prestashop>main_bd5de408d1064f93111824b724c2f767'] = 'Posible vulnerabilidad detectada en el núcleo';
 $_MODULE['<{prestascansecurity}prestashop>main_2dcb232bb6d696eb5a964e77530d9995'] = '(Descartar)';
 $_MODULE['<{prestascansecurity}prestashop>main_2b56b60f878922093facd42284848a0c'] = 'Más detalles';
 $_MODULE['<{prestascansecurity}prestashop>main_761c002c19e6ab5a8834993471839c5d'] = 'Archivos no estándar';
@@ -254,6 +270,7 @@ $_MODULE['<{prestascansecurity}prestashop>main_ea28c88fb397ee6e57edff5802ae8630'
 $_MODULE['<{prestascansecurity}prestashop>main_ea192129fb3d08d070e557c708b4fc21'] = 'Archivos infectados';
 $_MODULE['<{prestascansecurity}prestashop>main_3f468458e95593f5699856d2e5ea2dcb'] = 'Módulos en riesgo';
 $_MODULE['<{prestascansecurity}prestashop>main_e23e6b9e334e18341d83da77c9d44391'] = 'Módulos no utilizados';
+$_MODULE['<{prestascansecurity}prestashop>main_419ca1d8af854a8113fc430839881420'] = 'El estado de su suscripción ha sido actualizado.';
 $_MODULE['<{prestascansecurity}prestashop>menu_2938c7f7e560ed972f8a4f68e80ff834'] = 'Panel principal';
 $_MODULE['<{prestascansecurity}prestashop>menu_4d37406bbf556fb021f589529cccdebe'] = 'Escaneo de archivos';
 $_MODULE['<{prestascansecurity}prestashop>menu_0a684ba742e2b30e04c273b29c956009'] = 'Escaneo de módulos';
@@ -281,3 +298,4 @@ $_MODULE['<{prestascansecurity}prestashop>update_088af057f9dbcfc475e253dfa952a64
 $_MODULE['<{prestascansecurity}prestashop>directoriesprotectionreport_09642fbfce0ce364ad4c3892b1ff0703'] = 'Directorio de instalación detectado';
 $_MODULE['<{prestascansecurity}prestashop>directoriesprotectionreport_c711f3985fcbc1254e03acbb2250fda2'] = 'Directorio Git detectado';
 $_MODULE['<{prestascansecurity}prestashop>directoriesprotectionreport_6772c786dfc231422dbff6b7a248c0a9'] = 'Gestor SQL detectado';
+$_MODULE['<{prestascansecurity}prestashop>home_no_scan_result_2f94b1908cfd7df8b0cc79a8eb88884d'] = 'No se ha realizado ningún escaneo hasta la fecha';

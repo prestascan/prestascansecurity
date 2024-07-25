@@ -24,7 +24,7 @@
 <li id="module-{$aModule.name}" class="module_block item well {$class} {if isset($aModule.is_dismissed) && $aModule.is_dismissed}dismissed{/if}">
     <div class="module_name">
         <div class="module-logo-thumb-list">
-          <img src="/modules/{$aModule.name}/logo.png" alt="{$aModule.displayName}" width="45">
+          <img src="{$urlmodule|replace:"prestascansecurity/":$aModule.name}/logo.png" alt="{$aModule.displayName}" width="45">
         </div>
         <div class="module-details">
             <span class='module-details-label'>
