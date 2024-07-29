@@ -608,7 +608,7 @@ $(function () {
           click: "prestascanSecurity_Modal.closeDialog",
         }
       ];
-      window.prestascanSecurity_Modal.createDialog(text_refresh_module_status_required, buttons);
+      window.prestascanSecurity_Modal.createDialog(decodeHTMLEntities(text_refresh_module_status_required), buttons);
     },
     handleRefreshModuleStatus : function () {
       $.ajax({
@@ -725,6 +725,7 @@ $(function () {
             window.prestascanSecurity_Modal.createDialog(response.statusText, []);
           }
           if(response.success) {
+            window.prestascanSecurity_Tools.addUrlParameter("subRefresh", 1)
             window.location.reload();
             return true;
           }
@@ -788,4 +789,12 @@ $(function () {
   } // window.prestascanSecurity_Tools
 
   prestascanSecurity.init();
+});
+
+// Sub refresh message should only view after clic, then remove it from url
+window.addEventListener('load', () => {
+  if (window.location.search.includes('subRefresh=1')) {
+    let cleanUrl = window.location.href.replace(/[\?&]subRefresh=1/, '');
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
 });

@@ -998,3 +998,6 @@ label.chkConfirmModuleUninstall input {
     border: none !important;
     padding-right: 0 !important;
 }
+table#coreVulnerabilities.dataTable td.dt-control{
+    cursor: pointer;
+}

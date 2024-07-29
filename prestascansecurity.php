@@ -33,7 +33,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '1.1.6';
+        $this->version = '1.1.7';
         $this->author = 'PrestaScan';
         $this->need_instance = false;
         $this->bootstrap = true;
@@ -235,6 +235,7 @@ class Prestascansecurity extends Module
             '&token=' . Tools::getAdminTokenLite('AdminModules');
         $this->context->smarty->assign('module_link', $link);
         $this->context->smarty->assign('alert_modules_vulnerability', $alerts);
+        $this->context->smarty->assign('urlmodule', $this->getPathUri());
 
         $this->context->controller->addCSS($this->_path . 'views/css/dashboard.1.1.6.css');
         return $this->display(__FILE__, 'dashboard_zone_two.tpl');
@@ -440,7 +441,7 @@ class Prestascansecurity extends Module
             $settings_page_url = \Configuration::get('PRESTASCAN_DEV_OAUTH_DOMAIN_URL') . 'login';
         }
         if (!empty(Configuration::get('PRESTASCAN_API_EMAIL'))) {
-            $settings_page_url .= '?email=' . Configuration::get('PRESTASCAN_API_EMAIL');
+            $settings_page_url .= '?email=' . urlencode(Configuration::get('PRESTASCAN_API_EMAIL'));
         }
         $this->context->smarty->assign('settings_page_url', $settings_page_url);
     }
@@ -630,5 +631,43 @@ class Prestascansecurity extends Module
     public static function redirectTools($functionName, $param)
     {
         return PrestaScan\Tools::{$functionName}($param);
+    }
+
+    /**
+     * Retrieve the translated severity/criticity name
+     * This function has been place here instead of in an utility class un oder to be
+     * able to use the translation system.
+     */
+    public function getCriticityTranslated($criticity)
+    {
+        $criticities = array(
+            'High' => $this->l('High'),
+            'Critical' => $this->l('Critical'),
+            'Medium' => $this->l('Medium'),
+            'Low' => $this->l('Low'),
+        );
+        if (array_key_exists(ucfirst($criticity), $criticities)) {
+            return $criticities[ucFirst($criticity)];
+        }
+
+        return ucfirst($criticity);
+    }
+
+    /**
+     * Retrieve the translated word
+     * This function has been place here instead of in an utility class un oder to be
+     * able to use the translation system.
+     */
+    public function getWordTranslated($word)
+    {
+        $words = array(
+            'Yes' => $this->l('Yes'),
+            'No' => $this->l('No'),
+        );
+        if (array_key_exists($word, $words)) {
+            return $words[$word];
+        }
+
+        return ucfirst($criticity);
     }
 }

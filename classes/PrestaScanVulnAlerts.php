@@ -112,7 +112,7 @@ class PrestaScanVulnAlerts extends ObjectModel
     {
         $this->module_name = 'alert_module_no_detail';
         $this->vulnerability_type = 'unknow';
-        $this->vulnerability_data = 'unknow';
+        $this->vulnerability_data = json_encode(array('en' =>'unknow'));
         $this->date_add = date('Y-m-d H:i:s');
 
         return $this->save();
@@ -128,7 +128,7 @@ class PrestaScanVulnAlerts extends ObjectModel
         } else {
             $this->module_name = 'alert_core_no_detail';
             $this->vulnerability_type = 'other';
-            $this->vulnerability_data = $vulnerability['numberVulnerabilities'];
+            $this->vulnerability_data = json_encode(array('en' => $vulnerability['numberVulnerabilities']));
         }
         $this->is_core = true;
         $this->date_add = date('Y-m-d H:i:s');

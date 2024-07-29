@@ -31,7 +31,13 @@
 {assign var="tabreportmodules" value=array('report-modules','modules_vulnerabilities','modules_unused')}
 <div id="prestascansecurity_main_container" data-urlreports="{$prestascansecurity_reports_ajax}">
 	
-	<div id="flash-message"></div>
+	<div id="flash-message">
+		{if isset($smarty.get.subRefresh) && $smarty.get.subRefresh == 1}
+			<div class='success subscription-msg'>
+				<p class='alert alert-success'>{l s='Your subscription status has been updated' mod='prestascansecurity'}</p>
+			</div>
+		{/if}
+	</div>
 
 	{if isset($alert_new_modules_vulnerability) && !empty($alert_new_modules_vulnerability)}
 
@@ -56,7 +62,7 @@
 							{l s='Potential core vulnerability detected' mod='prestascansecurity'}
 						{else}
 							{l s='Potential vulnerability detected in module ' mod='prestascansecurity'}
-							<strong>{$alert_new_modules_vulnerability[0].name}.</strong>
+						<strong>{if isset($alert_new_modules_vulnerability[0].name)}{$alert_new_modules_vulnerability[0].name}{/if}.</strong>
 						{/if}
 					</span>
 					&nbsp;<a href="javascript:void(0);" data-alertId="{$alert_new_modules_vulnerability[0].id}" class="dismiss-action">{l s='(Dismiss)' mod='prestascansecurity'}</a>

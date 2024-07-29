@@ -176,11 +176,11 @@ class Report
                         $countdismiss++;
                         $results['summary']['scan_result_total'] -= 1;
                         $results['summary']['scan_result_ttotal'] -= 1;
-                        if ($result['severity']['value'] == 'Critical') {
+                        if ($result['severity']['severity_value'] == 'Critical') {
                             $results['summary']['total_critical'] -= 1;
-                        } elseif ($result['severity']['value'] == 'High') {
+                        } elseif ($result['severity']['severity_value'] == 'High') {
                             $results['summary']['total_high'] -= 1;
-                        } elseif ($result['severity']['value'] == 'Medium') {
+                        } elseif ($result['severity']['severity_value'] == 'Medium') {
                             $results['summary']['total_medium'] -= 1;
                         } else {
                             $results['summary']['total_low'] -= 1;

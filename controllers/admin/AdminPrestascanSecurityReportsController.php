@@ -454,13 +454,24 @@ class AdminPrestascanSecurityReportsController extends ModuleAdminController
         } catch (\PrestaScan\Exception\TooManyAttempsException $exp) {
             // Rate limit
             $errorMessage = $exp->getMessage();
-            if ($errorMessage == 'Too Many Attempts.') {
+            $arrayMessage = explode("#", $errorMessage);
+            $resetTime = ' ';
+            if (isset($arrayMessage[1]) && !empty($arrayMessage[1])) {
+                $resetTime .= date('j/m/Y', strtotime($arrayMessage[1]));
+                $resetTime .= $this->module->l('at','AdminPrestascanSecurityReportsController');
+                $resetTime .= date('h\hm', strtotime($arrayMessage[1]));
+            }
+            if ($arrayMessage[0] == 'Too Many Attempts.') {
                 $errorMessage = $this->module->l('You have exceeded the limit of allowed scans for this week. To enjoy unlimited automatic or manual scans, please upgrade to the premium version. This will support our developments and allow us to continue improving our services.','AdminPrestascanSecurityReportsController');
-            } elseif ($errorMessage == 'Too Many Attempts for subscribed user.') {
-                $errorMessage = $this->module->l('You have reached the maximum number of scan attempts allowed this week. Please try again in 24 hours.','AdminPrestascanSecurityReportsController');
-            } elseif($errorMessage == 'Too Many Attempts - API safeguard.') {
+                $errorMessage .= '<br />';
+                $errorMessage .= $this->module->l('A next scan will be possible on','AdminPrestascanSecurityReportsController') . $resetTime;
+            } elseif ($arrayMessage[0] == 'Too Many Attempts for subscribed user.') {
+                $errorMessage = $this->module->l('You have reached the maximum number of scan attempts allowed this week.','AdminPrestascanSecurityReportsController');
+                $errorMessage .= '<br />';
+                $errorMessage .= $this->module->l('A next scan will be possible on','AdminPrestascanSecurityReportsController') . $resetTime;
+            } elseif($arrayMessage[0] == 'Too Many Attempts - API safeguard.') {
                 $errorMessage = $this->module->l('A scan was performed less than 10 minutes ago. Please try again in a few minutes.','AdminPrestascanSecurityReportsController');
-            } elseif ($errorMessage == 'Account deleted') {
+            } elseif ($arrayMessage[0] == 'Account deleted') {
                 $errorMessage = $this->module->l('Your account has been deleted. Please reactivate your account to perform a scan','AdminPrestascanSecurityReportsController');
             }
             self::dieWithError($errorMessage);

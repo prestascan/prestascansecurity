@@ -34,7 +34,7 @@
 
     {assign var='scan_result_total' value=$core_vulnerabilities_results.summary.scan_result_ttotal}
 
-    {if $scan_result_total == 1}
+    {if $scan_result_total < 2}
         {assign var='scan_result_item_type' value={l s='core vulnerability' mod='prestascansecurity'}}
     {else}
         {assign var='scan_result_item_type' value={l s='core vulnerabilities' mod='prestascansecurity'}}

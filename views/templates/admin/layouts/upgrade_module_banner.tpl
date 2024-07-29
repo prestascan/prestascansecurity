@@ -24,7 +24,7 @@
 {assign var="banner_text" value={l s='Update your PrestaScan module as soon as possible to benefit from the latest features' mod='prestascansecurity'}}
 <div class="informationPanel row">
     <div class="banner_logo col-md-3 col-sm-3">
-        <img src="/modules/prestascansecurity/views/img/Logo_PSSecurity.svg"/>
+        <img src="{$urlmodule}views/img/Logo_PSSecurity.svg"/>
     </div>
     <div class="banner_text col-md-6 col-sm-6">
         {$banner_text|replace:'PrestaScan':'Presta<span>Scan</span>'}

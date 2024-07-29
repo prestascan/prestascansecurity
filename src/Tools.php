@@ -288,7 +288,51 @@ class Tools
 
     public static function formatDateString($date)
     {
-        return !empty($date) ? date('j F Y', strtotime($date)) : '';
+        $return = '';
+        $languageCode = \Context::getContext()->language->iso_code;
+        $mois = array(
+            'fr' => array(
+                'January' => 'Janvier',
+                'February' => 'Février',
+                'March' => 'Mars',
+                'April' => 'Avril',
+                'May' => 'Mai',
+                'June' => 'Juin',
+                'July' => 'Juillet',
+                'August' => 'Août',
+                'September' => 'Septembre',
+                'October' => 'Octobre',
+                'November' => 'Novembre',
+                'December' => 'Décembre'
+            ),
+            'es' => array(
+                'January' => 'Enero',
+                'February' => 'Febrero',
+                'March' => 'Marzo',
+                'April' => 'Abril',
+                'May' => 'Mayo',
+                'June' => 'Junio',
+                'July' => 'Julio',
+                'August' => 'Agosto',
+                'September' => 'Septiembre',
+                'October' => 'Octubre',
+                'November' => 'Noviembre',
+                'December' => 'Diciembre'
+            )
+        );
+        $at = array(
+            'fr' => ' à ',
+            'es' => ' a las ',
+        );
+        if (!empty($date)) {
+            $return = date('j F Y ', strtotime($date));
+            $return .= in_array($languageCode, array('fr','es')) ? $at[$languageCode] : ' at ';
+            $return .= date('h\hm', strtotime($date));
+            if (in_array($languageCode, array('fr','es'))) {
+                $return = str_replace(array_keys($mois[$languageCode]), array_values($mois[$languageCode]), $return);
+            }
+        }
+        return $return;
     }
 
     public static function getOldestScan($scans)

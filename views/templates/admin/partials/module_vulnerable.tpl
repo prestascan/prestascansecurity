@@ -62,7 +62,7 @@
             {if isset($modules_vulnerabilities_results.vulnerable) && $modules_vulnerabilities_results.vulnerable|is_array && $modules_vulnerabilities_results.vulnerable|count != 0}
                 {if $module_result1_count != 0}
                     <div class="btntooltip eoaction export-scan-results" data-type="modules_vulnerabilities" data-subtype="vulnerable" data-action="exportScanResults">
-                        <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
+                        <img src="{$urlmodule}views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
                     </div>
                 {/if}
                 <div class="scroll-overlay"></div>
@@ -92,7 +92,7 @@
             $modules_vulnerabilities_results.module_to_update|is_array && $modules_vulnerabilities_results.module_to_update|count > 0}
                 {if $module_result2_count != 0}
                     <div class="btntooltip eoaction export-scan-results" data-type="modules_vulnerabilities" data-subtype="module_to_update" data-action="exportScanResults">
-                        <img src="/modules/prestascansecurity/views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
+                        <img src="{$urlmodule}views/img/export_report.png"/><span class="tooltiptext">{$tooltipReport}</span>
                     </div>
                 {/if}
                 <div class="scroll-overlay"></div>

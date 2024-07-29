@@ -27,10 +27,10 @@
 {if $alert_modules_vulnerability[0].is_core}
     <p>{l s='New core vulnerability detected' mod='prestascansecurity'} <strong></strong></p>
 {else}
-    <p>{l s='New vulnerability detected in the module' mod='prestascansecurity'} <strong>{$alert_modules_vulnerability[0].name}</strong></p>
+    <p>{l s='New vulnerability detected in the module' mod='prestascansecurity'} <strong>{if isset($alert_modules_vulnerability[0].name)} {$alert_modules_vulnerability[0].name} {/if}</strong></p>
 {/if}
-{if (!$alert_modules_vulnerability[0].is_core && $alert_modules_vulnerability[0].module_name != 'alert_module_no_detail')
-    || ($alert_modules_vulnerability[0].is_core && $alert_modules_vulnerability[0].module_name != 'alert_core_no_detail')
+{if (!$alert_modules_vulnerability[0].is_core && isset($alert_modules_vulnerability[0].module_name) && $alert_modules_vulnerability[0].module_name != 'alert_module_no_detail')
+    || ($alert_modules_vulnerability[0].is_core && isset($alert_modules_vulnerability[0].module_name) && $alert_modules_vulnerability[0].module_name != 'alert_core_no_detail')
 }
 <ul>
     <li>{l s='Criticity' mod='prestascansecurity'} : {$criticity|ucfirst}</li>

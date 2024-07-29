@@ -22,6 +22,11 @@
  *}
 
 <script type="text/javascript">
+    function decodeHTMLEntities(text) {
+        var textarea = document.createElement('textarea');
+        textarea.innerHTML = text;
+        return textarea.value;
+    }
     {if isset($mediaJsDef)}
         {foreach from=$mediaJsDef key=key item=value} 
             var {$key} = "{$value|escape:"html":'UTF-8'}";

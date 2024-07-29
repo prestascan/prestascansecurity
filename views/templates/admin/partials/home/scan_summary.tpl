@@ -90,6 +90,11 @@
                             scan_more_details_link=$scan_more_details_link
                         }
                     </div>
+                {else}
+                    {include
+                        file="{$prestascansecurity_tpl_path|escape:'htmlall':'UTF-8'}/partials/home_no_scan_result.tpl"
+                        class="report-result-child"
+                    }
                 {/if}
             {/foreach}
 
