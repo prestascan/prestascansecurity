@@ -3,10 +3,10 @@
 </p>
 
 :gb: **PrestaScan Security** is a PrestaShop module allowing you to scan your PrestaShop website to identify malware and known vulnerabilities in PrestaShop core and modules.  
-**User guide**: https://security.profileo.com/advisories/prestascansecurity/
+**Learn more on**: https://www.profileo.com/en/prestascan-security
 
 :fr: **PrestaScan Security** est un module PrestaShop vous permettant de scanner votre site PrestaShop afin d'identifier les malwares et les vulnérabilités connues dans le cœur de PrestaShop et ses modules.  
-**Guide utilisateur** : https://security.profileo.com/fr/advisories/prestascansecurity/
+**En savoir plus sur** : https://www.profileo.com/fr/prestascan-security
 
 ![last release](https://badgen.net/github/release/prestascan/prestascansecurity)
 ![license](https://badgen.net/github/license/prestascan/prestascansecurity)
