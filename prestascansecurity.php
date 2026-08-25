@@ -33,7 +33,7 @@ class Prestascansecurity extends Module
     {
         $this->name = 'prestascansecurity';
         $this->tab = 'others';
-        $this->version = '1.1.12';
+        $this->version = '1.1.14';
         $this->author = 'PrestaScan';
         $this->need_instance = false;
         $this->bootstrap = true;
@@ -279,28 +279,6 @@ class Prestascansecurity extends Module
 
     public function getContent()
     {
-        if ($this->isUserLoggedIn()) {
-            // check if selected url is correct on account            
-            try {
-                $postBody = array(
-                    'shop_urls' => implode(';', array_map('urlencode', $this->getShopUrls())),
-                );
-                $request = new \PrestaScan\Api\Request(
-                    'prestascan-api/v2/check-url',
-                    'POST',
-                    $postBody
-                );
-                $response = $request->getResponse();
-                if (isset($response['error']) && $response['error']) {   // disconnect
-                    $this->logout();
-                }
-            } catch (Exception $e) {
-                if ($e->getMessage() == 'Not logged in') {  //
-                    $this->logout();
-                }
-            }
-        }
-
         // Update the module if requested to do so
         $this->updateModule();
         // Check for error message to display
@@ -309,36 +287,93 @@ class Prestascansecurity extends Module
             return $error;
         }
 
-        $vulnAlertHandler = new \PrestaScan\VulnerabilityAlertHandler($this);
-        $moduleNewVulnerabilitiesAlert = $vulnAlertHandler->getNewVulnerabilityAlerts($this->context->language->iso_code);
-
-        $this->includeAdminResources($moduleNewVulnerabilitiesAlert);
-        $this->assignAdminVariables($moduleNewVulnerabilitiesAlert);
-        $this->displayInitialScanAndScanProgress();
-
-        // Check if user is connected
-        $isLogged = $this->isUserLoggedIn();
-
-        $this->context->smarty->assign('prestascansecurity_isLoggedIn', $isLogged);
-        $this->context->smarty->assign('email_user', Configuration::get('PRESTASCAN_API_EMAIL'));
-
-        // check if module update is available
-        if ($isLogged) {
-            $updateObj = new \PrestaScan\Update($this->context, $this);
-            $updateObj->checkForModuleUpdate();
-            $updateAvailable = Configuration::get('PRESTASCAN_UPDATE_VERSION_AVAILABLE') ? true : false;
-            $this->context->smarty->assign('module_upgrade_available', $updateAvailable);
-
-            // check if banner is available
-            $bannerResponse = \PrestaScan\Banner::getBanner();
-            if (!empty($bannerResponse)) {
-                $this->context->smarty->assign('banner', $bannerResponse);
-            }
-            $subscription = \PrestaScan\Subscription::getSubscription();
-            $this->context->smarty->assign('subscription', $subscription);
+        $this->includeAdminResources(array());
+        $linkParams = array(
+            'configure' => $this->name,
+            'migrate_zentria' => '1'
+        );
+        if (version_compare(_PS_VERSION_, '1.7.0', '>=')) {
+            $migrationlink = $this->context->link->getAdminLink('AdminModules', true, array(), $linkParams);
+        } else {
+            $migrationlink = $this->context->link->getAdminLink('AdminModules') . '&' . http_build_query($linkParams);
         }
 
-        return $this->display(__FILE__, 'views/templates/admin/layouts/main.tpl');
+        $this->smarty->assign(array(
+            'migrationlink' => $migrationlink,
+            'urlZentriaLogo' => $this->_path . 'views/img/zentria-logo.png',
+        ));
+
+        if (Tools::getIsset('check_install_zentria')) {
+            if (! Module::isinstalled('zentria')) {
+                // Failed to install
+                $this->smarty->assign(array('error' => $this->l('Failed to install Zentria module.')));
+                return $this->display(__FILE__, 'views/templates/admin/migration/installation_failed.tpl');
+            }
+
+            $linkParams = array(
+                'configure' => 'zentria',
+            );
+            if (version_compare(_PS_VERSION_, '1.7.0', '>=')) {
+                $configureLink = $this->context->link->getAdminLink('AdminModules', true, array(), $linkParams);
+            } else {
+                $configureLink = $this->context->link->getAdminLink('AdminModules') . '&' . http_build_query($linkParams);
+            }
+
+            // Redirect to Zentria configuration page
+            Tools::redirectAdmin($configureLink);
+        }
+
+        if (Tools::getIsset('migrate_zentria')) {
+            $zentria = Module::getInstanceByName('zentria');
+            // Check if zentria already exists
+            if (! $zentria || ! file_exists(_PS_MODULE_DIR_ . 'zentria/zentria.php')) {
+                // Download Zentria if it does not exist
+                $modulesDir = _PS_MODULE_DIR_;
+                $zipPath = $modulesDir . 'zentria.zip';
+                $zipUrl = 'https://zentria.profileo.com/release/zentria.zip';
+
+                $zipContent = Tools::file_get_contents($zipUrl);
+                if (! $zipContent) {
+                    $this->smarty->assign(array('error' => $this->l('Failed to download Zentria module.')));
+                    return $this->display(__FILE__, 'views/templates/admin/migration/installation_failed.tpl');
+                }
+                file_put_contents($zipPath, $zipContent);
+
+                // Extract Zentria
+                $zip = new ZipArchive();
+                if ($zip->open($zipPath) === true) {
+                    $zip->extractTo($modulesDir);
+                    $zip->close();
+                } else {
+                    $this->smarty->assign(array('error' => $this->l('Failed to extract Zentria module.')));
+                    unlink($zipPath);
+                    return $this->display(__FILE__, 'views/templates/admin/migration/installation_failed.tpl');
+                }
+
+                // Delete the zentria.zip
+                unlink($zipPath);
+            }
+
+            if (! Module::isinstalled('zentria')) {
+                // Install the module via PrestaShop
+                $module = Module::getInstanceByName('zentria');
+                $module->install();
+            }
+
+            // Check installation
+            $linkParams = array(
+                'configure' => $this->name,
+                'check_install_zentria' => '1'
+            );
+            if (version_compare(_PS_VERSION_, '1.7.0', '>=')) {
+                $checkLink = $this->context->link->getAdminLink('AdminModules', true, array(), $linkParams);
+            } else {
+                $checkLink = $this->context->link->getAdminLink('AdminModules') . '&' . http_build_query($linkParams);
+            }
+            Tools::redirectAdmin($checkLink);
+        }
+
+        return $this->display(__FILE__, 'views/templates/admin/migration/migrate.tpl');
     }
 
     public function updateModule()
@@ -589,9 +624,9 @@ class Prestascansecurity extends Module
         }
 
         $jsFiles = [
-            'views/js/reports.js?v=' . $this->version,
-            'views/js/authentication.js?v=' . $this->version,
             'views/js/modal.js?v=' . $this->version,
+            'views/js/reports.js?v=' . $this->version,
+            'views/js/authentication.js?v=' . $this->version,            
             'views/js/datatables.1.10.25.js',
             'views/js/dataTables.buttons.min.js',
             'views/js/file-size.js',
@@ -601,6 +636,7 @@ class Prestascansecurity extends Module
         ];
 
         $cssFiles = [
+            'views/css/ps_migration.css',
             'views/css/datatables.1.10.25.css',
             'views/css/buttons.dataTables.min.css',
             'views/css/jquery-ui.min.css',
