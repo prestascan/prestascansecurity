@@ -625,8 +625,8 @@ class Prestascansecurity extends Module
 
         $jsFiles = [
             'views/js/modal.js?v=' . $this->version,
-            'views/js/reports.js?v=' . $this->version,
-            'views/js/authentication.js?v=' . $this->version,            
+            // 'views/js/reports.js?v=' . $this->version,
+            // 'views/js/authentication.js?v=' . $this->version,
             'views/js/datatables.1.10.25.js',
             'views/js/dataTables.buttons.min.js',
             'views/js/file-size.js',
